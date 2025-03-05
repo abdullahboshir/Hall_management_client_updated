@@ -1,30 +1,61 @@
 "use client";
+import HmForm from "@/components/Form/HmForm";
+import HmInput from "@/components/Form/HmInput";
+import { UserLogin } from "@/services/actions/userLogin";
+import { storeUserInfo } from "@/services/auth.services";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
   Button,
   Container,
   Grid2,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
-type Inputs = {
-  email: string;
-  password: string;
-  exampleRequired: string;
-};
+const loginValidationSchema = z.object({
+  email: z
+    .string()
+    .email("Invalid email address") // Ensures the string is a valid email
+    .min(2, "Email is required"), // Ensures the email is not empty
+
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters long") // Minimum length of 6 characters
+    .max(20, "Password must be at most 20 characters long") // Maximum length of 20 characters
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter") // At least one uppercase letter
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter") // At least one lowercase letter
+    .regex(/[0-9]/, "Password must contain at least one number") // At least one number
+    .regex(
+      /[@$!%*?&]/,
+      "Password must contain at least one special character (@$!%*?&)"
+    ), // At least one special character
+});
 
 const LoginPage = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const router = useRouter();
+  const [error, setError] = useState();
+
+  const handleLogin = async (data: FieldValues) => {
+    try {
+      const res = await UserLogin(data);
+      if (res?.data?.accessToken) {
+        toast.success(res?.message);
+        storeUserInfo(res?.data?.accessToken);
+        router.push("/dashboard");
+      } else {
+        setError(res?.message);
+      }
+      console.log("resssssssssssss", res);
+    } catch (error) {
+      console.log("errorrrrrrrr", error);
+    }
+  };
 
   return (
     <Container>
@@ -46,36 +77,35 @@ const LoginPage = () => {
           }}
         >
           <Stack sx={{ justifyContent: "center", alignItems: "center" }}>
-            <Typography variant="h5" fontWeight={600} marginBottom={3}>
+            <Typography variant="h5" fontWeight={600} marginBottom={2}>
               Login
             </Typography>
           </Stack>
 
+          {error && (
+            <Box>
+              <Typography variant="h6" color="red" marginBottom={3}>
+                {error}
+              </Typography>
+            </Box>
+          )}
+
           <Box>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <HmForm
+              onSubmit={handleLogin}
+              resolver={zodResolver(loginValidationSchema)}
+            >
               <Grid2
                 container
                 spacing={2}
                 sx={{ justifyContent: "center", alignItems: "center" }}
               >
                 <Grid2 size={6}>
-                  <TextField
-                    size="small"
-                    label="Email"
-                    variant="outlined"
-                    type="email"
-                    {...register("email")}
-                  />
+                  <HmInput name="email" label="Email" type="email" />
                 </Grid2>
 
                 <Grid2 size={6}>
-                  <TextField
-                    size="small"
-                    label="Password"
-                    variant="outlined"
-                    type="password"
-                    {...register("password")}
-                  />
+                  <HmInput name="password" label="Password" type="password" />
                 </Grid2>
               </Grid2>
               <Typography textAlign="end">Forgot Password?</Typography>
@@ -86,7 +116,7 @@ const LoginPage = () => {
               >
                 Login
               </Button>
-            </form>
+            </HmForm>
           </Box>
         </Box>
       </Stack>

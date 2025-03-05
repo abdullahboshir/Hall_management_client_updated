@@ -1,4 +1,5 @@
 "use client";
+// import { useGetAllStudentQuery } from "@/redux/api/studentApi";
 // import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -25,14 +26,8 @@ const columns: GridColDef[] = [
 ];
 
 const AllStudent = () => {
-  //   const res = await fetch("http://localhost:5000/api/v1/students/getStudents", {
-  //     next: {
-  //       revalidate: 30,
-  //     },
-  //   });
-
-  //   const students = await res.json();
-  //   console.log("studenttttttttt", students);
+  // const {data, isLoading} = useGetAllStudentQuery({});
+  // console.log("studenttttttttttttt", data);
 
   const rows = [
     { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },

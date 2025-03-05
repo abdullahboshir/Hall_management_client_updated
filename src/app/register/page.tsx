@@ -10,14 +10,19 @@ import {
   Grid2,
   MenuItem,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, FieldValues, useFormContext } from "react-hook-form";
+import dayjs, { Dayjs } from "dayjs";
+import { toast } from "sonner";
+import HmInput from "@/components/Form/HmInput";
+import HmForm from "@/components/Form/HmForm";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface IName {
   firstName: string;
@@ -47,7 +52,7 @@ export interface IStudent {
     email: string;
     name: IName;
     gender: string;
-    dateOfBirth: string;
+    dateOfBirth: Dayjs;
     phoneNumber: string;
     roomNumber: string;
     seatNumber: string;
@@ -64,19 +69,161 @@ export interface IStudent {
   };
 }
 
+const studentRegisterValidationSchema = z.object({
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .max(20, "Password must be at most 20 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(/[@$!%*?&]/, "Password must contain at least one special character"),
+
+  studentData: z.object({
+    email: z
+      .string()
+      .email("Invalid email address")
+      .min(1, "Email is required"),
+
+    name: z.object({
+      firstName: z.string().min(1, "First name is required"),
+      middleName: z.string().min(1, "Middle name is required"),
+      lastName: z.string().min(1, "Last name is required"),
+    }),
+
+    gender: z.string().min(1, "Gender is required"),
+
+    // dateOfBirth: z
+    //   .instanceof(Dayjs)
+    //   .refine((date) => date.isValid(), {
+    //     message: "Date of birth is required",
+    //   })
+    //   .nullable(),
+
+    phoneNumber: z
+      .string()
+      .min(10, "Phone number must be at least 10 digits")
+      .max(15, "Phone number must not exceed 15 digits")
+      .regex(/^\d{11}$/, "Phone number must only contain digits"),
+
+    roomNumber: z.string().min(1, "Room number is required"),
+    seatNumber: z.string().min(1, "Seat number is required"),
+    session: z.string().min(1, "Session is required"),
+    classRoll: z.string().min(1, "Class roll is required"),
+
+    admissionDetails: z.object({
+      admissionFee: z.string().min(1, "Admission fee is required"),
+    }),
+
+    emergencyContact: z
+      .string()
+      .min(10, "Emergency contact number must be at least 10 digits")
+      .max(15, "Emergency contact number must not exceed 15 digits")
+      .regex(/^\d+$/, "Emergency contact number must only contain digits"),
+
+    guardian: z.object({
+      fatherName: z.string().min(1, "Father's name is required"),
+      fatherOccupation: z.string().min(1, "Father's occupation is required"),
+      fatherContactNo: z
+        .string()
+        .min(11, "Father's contact number must be at least 10 digits")
+        .max(11, "Father's contact number must not exceed 15 digits")
+        .regex(/^\d{11}$/, "Father's contact number must only contain digits"),
+
+      motherName: z.string().min(1, "Mother's name is required"),
+      motherOccupation: z.string().min(1, "Mother's occupation is required"),
+      motherContactNo: z
+        .string()
+        .min(11, "Mother's contact number must be at least 10 digits")
+        .max(11, "Mother's contact number must not exceed 15 digits")
+        .regex(/^\d{11}$/, "Mother's contact number must only contain digits"),
+    }),
+
+    presentAddress: z.object({
+      division: z.string().min(1, "Division is required"),
+      district: z.string().min(1, "District is required"),
+      subDistrict: z.string().min(1, "Sub-district is required"),
+      alliance: z.string().min(1, "Alliance is required"),
+      village: z.string().min(1, "Village is required"),
+    }),
+
+    permanentAddress: z.object({
+      division: z.string().min(1, "Division is required"),
+      district: z.string().min(1, "District is required"),
+      subDistrict: z.string().min(1, "Sub-district is required"),
+      alliance: z.string().min(1, "Alliance is required"),
+      village: z.string().min(1, "Village is required"),
+    }),
+
+    bloodGroup: z
+      .string()
+      .min(1, "Blood group is required")
+      .refine(
+        (val) =>
+          ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].includes(val),
+        {
+          message: "Invalid blood group",
+        }
+      ),
+  }),
+});
+
+const studentRegisterDefaultValues = {
+  password: "",
+  studentData: {
+    name: {
+      firstName: "",
+      middleName: "",
+      lastName: "",
+    },
+    gender: "",
+    dateOfBirth: dayjs(),
+    phoneNumber: "",
+    email: "",
+    roomNumber: "",
+    seatNumber: "",
+    session: "",
+    classRoll: "",
+    admissionDetails: {
+      admissionFee: "",
+    },
+    emergencyContact: "",
+    guardian: {
+      fatherName: "",
+      fatherOccupation: "",
+      fatherContactNo: "",
+      motherName: "",
+      motherOccupation: "",
+      motherContactNo: "",
+    },
+    presentAddress: {
+      division: "",
+      district: "",
+      subDistrict: "",
+      alliance: "",
+      village: "",
+    },
+    permanentAddress: {
+      division: "",
+      district: "",
+      subDistrict: "",
+      alliance: "",
+      village: "",
+    },
+    bloodGroup: "",
+  },
+};
+
 const RegisterPage = () => {
-  const {
-    register,
-    handleSubmit,
-    // watch,
-    // formState: { errors },
-  } = useForm<IStudent>();
-  const onSubmit: SubmitHandler<IStudent> = async (values) => {
-    const data = modifyPayload(values);
+  const handleUserRegistration = async (values: FieldValues) => {
+    const data = modifyPayload(values, "studentData");
     console.log("dataaaaaaaaaaa", data);
 
     try {
       const res = await registerStudent(data);
+      if (res?.data?.id) {
+        toast.success(res?.message);
+      }
       console.log("ressssssssssssssssss", res);
     } catch (error) {
       console.log("errorrrrrrrrr", error);
@@ -90,12 +237,16 @@ const RegisterPage = () => {
           height: "100vh",
           justifyContent: "center",
           alignItems: "center",
-          paddingTop: 45,
+          paddingTop: 60,
           paddingBottom: 5,
           overflow: "scroll",
         }}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <HmForm
+          onSubmit={handleUserRegistration}
+          resolver={zodResolver(studentRegisterValidationSchema)}
+          defaultValues={studentRegisterDefaultValues}
+        >
           <Box
             sx={{
               maxWidth: 1000,
@@ -118,146 +269,112 @@ const RegisterPage = () => {
             <Box>
               <Grid2 container spacing={2}>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.name.firstName"
                     label="First Name"
-                    variant="outlined"
-                    {...register("studentData.name.firstName")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.name.middleName"
                     label="Middle Name"
-                    variant="outlined"
-                    {...register("studentData.name.middleName")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
-                    label="Last Name"
-                    variant="outlined"
-                    {...register("studentData.name.lastName")}
-                  />
+                  <HmInput name="studentData.name.lastName" label="Last Name" />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
-                    id="outlined-select-currency"
-                    select
+                  <HmInput
+                    name="studentData.gender"
                     label="Select Your Gender"
+                    isSelect={true}
                     defaultValue="Male"
                     fullWidth={true}
-                    {...register("studentData.gender")}
-                    sx={{ paddingRight: "7px" }}
+                    sx={{ width: "95%" }}
                   >
                     <MenuItem value="Male">Male</MenuItem>
                     <MenuItem value="Female">Female</MenuItem>
                     <MenuItem value="Other">Other</MenuItem>
-                  </TextField>
+                  </HmInput>
                 </Grid2>
+
                 <Grid2 size={3}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer
                       components={["DatePicker"]}
                       sx={{ paddingTop: "0", width: "97%", paddingLeft: "6px" }}
                     >
-                      <DatePicker
-                        label="Date of birth"
-                        slotProps={{
-                          textField: {
-                            size: "small",
-                          },
-                        }}
+                      <Controller
+                        name="studentData.dateOfBirth"
+                        control={useFormContext()?.control}
+                        defaultValue={dayjs()} // Ensure a default value is set
+                        render={({ field }) => (
+                          <DatePicker
+                            {...field}
+                            label="Date of Birth"
+                            value={field.value || dayjs()} // Ensure the value is set correctly
+                            slotProps={{
+                              textField: {
+                                size: "small",
+                              },
+                            }}
+                            onChange={(date) => field.onChange(date)} // Correctly handle the onChange
+                          />
+                        )}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid2>
+
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.phoneNumber"
                     label="Phone Number"
-                    variant="outlined"
-                    {...register("studentData.phoneNumber")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.email"
                     label="Email"
-                    variant="outlined"
                     type="email"
-                    {...register("studentData.email")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
-                    label="Password"
-                    variant="outlined"
-                    type="password"
-                    {...register("password")}
-                  />
+                  <HmInput name="password" label="Password" type="password" />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
-                    label="Room Number"
-                    variant="outlined"
-                    {...register("studentData.roomNumber")}
-                  />
+                  <HmInput name="studentData.roomNumber" label="Room Number" />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
-                    label="Seat Number"
-                    variant="outlined"
-                    {...register("studentData.seatNumber")}
-                  />
+                  <HmInput name="studentData.seatNumber" label="Seat Number" />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
-                    label="Session"
-                    variant="outlined"
-                    {...register("studentData.session")}
-                  />
+                  <HmInput name="studentData.session" label="Session" />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
-                    label="Class Roll"
-                    variant="outlined"
-                    {...register("studentData.classRoll")}
-                  />
+                  <HmInput name="studentData.classRoll" label="Class Roll" />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.admissionDetails.admissionFee"
                     label="Admission Fee"
-                    variant="outlined"
-                    {...register("studentData.admissionDetails.admissionFee")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.emergencyContact"
                     label="Emergency Contact"
-                    variant="outlined"
-                    {...register("studentData.emergencyContact")}
                   />
                 </Grid2>
 
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
-                    id="outlined-select-currency"
-                    select
+                  <HmInput
+                    name="studentData.bloodGroup"
+                    isSelect={true}
                     label="Blood Group"
                     defaultValue="A+"
                     fullWidth={true}
-                    {...register("studentData.bloodGroup")}
+                    sx={{ width: "95%" }}
                   >
                     <MenuItem value="A+">A+</MenuItem>
                     <MenuItem value="A-">A-</MenuItem>
@@ -267,7 +384,7 @@ const RegisterPage = () => {
                     <MenuItem value="AB-">AB-</MenuItem>
                     <MenuItem value="O+">O+</MenuItem>
                     <MenuItem value="O-">O-</MenuItem>
-                  </TextField>
+                  </HmInput>
                 </Grid2>
 
                 <Grid2
@@ -286,51 +403,39 @@ const RegisterPage = () => {
                 </Grid2>
 
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.guardian.fatherName"
                     label="Father Name"
-                    variant="outlined"
-                    {...register("studentData.guardian.fatherName")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.guardian.fatherOccupation"
                     label="Father Occupation"
-                    variant="outlined"
-                    {...register("studentData.guardian.fatherOccupation")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.guardian.fatherContactNo"
                     label="Father Contact Number"
-                    variant="outlined"
-                    {...register("studentData.guardian.fatherContactNo")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.guardian.motherName"
                     label="Mother Name"
-                    variant="outlined"
-                    {...register("studentData.guardian.motherName")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.guardian.motherOccupation"
                     label="Mother Occupation"
-                    variant="outlined"
-                    {...register("studentData.guardian.motherOccupation")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.guardian.motherContactNo"
                     label="Mother Contact Number"
-                    variant="outlined"
-                    {...register("studentData.guardian.motherContactNo")}
                   />
                 </Grid2>
 
@@ -350,43 +455,33 @@ const RegisterPage = () => {
                 </Grid2>
 
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.permanentAddress.division"
                     label="Division"
-                    variant="outlined"
-                    {...register("studentData.permanentAddress.division")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.permanentAddress.district"
                     label="District"
-                    variant="outlined"
-                    {...register("studentData.permanentAddress.district")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.permanentAddress.subDistrict"
                     label="Sub District"
-                    variant="outlined"
-                    {...register("studentData.permanentAddress.subDistrict")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.permanentAddress.alliance"
                     label="Alliance"
-                    variant="outlined"
-                    {...register("studentData.permanentAddress.alliance")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.permanentAddress.village"
                     label="Village"
-                    variant="outlined"
-                    {...register("studentData.permanentAddress.village")}
                   />
                 </Grid2>
 
@@ -406,43 +501,33 @@ const RegisterPage = () => {
                 </Grid2>
 
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.presentAddress.division"
                     label="Division"
-                    variant="outlined"
-                    {...register("studentData.presentAddress.division")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.presentAddress.district"
                     label="District"
-                    variant="outlined"
-                    {...register("studentData.presentAddress.district")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.presentAddress.subDistrict"
                     label="Sub District"
-                    variant="outlined"
-                    {...register("studentData.presentAddress.subDistrict")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.presentAddress.alliance"
                     label="Alliance"
-                    variant="outlined"
-                    {...register("studentData.presentAddress.alliance")}
                   />
                 </Grid2>
                 <Grid2 size={3}>
-                  <TextField
-                    size="small"
+                  <HmInput
+                    name="studentData.presentAddress.village"
                     label="Village"
-                    variant="outlined"
-                    {...register("studentData.presentAddress.village")}
                   />
                 </Grid2>
               </Grid2>
@@ -454,7 +539,7 @@ const RegisterPage = () => {
               Submit
             </Button>
           </Box>
-        </form>
+        </HmForm>
       </Stack>
     </Container>
   );
