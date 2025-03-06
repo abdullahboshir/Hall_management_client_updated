@@ -2,7 +2,7 @@
 import HmFileUploader from "@/components/Form/HmFileUploader";
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
-import HmOptionSelect from "@/components/Form/HmSelectField";
+import HmSelectField from "@/components/Form/HmSelectField";
 import HmModal from "@/components/Shared/HmModal/HmModal";
 import { BloodGroup, Gender } from "@/constant/common.constant";
 import { useCreateManagerMutation } from "@/redux/api/managerApi";
@@ -44,7 +44,11 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
       <HmForm onSubmit={handleFormSubmit}>
         <Grid2 container spacing={2}>
           <Grid2 size={6}>
-            <HmInput name="managerData.name.firstName" label="First Name" />
+            <HmInput
+              name="managerData.name.firstName"
+              label="First Name"
+              fullWidth={true}
+            />
           </Grid2>
           <Grid2 size={6}>
             <HmInput name="managerData.name.middleName" label="Middle Name" />
@@ -54,13 +58,13 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
           </Grid2>
 
           <Grid2 size={5}>
-            <HmOptionSelect
+            <HmSelectField
               items={Gender}
               name="studentData.gender"
               label="Select Your Gender"
               fullWidth={true}
               sx={{ width: "75%" }}
-            ></HmOptionSelect>
+            ></HmSelectField>
           </Grid2>
 
           <Grid2 size={6}>
@@ -124,13 +128,13 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
           </Grid2>
 
           <Grid2 size={5}>
-            <HmOptionSelect
+            <HmSelectField
               items={BloodGroup}
               name="studentData.gender"
               label="Select Your Gender"
               fullWidth={true}
               sx={{ width: "75%" }}
-            ></HmOptionSelect>
+            ></HmSelectField>
           </Grid2>
 
           <Grid2 size={6}>

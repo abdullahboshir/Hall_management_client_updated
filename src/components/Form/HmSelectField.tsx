@@ -13,7 +13,7 @@ type TTextField = {
   sx?: SxProps;
 };
 
-export default function HmOptionSelect({
+export default function HmSelectField({
   items,
   name,
   label,

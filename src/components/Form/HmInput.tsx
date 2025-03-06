@@ -19,7 +19,7 @@ const HmInput = ({
   label,
   type = "text",
   size = "small",
-  fullWidth,
+  fullWidth = true,
   required,
   defaultValue,
   sx,

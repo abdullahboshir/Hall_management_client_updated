@@ -46,7 +46,10 @@ export default function HmFullScreenModal({
           transition: Transition,
         }}
       >
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+        <DialogTitle
+          sx={{ m: 0, p: 2, fontSize: "30px", fontWeight: "bold" }}
+          id="customized-dialog-title"
+        >
           {title}
         </DialogTitle>
 

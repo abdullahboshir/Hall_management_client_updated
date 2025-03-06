@@ -8,7 +8,6 @@ import {
   Container,
   Divider,
   Grid2,
-  MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
@@ -23,6 +22,8 @@ import HmInput from "@/components/Form/HmInput";
 import HmForm from "@/components/Form/HmForm";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import HmSelectField from "@/components/Form/HmSelectField";
+import { Gender } from "@/constant/common.constant";
 
 interface IName {
   firstName: string;
@@ -284,18 +285,13 @@ const RegisterPage = () => {
                   <HmInput name="studentData.name.lastName" label="Last Name" />
                 </Grid2>
                 <Grid2 size={3}>
-                  <HmInput
+                  <HmSelectField
+                    items={["Male", "Female", "Other"]}
                     name="studentData.gender"
                     label="Select Your Gender"
-                    isSelect={true}
-                    defaultValue="Male"
                     fullWidth={true}
                     sx={{ width: "95%" }}
-                  >
-                    <MenuItem value="Male">Male</MenuItem>
-                    <MenuItem value="Female">Female</MenuItem>
-                    <MenuItem value="Other">Other</MenuItem>
-                  </HmInput>
+                  ></HmSelectField>
                 </Grid2>
 
                 <Grid2 size={3}>
@@ -368,23 +364,13 @@ const RegisterPage = () => {
                 </Grid2>
 
                 <Grid2 size={3}>
-                  <HmInput
+                  <HmSelectField
+                    items={Gender}
                     name="studentData.bloodGroup"
-                    isSelect={true}
                     label="Blood Group"
-                    defaultValue="A+"
                     fullWidth={true}
                     sx={{ width: "95%" }}
-                  >
-                    <MenuItem value="A+">A+</MenuItem>
-                    <MenuItem value="A-">A-</MenuItem>
-                    <MenuItem value="B+">B+</MenuItem>
-                    <MenuItem value="B-">B-</MenuItem>
-                    <MenuItem value="AB+">AB+</MenuItem>
-                    <MenuItem value="AB-">AB-</MenuItem>
-                    <MenuItem value="O+">O+</MenuItem>
-                    <MenuItem value="O-">O-</MenuItem>
-                  </HmInput>
+                  ></HmSelectField>
                 </Grid2>
 
                 <Grid2
