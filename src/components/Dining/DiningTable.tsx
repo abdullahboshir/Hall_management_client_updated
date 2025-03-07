@@ -8,6 +8,9 @@ import Image from "next/image";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "sonner";
 import { useGetAllMealQuery } from "@/redux/api/mealApi";
+import { currentDateBD } from "@/utils/currentDateBD";
+
+const { currentYear, currentMonth } = currentDateBD();
 
 const DiningTable = () => {
   const { data, isLoading } = useGetAllMealQuery({});
@@ -93,7 +96,7 @@ const DiningTable = () => {
           <Box display="flex" flexDirection="column">
             <Typography variant="body2">
               {row && row.mealInfo["2025"] ? (
-                row.mealInfo["2025"]["February"]?.maintenanceFee ===
+                row.mealInfo[currentYear][currentMonth]?.maintenanceFee ===
                 row.student.hallId.hallPolicies.maintenanceCharge ? (
                   "Paid"
                 ) : (
@@ -109,14 +112,14 @@ const DiningTable = () => {
             <Typography
               variant="caption"
               color={
-                row.mealInfo["2025"]["February"]?.dueMaintenanceFee > 0
+                row.mealInfo[currentYear][currentMonth]?.dueMaintenanceFee > 0
                   ? "error"
                   : "textSecondary"
               }
             >
               DUE -{" "}
               {row && row.mealInfo["2025"]
-                ? row.mealInfo["2025"]["February"]?.dueMaintenanceFee
+                ? row.mealInfo[currentYear][currentMonth]?.dueMaintenanceFee
                 : ""}
             </Typography>
           </Box>
@@ -139,17 +142,18 @@ const DiningTable = () => {
           <Box display="flex" flexDirection="column">
             <Typography variant="body2">
               {row && row.mealInfo["2025"]
-                ? row.mealInfo["2025"]["February"]?.currentDeposit && (
+                ? row.mealInfo[currentYear][currentMonth] && (
                     <Typography
                       color={
-                        row.mealInfo["2025"]["February"]?.currentDeposit === 0
+                        row.mealInfo[currentYear][currentMonth]
+                          ?.currentDeposit === 0
                           ? "error"
                           : "success"
                       }
                       display="inline"
                     >
                       Currently -{" "}
-                      {row.mealInfo["2025"]["February"]?.currentDeposit}
+                      {row.mealInfo[currentYear][currentMonth]?.currentDeposit}
                     </Typography>
                   )
                 : ""}
@@ -158,7 +162,7 @@ const DiningTable = () => {
             <Typography
               variant="caption"
               color={
-                row.mealInfo["2025"]["February"]?.totalDeposit === 0
+                row.mealInfo[currentYear][currentMonth]?.totalDeposit === 0
                   ? "error"
                   : "textSecondary"
               }
@@ -166,7 +170,7 @@ const DiningTable = () => {
               TOTAL -{" "}
               {row &&
                 row.mealInfo["2025"] &&
-                row.mealInfo["2025"]["February"]?.totalDeposit}
+                row.mealInfo[currentYear][currentMonth]?.totalDeposit}
             </Typography>
           </Box>
         </Box>
@@ -174,7 +178,7 @@ const DiningTable = () => {
     },
     {
       field: "totalMeals",
-      headerName: "Meal Information",
+      headerName: "Total Meals",
       width: 150,
       renderCell: ({ row }) => (
         <Box
@@ -186,16 +190,18 @@ const DiningTable = () => {
           <Box display="flex" flexDirection="column">
             <Typography variant="body2">
               {row && row.mealInfo["2025"]
-                ? row.mealInfo["2025"]["February"]?.currentDeposit && (
+                ? row.mealInfo[currentYear][currentMonth] && (
                     <Typography
                       color={
-                        row.mealInfo["2025"]["February"]?.totalMeals === 0
+                        row.mealInfo[currentYear][currentMonth]?.totalMeals ===
+                        0
                           ? "error"
                           : "success"
                       }
                       display="inline"
                     >
-                      Regular - {row.mealInfo["2025"]["February"]?.totalMeals}
+                      Regular -{" "}
+                      {row.mealInfo[currentYear][currentMonth]?.totalMeals}
                     </Typography>
                   )
                 : ""}
@@ -204,7 +210,7 @@ const DiningTable = () => {
             <Typography
               variant="caption"
               color={
-                row.mealInfo["2025"]["February"]?.totalSpecialMeals === 0
+                row.mealInfo[currentYear][currentMonth]?.totalSpecialMeals === 0
                   ? "error"
                   : "textSecondary"
               }
@@ -212,11 +218,81 @@ const DiningTable = () => {
               SPECIAL -{" "}
               {row &&
                 row.mealInfo["2025"] &&
-                row.mealInfo["2025"]["February"]?.totalSpecialMeals}
+                row.mealInfo[currentYear][currentMonth]?.totalSpecialMeals}
             </Typography>
           </Box>
         </Box>
       ),
+    },
+
+    {
+      field: "totalCost",
+      headerName: "Total Cost",
+      width: 150,
+      renderCell: ({ row }) => {
+        const regularMealCharge =
+          row.student.diningId.diningPolicies.mealCharge;
+        const speacialMealCharge =
+          row.student.diningId.diningPolicies.specialMealCharge;
+
+        return (
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={1}
+            sx={{ width: "100%", height: "100%" }}
+          >
+            <Box display="flex" flexDirection="column">
+              <Typography variant="body2">
+                {row && row.mealInfo["2025"]
+                  ? row.mealInfo[currentYear][currentMonth] && (
+                      <Typography
+                        color={
+                          row.mealInfo[currentYear][currentMonth]?.totalCost ===
+                          0
+                            ? "error"
+                            : "success"
+                        }
+                        display="inline"
+                      >
+                        {/* Regular -{" "} */}
+                        {row.mealInfo[currentYear][currentMonth]?.totalCost}
+                      </Typography>
+                    )
+                  : ""}
+              </Typography>
+
+              <Typography
+                variant="caption"
+                color={
+                  row.mealInfo[currentYear][currentMonth]?.totalCost === 0
+                    ? "error"
+                    : "textSecondary"
+                }
+              >
+                {row.mealInfo[currentYear][currentMonth]?.totalMeals *
+                  regularMealCharge}{" "}
+                + {""}
+                {row.mealInfo[currentYear][currentMonth]?.totalSpecialMeals *
+                  speacialMealCharge}
+              </Typography>
+            </Box>
+          </Box>
+        );
+      },
+    },
+
+    {
+      field: "previousRefunded",
+      headerName: "Refunded Deposit",
+      width: 150,
+      renderCell: ({ row }) => {
+        return (
+          <IconButton onClick={() => handleDelete(row.id)} aria-label="delete">
+            <DeleteIcon />
+          </IconButton>
+        );
+      },
     },
     {
       field: "action",
