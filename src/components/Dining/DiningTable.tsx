@@ -1,50 +1,83 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { Avatar, Box, IconButton, Switch, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  IconButton,
+  Stack,
+  Switch,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 
 import { useDeleteManagerMutation } from "@/redux/api/managerApi";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Image from "next/image";
-import DeleteIcon from "@mui/icons-material/Delete";
+import AddCardIcon from "@mui/icons-material/AddCard";
 import { toast } from "sonner";
-import { useGetAllMealQuery } from "@/redux/api/mealApi";
+import {
+  useGetAllMealQuery,
+  useUpdateMealStatusMutation,
+} from "@/redux/api/mealApi";
 import { currentDateBD } from "@/utils/currentDateBD";
+import { useState } from "react";
+import { useDebounced } from "@/redux/hooks";
 
 const { currentYear, currentMonth } = currentDateBD();
 
 const DiningTable = () => {
-  const { data, isLoading } = useGetAllMealQuery({});
-  const [deleteManager] = useDeleteManagerMutation();
+  const query: Record<string, any> = {};
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleDelete = async (id: string) => {
-    const res = await deleteManager(id).unwrap();
+  const debouncedTerm = useDebounced({
+    searchQuery: searchTerm,
+    delay: 600,
+  });
 
-    console.log("ddddddddddddd", res);
-    if (res?.id) {
-      toast.success("deleted successfully");
-    }
+  if (!!debouncedTerm) {
+    query["searchTerm"] = searchTerm;
+  }
 
-    try {
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
+  const { data, isLoading } = useGetAllMealQuery({ ...query });
+  const meals = data?.meals;
+  // const meta = data?.meta;
 
   console.log("mealssssssssss", data);
+
+  // const [updateMealStatus] = useUpdateMealStatusMutation();
+  // const handleUpdateMealStatus = async (id: string) => {
+  //   const res = await updateMealStatus(id).unwrap();
+
+  //   console.log("ddddddddddddd", res);
+  //   if (res?.id) {
+  //     toast.success("deleted successfully");
+  //   }
+
+  //   try {
+  //   } catch (error) {
+  //     console.log("error", error);
+  //   }
+  // };
 
   const columns: GridColDef[] = [
     {
       field: "mealStatus",
       headerName: "ON/OFF",
       width: 100,
-      renderCell: ({ row }) => <Switch checked={row.mealStatus} />,
+      renderCell: ({ row }) => (
+        <Switch
+          checked={row.mealStatus}
+          color={row?.mealStatus === "off" ? "success" : "error"}
+        />
+      ),
     },
 
     {
       field: "student",
       headerName: "Name",
       sortable: false,
-      width: 200,
+      width: 220,
       renderCell: ({ row }) => (
         <Box
           display="flex"
@@ -72,7 +105,7 @@ const DiningTable = () => {
               {row.student.name.lastName}
             </Typography>
             <Typography variant="caption" color="textSecondary">
-              {row.student.roomNumber} | {row.student.seatNumber}
+              ROOM - {row.student.roomNumber} | SEAT - {row.student.seatNumber}
             </Typography>
           </Box>
         </Box>
@@ -86,52 +119,56 @@ const DiningTable = () => {
       sortable: false,
       width: 160,
       renderCell: ({ row }) => (
-        <Box
-          display="flex"
-          alignItems="center"
-          // justifyContent="center"
-          gap={1}
-          sx={{ width: "100%", height: "100%" }}
-        >
-          <Box display="flex" flexDirection="column">
-            <Typography variant="body2">
-              {row && row.mealInfo["2025"] ? (
-                row.mealInfo[currentYear][currentMonth]?.maintenanceFee ===
-                row.student.hallId.hallPolicies.maintenanceCharge ? (
-                  "Paid"
+        <Tooltip title="More other month." arrow>
+          <Box
+            display="flex"
+            alignItems="center"
+            // justifyContent="center"
+            gap={1}
+            sx={{ width: "100%", height: "100%" }}
+          >
+            <Box display="flex" flexDirection="column">
+              <Typography variant="body2">
+                {row && row.mealInfo["2025"] ? (
+                  row.mealInfo[currentYear][currentMonth]?.maintenanceFee ===
+                  row.student.hallId.hallPolicies.maintenanceCharge ? (
+                    "Paid"
+                  ) : (
+                    <Typography color={"error"} display="inline">
+                      Unpaid
+                    </Typography>
+                  )
                 ) : (
-                  <Typography color={"error"} display="inline">
-                    Unpaid
-                  </Typography>
-                )
-              ) : (
-                ""
-              )}{" "}
-              {" | "} {row.student.hallId.hallPolicies.maintenanceCharge}
-            </Typography>
-            <Typography
-              variant="caption"
-              color={
-                row.mealInfo[currentYear][currentMonth]?.dueMaintenanceFee > 0
-                  ? "error"
-                  : "textSecondary"
-              }
-            >
-              DUE -{" "}
-              {row && row.mealInfo["2025"]
-                ? row.mealInfo[currentYear][currentMonth]?.dueMaintenanceFee
-                : ""}
-            </Typography>
+                  ""
+                )}{" "}
+                {" | "} {row.student.hallId.hallPolicies.maintenanceCharge}
+              </Typography>
+              <Typography
+                variant="caption"
+                color={
+                  row.mealInfo[currentYear][currentMonth]?.dueMaintenanceFee > 0
+                    ? "error"
+                    : "textSecondary"
+                }
+              >
+                DUE -
+                {row &&
+                  row.mealInfo["2025"] &&
+                  row.mealInfo[currentYear][currentMonth]
+                    ?.dueMaintenanceFee}{" "}
+                | Jan | Feb | Mar
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        </Tooltip>
       ),
     },
     {
       field: "currentDeposit",
-      headerName: "Deposit",
+      headerName: "Deposit Status",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
-      width: 160,
+      width: 150,
       renderCell: ({ row }) => (
         <Box
           display="flex"
@@ -179,7 +216,7 @@ const DiningTable = () => {
     {
       field: "totalMeals",
       headerName: "Total Meals",
-      width: 150,
+      width: 120,
       renderCell: ({ row }) => (
         <Box
           display="flex"
@@ -230,6 +267,7 @@ const DiningTable = () => {
       headerName: "Total Cost",
       width: 150,
       renderCell: ({ row }) => {
+        console.log("dddddddddddd", row);
         const regularMealCharge =
           row.student.diningId.diningPolicies.mealCharge;
         const speacialMealCharge =
@@ -255,8 +293,9 @@ const DiningTable = () => {
                         }
                         display="inline"
                       >
-                        {/* Regular -{" "} */}
+                        Total -{" "}
                         {row.mealInfo[currentYear][currentMonth]?.totalCost}
+                        {/* |{" "} Rate- {regularMealCharge} */}
                       </Typography>
                     )
                   : ""}
@@ -270,9 +309,13 @@ const DiningTable = () => {
                     : "textSecondary"
                 }
               >
+                {/* Regular-{" "} */}
+                Regu.-{" "}
                 {row.mealInfo[currentYear][currentMonth]?.totalMeals *
                   regularMealCharge}{" "}
                 + {""}
+                {/* Special-{" "} */}
+                Spec.-{" "}
                 {row.mealInfo[currentYear][currentMonth]?.totalSpecialMeals *
                   speacialMealCharge}
               </Typography>
@@ -284,24 +327,131 @@ const DiningTable = () => {
 
     {
       field: "previousRefunded",
-      headerName: "Refunded Deposit",
-      width: 150,
+      headerName: "Deposit Adjustments",
+      width: 170,
       renderCell: ({ row }) => {
+        // const regularMealCharge =
+        //   row.student.diningId.diningPolicies.mealCharge;
+        // const speacialMealCharge =
+        //   row.student.diningId.diningPolicies.specialMealCharge;
+
         return (
-          <IconButton onClick={() => handleDelete(row.id)} aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={1}
+            sx={{ width: "100%", height: "100%" }}
+          >
+            <Box display="flex" flexDirection="column">
+              <Typography variant="body2">
+                {row && row.mealInfo["2025"]
+                  ? row.mealInfo[currentYear][currentMonth] && (
+                      <Typography
+                        color={
+                          row.mealInfo[currentYear][currentMonth]?.totalCost ===
+                          0
+                            ? "error"
+                            : "success"
+                        }
+                        display="inline"
+                      >
+                        Refunded -{" "}
+                        {row.mealInfo[currentYear][currentMonth]?.totalCost}
+                        {/* |{" "} Rate- {regularMealCharge} */}
+                      </Typography>
+                    )
+                  : ""}
+              </Typography>
+
+              <Typography
+                variant="caption"
+                color={
+                  row.mealInfo[currentYear][currentMonth]?.totalCost === 0
+                    ? "error"
+                    : "textSecondary"
+                }
+              >
+                {/* Regular-{" "} */}
+                Transferred Success {/* Transferred success{" "} */}
+                {/* {row.mealInfo[currentYear][currentMonth]?.totalMeals *
+                  regularMealCharge}{" "} */}
+                {/* + {""} */}
+                {/* Special-{" "} */}
+                {/* Spec.-{" "} */}
+                {/* {row.mealInfo[currentYear][currentMonth]?.totalSpecialMeals *
+                  speacialMealCharge} */}
+              </Typography>
+            </Box>
+          </Box>
+        );
+      },
+    },
+
+    {
+      field: "diningPolicies",
+      headerName: "Meal Rate",
+      width: 120,
+      renderCell: ({ row }) => {
+        const regularMealCharge =
+          row.student.diningId.diningPolicies.mealCharge;
+        const speacialMealCharge =
+          row.student.diningId.diningPolicies.specialMealCharge;
+
+        return (
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={1}
+            sx={{ width: "100%", height: "100%" }}
+          >
+            <Box display="flex" flexDirection="column">
+              <Typography variant="body2">
+                {row && row.mealInfo["2025"]
+                  ? row.mealInfo[currentYear][currentMonth] && (
+                      <Typography
+                        color={
+                          row.mealInfo[currentYear][currentMonth]?.totalCost ===
+                          0
+                            ? "error"
+                            : "success"
+                        }
+                        display="inline"
+                      >
+                        Regular - {regularMealCharge}
+                        {/* |{" "} Rate- {regularMealCharge} */}
+                      </Typography>
+                    )
+                  : ""}
+              </Typography>
+
+              <Typography
+                variant="caption"
+                color={
+                  row.mealInfo[currentYear][currentMonth]?.totalCost === 0
+                    ? "error"
+                    : "textSecondary"
+                }
+              >
+                {/* Regular-{" "} */}
+                Special- {speacialMealCharge} {/* + {""} */}
+                {/* Special-{" "} */}
+                {/* Spec.-{" "} */}
+                {/* {row.mealInfo[currentYear][currentMonth]?.totalSpecialMeals *
+                  speacialMealCharge} */}
+              </Typography>
+            </Box>
+          </Box>
         );
       },
     },
     {
       field: "action",
-      headerName: "Action",
-      width: 150,
+      headerName: "Deposit",
+      width: 80,
       renderCell: ({ row }) => {
         return (
-          <IconButton onClick={() => handleDelete(row.id)} aria-label="delete">
-            <DeleteIcon />
+          <IconButton onClick={() => console.log(row)} aria-label="delete">
+            <AddCardIcon />
           </IconButton>
         );
       },
@@ -310,9 +460,16 @@ const DiningTable = () => {
 
   return (
     <Box>
+      <Stack alignItems="center" py={2}>
+        <TextField
+          onChange={(e) => setSearchTerm(e.target.value)}
+          size="small"
+          placeholder="Search Manager"
+        />
+      </Stack>
       {!isLoading ? (
         <Box>
-          <DataGrid rows={data} columns={columns} rowHeight={70} />
+          <DataGrid rows={meals ?? []} columns={columns} rowHeight={70} />
         </Box>
       ) : (
         <h1>Loading.......</h1>

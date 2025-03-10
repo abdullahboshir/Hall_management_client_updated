@@ -2,16 +2,16 @@
 import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseApi";
 
-const studentApi = baseApi.injectEndpoints({
+const userApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getAllStudent: build.query({
+    getSingleUser: build.query({
       query: () => ({
-        url: "/student/getStudents",
+        url: "/user/me",
         method: "GET",
       }),
-      providesTags: [tagTypes.student],
+      providesTags: [tagTypes.user],
     }),
   }),
 });
 
-export const { useGetAllStudentQuery } = studentApi;
+export const { useGetSingleUserQuery } = userApi;

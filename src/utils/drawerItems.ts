@@ -2,7 +2,10 @@ import { USER_ROLE } from "@/constant/role";
 import { DrawerItem, TUserRole } from "@/types";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import GroupIcon from "@mui/icons-material/Group";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import PersonIcon from "@mui/icons-material/Person";
+import CampaignIcon from "@mui/icons-material/Campaign";
 import AddModeratorIcon from "@mui/icons-material/AddModerator";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import WarehouseIcon from "@mui/icons-material/Warehouse";
@@ -15,14 +18,39 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
     case USER_ROLE.superAdmin:
       roleMenus.push(
         {
-          title: "Dashboard",
-          path: `${role}`,
-          icon: DashboardIcon,
+          title: "Admin",
+          path: `${role}/admin`,
+          icon: AdminPanelSettingsIcon,
         },
         {
-          title: "Manage - Users",
-          path: `${role}/manage-users`,
-          icon: GroupIcon,
+          title: "Manager",
+          path: `${role}/manager`,
+          icon: SupervisorAccountIcon,
+        },
+        {
+          title: "Moderator",
+          path: `${role}/moderator`,
+          icon: AddModeratorIcon,
+        },
+        {
+          title: "Student",
+          path: `${role}/student`,
+          icon: PersonAddAltIcon,
+        },
+        {
+          title: "Hall",
+          path: `${role}/hall`,
+          icon: WarehouseIcon,
+        },
+        {
+          title: "Dining",
+          path: `${role}/dining`,
+          icon: DiningIcon,
+        },
+        {
+          title: "declaration",
+          path: `${role}/declaration`,
+          icon: CampaignIcon,
         }
       );
       break;
@@ -30,34 +58,29 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
     case USER_ROLE.admin:
       roleMenus.push(
         {
-          title: "Dashboard",
-          path: `${role}`,
-          icon: DashboardIcon,
+          title: "Admin",
+          path: `${role}/admin`,
+          icon: AdminPanelSettingsIcon,
         },
         {
-          title: "manager",
+          title: "Manager",
           path: `${role}/manager`,
-          icon: PersonIcon,
+          icon: SupervisorAccountIcon,
         },
         {
-          title: "moderator",
+          title: "Moderator",
           path: `${role}/moderator`,
           icon: AddModeratorIcon,
         },
         {
-          title: "student",
+          title: "Student",
           path: `${role}/student`,
           icon: PersonAddAltIcon,
         },
         {
-          title: "hall",
-          path: `${role}/hall`,
-          icon: WarehouseIcon,
-        },
-        {
-          title: "dining",
-          path: `${role}/dining`,
-          icon: DiningIcon,
+          title: "declaration",
+          path: `${role}/declaration`,
+          icon: CampaignIcon,
         }
       );
       break;
@@ -65,14 +88,19 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
     case USER_ROLE.manager:
       roleMenus.push(
         {
-          title: "hall",
-          path: `${role}/hall`,
+          title: "Dining",
+          path: `${role}/dining`,
+          icon: DiningIcon,
+        },
+        {
+          title: "Meals",
+          path: `${role}/meal`,
           icon: WarehouseIcon,
         },
         {
-          title: "dining",
-          path: `${role}/dining`,
-          icon: DiningIcon,
+          title: "declaration",
+          path: `${role}/declaration`,
+          icon: CampaignIcon,
         }
       );
       break;
@@ -81,7 +109,7 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
       roleMenus.push({
         title: "declaration",
         path: `${role}/declaration`,
-        icon: DiningIcon,
+        icon: CampaignIcon,
       });
       break;
 

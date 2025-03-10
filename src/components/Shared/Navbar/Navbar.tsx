@@ -30,11 +30,21 @@ const Navbar = () => {
         </Typography>
 
         <Stack direction="row" justifyContent="space-between" gap={4}>
-          <Typography>Home</Typography>
-          <Typography>Dashbord</Typography>
-          <Typography>Dining</Typography>
-          <Typography>Notifications</Typography>
-          <Typography>Declaration</Typography>
+          <Typography component={Link} href="/">
+            Home
+          </Typography>
+          <Typography component={Link} href="/dashboard">
+            Dashbord
+          </Typography>
+          <Typography component={Link} href="/dining">
+            Dining
+          </Typography>
+          <Typography component={Link} href="/login">
+            Notifications
+          </Typography>
+          <Typography component={Link} href="/login">
+            Declaration
+          </Typography>
         </Stack>
         <AuthButton />
       </Stack>

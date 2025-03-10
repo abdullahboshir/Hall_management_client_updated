@@ -10,6 +10,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import SideBar from "../SideBar/SideBar";
+import { useGetSingleUserQuery } from "@/redux/api/userApi";
+import { Avatar, Badge, Stack } from "@mui/material";
+import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
+import AccountMenu from "../AccountMenu/AccountMenu";
 
 const drawerWidth = 240;
 
@@ -36,6 +40,9 @@ export default function DashboardDrawer({
     }
   };
 
+  const { data, isLoading } = useGetSingleUserQuery({});
+  console.log("dddddddd", data);
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -59,13 +66,31 @@ export default function DashboardDrawer({
           >
             <MenuIcon />
           </IconButton>
-          <Box>
-            <Typography variant="body2" noWrap component="div" color="gray">
-              Hey User
-            </Typography>
-            <Typography variant="body2" noWrap component="div" color="black">
-              Welcome to Nazrul hall
-            </Typography>
+
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+          >
+            <Box>
+              <Typography variant="body2" noWrap component="div" color="gray">
+                Hey, {isLoading ? "Loading..." : data?.fullName}
+              </Typography>
+              <Typography variant="body2" noWrap component="div" color="black">
+                Welcome to Nazrul hall
+              </Typography>
+            </Box>
+
+            <Stack direction="row" gap={3}>
+              <Badge color="secondary" overlap="circular" badgeContent={2}>
+                <IconButton sx={{ background: "#ffffff" }}>
+                  <CircleNotificationsIcon color="action" />
+                </IconButton>
+              </Badge>
+              <Avatar alt={data?.name} src={data?.profileImg} />
+              <AccountMenu />
+            </Stack>
           </Box>
         </Toolbar>
       </AppBar>
