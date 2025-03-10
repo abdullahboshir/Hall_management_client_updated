@@ -9,7 +9,7 @@ const managerApi = baseApi.injectEndpoints({
         url: "/user/create-manager",
         method: "POST",
         contentType: "multipart/form-data",
-        body: data,
+        data,
       }),
       invalidatesTags: [tagTypes.manager],
     }),

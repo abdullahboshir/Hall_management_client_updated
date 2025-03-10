@@ -1,10 +1,10 @@
 import { USER_ROLE } from "@/constant/role";
 import { DrawerItem, TUserRole } from "@/types";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import GroupIcon from "@mui/icons-material/Group";
+// import DashboardIcon from "@mui/icons-material/Dashboard";
+// import GroupIcon from "@mui/icons-material/Group";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import PersonIcon from "@mui/icons-material/Person";
+// import PersonIcon from "@mui/icons-material/Person";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import AddModeratorIcon from "@mui/icons-material/AddModerator";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
@@ -48,8 +48,8 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
           icon: DiningIcon,
         },
         {
-          title: "declaration",
-          path: `${role}/declaration`,
+          title: "Notices",
+          path: `${role}/notices`,
           icon: CampaignIcon,
         }
       );
@@ -78,8 +78,8 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
           icon: PersonAddAltIcon,
         },
         {
-          title: "declaration",
-          path: `${role}/declaration`,
+          title: "Notices",
+          path: `${role}/notices`,
           icon: CampaignIcon,
         }
       );
@@ -98,8 +98,8 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
           icon: WarehouseIcon,
         },
         {
-          title: "declaration",
-          path: `${role}/declaration`,
+          title: "Notices",
+          path: `${role}/notices`,
           icon: CampaignIcon,
         }
       );
@@ -107,8 +107,8 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
 
     case USER_ROLE.moderator:
       roleMenus.push({
-        title: "declaration",
-        path: `${role}/declaration`,
+        title: "Notices",
+        path: `${role}/notices`,
         icon: CampaignIcon,
       });
       break;

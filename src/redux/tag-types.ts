@@ -1,4 +1,6 @@
 export enum tagTypes {
+  hall = "hall",
+  dining = "dining",
   user = "user",
   admin = "admin",
   moderator = "moderator",
@@ -8,6 +10,8 @@ export enum tagTypes {
 }
 
 export const tagTypesList = [
+  tagTypes.hall,
+  tagTypes.dining,
   tagTypes.admin,
   tagTypes.manager,
   tagTypes.moderator,

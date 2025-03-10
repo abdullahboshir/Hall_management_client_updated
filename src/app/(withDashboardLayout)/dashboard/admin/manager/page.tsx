@@ -135,7 +135,7 @@ const ManagerPage = () => {
 
       {!isLoading ? (
         <Box>
-          <DataGrid rows={data} columns={columns} hideFooter />
+          <DataGrid rows={data} columns={columns} rowHeight={60} hideFooter />
         </Box>
       ) : (
         <h1>Loading.......</h1>

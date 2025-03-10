@@ -22,7 +22,7 @@ type TProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ManagerModal = ({ open, setOpen }: TProps) => {
+const AdminModal = ({ open, setOpen }: TProps) => {
   const { data: userData, isLoading: userIsLoading } = useGetSingleUserQuery(
     {}
   );
@@ -191,4 +191,4 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
   );
 };
 
-export default ManagerModal;
+export default AdminModal;

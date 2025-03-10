@@ -15,7 +15,7 @@ import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import { FieldValues } from "react-hook-form";
 
-const ManagerUpdatePage = () => {
+const AdminUpdatePage = () => {
   const params = useParams();
   const managerId = params?.managerId as string;
 
@@ -147,4 +147,4 @@ const ManagerUpdatePage = () => {
   );
 };
 
-export default ManagerUpdatePage;
+export default AdminUpdatePage;
