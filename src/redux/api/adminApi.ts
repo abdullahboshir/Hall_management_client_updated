@@ -15,7 +15,7 @@ const adminApi = baseApi.injectEndpoints({
     }),
     getAllAdmin: build.query({
       query: () => ({
-        url: "/admin/getAdmins",
+        url: "/admin/getAllAdmin",
         method: "GET",
       }),
       providesTags: [tagTypes.admin],

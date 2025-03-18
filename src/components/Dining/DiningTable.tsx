@@ -18,11 +18,14 @@ import AddCardIcon from "@mui/icons-material/AddCard";
 // import { toast } from "sonner";
 import {
   useGetAllMealQuery,
+  useUpdateMealStatusMutation,
   // useUpdateMealStatusMutation,
 } from "@/redux/api/mealApi";
 import { currentDateBD } from "@/utils/currentDateBD";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebounced } from "@/redux/hooks";
+// import { useGetAllHallsQuery } from "@/redux/api/hallApi";
+import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
 
 const { currentYear, currentMonth } = currentDateBD();
 
@@ -39,11 +42,39 @@ const DiningTable = () => {
     query["searchTerm"] = searchTerm;
   }
 
-  const { data, isLoading } = useGetAllMealQuery({ ...query });
-  const meals = data?.meals;
-  // const meta = data?.meta;
+  // const { data: hallData, isLoading: isHallLoading } = useGetAllHallsQuery({});
+  const { data: diningData, isLoading: isDiningLoading } =
+    useGetAllDiningsQuery({});
+  const { data, isLoading, refetch } = useGetAllMealQuery<any>({ ...query });
 
-  console.log("mealssssssssss", data);
+  useEffect(() => {
+    const mealCharge = diningData?.diningPolicies?.mealCharge;
+
+    const reservedSafetyDeposit =
+      diningData?.diningPolicies?.reservedSafetyDeposit;
+
+    if (
+      data?.meals &&
+      data?.meals?.some(
+        (meal: any) =>
+          meal.mealStatus === "on" &&
+          meal.mealInfo[currentYear][currentMonth]?.currentDeposit >=
+            mealCharge + (mealCharge / 100) * reservedSafetyDeposit
+      )
+    ) {
+      const intervalId = setInterval(() => {
+        refetch();
+      }, 2000);
+
+      return () => clearInterval(intervalId);
+    }
+  }, [data, refetch, diningData]);
+
+  const meals = data?.meals;
+
+  // useEffect(() => {
+  //   refetch(); // ✅ Refresh data when the page loads
+  // }, []);
 
   // const [updateMealStatus] = useUpdateMealStatusMutation();
   // const handleUpdateMealStatus = async (id: string) => {
@@ -60,17 +91,65 @@ const DiningTable = () => {
   //   }
   // };
 
+  const [updateMealStatus] = useUpdateMealStatusMutation();
+  // const meta = data?.meta;
+
+  console.log("mealssssssssss", data);
+
+  const handleMealStatus = async (id: string, checked: boolean) => {
+    const updatedMealStatus = checked ? "on" : "off";
+
+    const mealData = {
+      id,
+      body: { mealStatus: updatedMealStatus },
+    };
+
+    try {
+      const res = await updateMealStatus(mealData);
+      console.log("dddddd7777777777777", res);
+      refetch();
+    } catch (error) {
+      console.log("got and error", error);
+    }
+  };
+
   const columns: GridColDef[] = [
     {
       field: "mealStatus",
       headerName: "ON/OFF",
       width: 100,
-      renderCell: ({ row }) => (
-        <Switch
-          checked={row.mealStatus}
-          color={row?.mealStatus === "off" ? "success" : "error"}
-        />
-      ),
+      renderCell: ({ row }) => {
+        const baseMealObj = row.mealInfo?.[currentYear]?.[currentMonth] || {};
+        const mealCharge = diningData?.diningPolicies?.mealCharge;
+
+        const reservedSafetyDeposit =
+          diningData?.diningPolicies?.reservedSafetyDeposit;
+
+        const isAvaiableCurrentDeposite =
+          isLoading || isDiningLoading
+            ? "...Loading"
+            : baseMealObj?.currentDeposit >=
+              mealCharge + (mealCharge / 100) * reservedSafetyDeposit;
+        console.log(
+          "dddddddddddddddd",
+          row.student?.name?.firstName,
+          isAvaiableCurrentDeposite,
+          baseMealObj.currentDeposit,
+          mealCharge + (mealCharge / 100) * reservedSafetyDeposit
+        );
+        return (
+          <Switch
+            onClick={(e: any) => {
+              if (isAvaiableCurrentDeposite) {
+                handleMealStatus(row._id, e.target.checked);
+              }
+            }}
+            checked={isAvaiableCurrentDeposite && row.mealStatus === "on"}
+            disabled={!isAvaiableCurrentDeposite}
+            color={row?.mealStatus === "off" ? "success" : "error"}
+          />
+        );
+      },
     },
 
     {
@@ -129,9 +208,9 @@ const DiningTable = () => {
           >
             <Box display="flex" flexDirection="column">
               <Typography variant="body2">
-                {row && row.mealInfo["2025"] ? (
+                {row && row.mealInfo[currentYear] ? (
                   row.mealInfo[currentYear][currentMonth]?.maintenanceFee ===
-                  row.student.hallId.hallPolicies.maintenanceCharge ? (
+                  row.student.hall?.hallPolicies?.maintenanceCharge ? (
                     "Paid"
                   ) : (
                     <Typography color={"error"} display="inline">
@@ -141,7 +220,7 @@ const DiningTable = () => {
                 ) : (
                   ""
                 )}{" "}
-                {" | "} {row.student.hallId.hallPolicies.maintenanceCharge}
+                {" | "} {row.student.hall.hallPolicies.maintenanceCharge}
               </Typography>
               <Typography
                 variant="caption"
@@ -268,10 +347,9 @@ const DiningTable = () => {
       width: 150,
       renderCell: ({ row }) => {
         console.log("dddddddddddd", row);
-        const regularMealCharge =
-          row.student.diningId.diningPolicies.mealCharge;
+        const regularMealCharge = row.student.dining.diningPolicies.mealCharge;
         const speacialMealCharge =
-          row.student.diningId.diningPolicies.specialMealCharge;
+          row.student.dining.diningPolicies.specialMealCharge;
 
         return (
           <Box
@@ -331,9 +409,9 @@ const DiningTable = () => {
       width: 170,
       renderCell: ({ row }) => {
         // const regularMealCharge =
-        //   row.student.diningId.diningPolicies.mealCharge;
+        //   row.student.dining.diningPolicies.mealCharge;
         // const speacialMealCharge =
-        //   row.student.diningId.diningPolicies.specialMealCharge;
+        //   row.student.dining.diningPolicies.specialMealCharge;
 
         return (
           <Box
@@ -356,7 +434,7 @@ const DiningTable = () => {
                         display="inline"
                       >
                         Refunded -{" "}
-                        {row.mealInfo[currentYear][currentMonth]?.totalCost}
+                        {row.mealInfo[currentYear][currentMonth]?.refunded}
                         {/* |{" "} Rate- {regularMealCharge} */}
                       </Typography>
                     )
@@ -392,10 +470,9 @@ const DiningTable = () => {
       headerName: "Meal Rate",
       width: 120,
       renderCell: ({ row }) => {
-        const regularMealCharge =
-          row.student.diningId.diningPolicies.mealCharge;
+        const regularMealCharge = row.student.dining.diningPolicies.mealCharge;
         const speacialMealCharge =
-          row.student.diningId.diningPolicies.specialMealCharge;
+          row.student.dining.diningPolicies.specialMealCharge;
 
         return (
           <Box

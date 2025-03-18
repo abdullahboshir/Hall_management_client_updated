@@ -21,9 +21,10 @@ const mealApi = baseApi.injectEndpoints({
     }),
 
     updateMealStatus: build.mutation({
-      query: (id) => ({
-        url: `/meal/${id}`,
+      query: ({ body, id }) => ({
+        url: `/meal/meal-status/${id}`,
         method: "PATCH",
+        data: body,
       }),
       invalidatesTags: [tagTypes.meal],
     }),

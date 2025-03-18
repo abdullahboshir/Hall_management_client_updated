@@ -5,10 +5,10 @@ import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import HmSelectField from "@/components/Form/HmSelectField";
 import HmModal from "@/components/Shared/HmModal/HmModal";
-import { BloodGroup, Gender } from "@/constant/common.constant";
+import { BloodGroup, Designation, Gender } from "@/constant/common.constant";
+import { useCreateAdminMutation } from "@/redux/api/adminApi";
 import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
 import { useGetAllHallsQuery } from "@/redux/api/hallApi";
-import { useCreateManagerMutation } from "@/redux/api/managerApi";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import { modifyPayload } from "@/utils/modifyPayload";
 import { Button, Grid2 } from "@mui/material";
@@ -29,7 +29,7 @@ const AdminModal = ({ open, setOpen }: TProps) => {
   const { data: hallData, isLoading: hallIsLoading } = useGetAllHallsQuery({});
   const { data: diningData, isLoading: diningIsLoading } =
     useGetAllDiningsQuery({});
-  const [createManager] = useCreateManagerMutation();
+  const [createAdmin] = useCreateAdminMutation();
 
   const handleFormSubmit = async (values: FieldValues) => {
     if (hallIsLoading || diningIsLoading || userIsLoading) {
@@ -42,18 +42,18 @@ const AdminModal = ({ open, setOpen }: TProps) => {
       return;
     }
 
-    values.managerData.hall = hallData[0]?._id;
-    values.managerData.dining = diningData[0]?._id;
-    values.managerData.creator = userData?.id;
+    values.adminData.hall = hallData?._id;
+    values.adminData.dining = diningData?._id;
+    values.adminData.creator = userData?.id;
 
     const data = modifyPayload(values);
 
     try {
-      const res = await createManager(data).unwrap();
-      console.log("manager createdddddddddddd", res);
+      const res = await createAdmin(data).unwrap();
+      console.log("Admin createdddddddddddd", res);
 
       if (res?.id) {
-        toast.success("Manager created Successfully!!");
+        toast.success("Admin created Successfully!!");
         setOpen(false);
       }
     } catch (error: any) {
@@ -62,7 +62,7 @@ const AdminModal = ({ open, setOpen }: TProps) => {
   };
 
   const managerDefaultValues = {
-    managerData: {
+    adminData: {
       name: {
         firstName: "",
         middleName: "",
@@ -91,35 +91,32 @@ const AdminModal = ({ open, setOpen }: TProps) => {
           <Grid2 container spacing={2}>
             <Grid2 size={6}>
               <HmInput
-                name="managerData.name.firstName"
+                name="adminData.name.firstName"
                 label="First Name"
                 fullWidth={true}
               />
             </Grid2>
             <Grid2 size={6}>
-              <HmInput name="managerData.name.middleName" label="Middle Name" />
+              <HmInput name="adminData.name.middleName" label="Middle Name" />
             </Grid2>
             <Grid2 size={6}>
-              <HmInput name="managerData.name.lastName" label="Last Name" />
+              <HmInput name="adminData.name.lastName" label="Last Name" />
             </Grid2>
 
             <Grid2 size={6}>
               <HmSelectField
                 items={Gender}
-                name="managerData.gender"
+                name="adminData.gender"
                 label="Select Your Gender"
                 fullWidth={true}
               ></HmSelectField>
             </Grid2>
 
             <Grid2 size={6}>
-              <HmInput
-                name="managerData.contactNumber"
-                label="Contact Number"
-              />
+              <HmInput name="adminData.contactNumber" label="Contact Number" />
             </Grid2>
             <Grid2 size={6}>
-              <HmInput name="managerData.email" label="Email" />
+              <HmInput name="adminData.email" label="Email" />
             </Grid2>
 
             <Grid2 size={6}>
@@ -128,27 +125,27 @@ const AdminModal = ({ open, setOpen }: TProps) => {
 
             <Grid2 size={6}>
               <HmInput
-                name="managerData.emergencyContactNo"
+                name="adminData.emergencyContactNo"
                 label="Emergency Contact Number"
               />
             </Grid2>
 
             <Grid2 size={6}>
               <HmInput
-                name="managerData.presentAddress"
+                name="adminData.presentAddress"
                 label="Present Address"
               />
             </Grid2>
             <Grid2 size={6}>
               <HmInput
-                name="managerData.permanentAddress"
+                name="adminData.permanentAddress"
                 label="Permanent Address"
               />
             </Grid2>
 
             <Grid2 size={6}>
               <HmDatePicker
-                name="managerData.dateOfBirth"
+                name="adminData.dateOfBirth"
                 label="Date of Birth"
               />
             </Grid2>
@@ -156,8 +153,17 @@ const AdminModal = ({ open, setOpen }: TProps) => {
             <Grid2 size={6}>
               <HmSelectField
                 items={BloodGroup}
-                name="managerData.bloodGroup"
+                name="adminData.bloodGroup"
                 label="Select Your Blood Group"
+                fullWidth={true}
+              ></HmSelectField>
+            </Grid2>
+
+            <Grid2 size={6}>
+              <HmSelectField
+                items={Designation}
+                name="adminData.designation"
+                label="Designation"
                 fullWidth={true}
               ></HmSelectField>
             </Grid2>

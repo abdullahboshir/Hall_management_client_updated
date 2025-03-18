@@ -42,8 +42,8 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
       return;
     }
 
-    values.managerData.hall = hallData[0]?._id;
-    values.managerData.dining = diningData[0]?._id;
+    values.managerData.hall = hallData?._id;
+    values.managerData.dining = diningData?._id;
     values.managerData.creator = userData?.id;
 
     const data = modifyPayload(values);

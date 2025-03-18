@@ -10,22 +10,21 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import ManagerModal from "./components/AdminModal";
-import {
-  useDeleteManagerMutation,
-  useGetAllManagerQuery,
-} from "@/redux/api/managerApi";
+import { useDeleteManagerMutation } from "@/redux/api/managerApi";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Image from "next/image";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useGetAllAdminQuery } from "@/redux/api/adminApi";
 
 const AdminPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const { data, isLoading } = useGetAllManagerQuery({});
+  const { data, isLoading } = useGetAllAdminQuery({});
   const [deleteManager] = useDeleteManagerMutation();
 
+  console.log("adminnnnnnnnnnnnnn", data);
   const handleDelete = async (id: string) => {
     const res = await deleteManager(id).unwrap();
 
@@ -33,14 +32,11 @@ const AdminPage = () => {
       toast.success("deleted successfully");
     }
 
-    console.log("ddddddddddddd", res);
-
     try {
     } catch (error) {
       console.log("error", error);
     }
   };
-  console.log("managerrrrrrr", data);
 
   const columns: GridColDef[] = [
     {
@@ -69,7 +65,7 @@ const AdminPage = () => {
             <Box display="flex" flexDirection="column">
               <Typography variant="body2">{row.fullName}</Typography>
               <Typography variant="caption" color="textSecondary">
-                {row.designation}
+                {row.designation} {row?.user?.role}
                 {/* | SEAT -{" "} {row.student.seatNumber} */}
               </Typography>
             </Box>
@@ -106,7 +102,7 @@ const AdminPage = () => {
               <DeleteIcon color="error" />
             </IconButton>
 
-            <Link href={`/dashboard/admin/manager/edit/${row?.id}`}>
+            <Link href={`/dashboard/admin/admin/edit/${row?.id}`}>
               <IconButton
               // onClick={() => handleDelete(row.id)}
               // aria-label="delete"
@@ -128,7 +124,7 @@ const AdminPage = () => {
         alignItems="center"
         pb={2}
       >
-        <Button onClick={() => setIsModalOpen(true)}>Add Manager</Button>
+        <Button onClick={() => setIsModalOpen(true)}>Add Admin</Button>
         <ManagerModal open={isModalOpen} setOpen={setIsModalOpen} />
         <TextField size="small" placeholder="Search Manager" />
       </Stack>

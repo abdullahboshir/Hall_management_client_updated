@@ -4,18 +4,19 @@ export enum tagTypes {
   user = "user",
   admin = "admin",
   moderator = "moderator",
-  student = "manager",
-  manager = "student",
+  manager = "manager",
+  student = "student",
   meal = "meal",
 }
 
-export const tagTypesList = [
-  tagTypes.hall,
-  tagTypes.dining,
-  tagTypes.admin,
-  tagTypes.manager,
-  tagTypes.moderator,
-  tagTypes.student,
-  tagTypes.meal,
-  tagTypes.user,
-];
+export const tagTypesList = Object.values(tagTypes);
+// [
+//   tagTypes.hall,
+//   tagTypes.dining,
+//   tagTypes.admin,
+//   tagTypes.manager,
+//   tagTypes.moderator,
+//   tagTypes.student,
+//   tagTypes.meal,
+//   tagTypes.user,
+// ];
