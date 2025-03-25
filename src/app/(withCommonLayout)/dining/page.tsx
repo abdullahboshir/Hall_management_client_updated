@@ -1,5 +1,4 @@
 import DiningTable from "@/components/Dining/DiningTable";
-import React from "react";
 
 const DiningPage = () => {
   return (

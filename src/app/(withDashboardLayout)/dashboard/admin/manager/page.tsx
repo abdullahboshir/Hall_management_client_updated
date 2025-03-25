@@ -33,8 +33,6 @@ const ManagerPage = () => {
       toast.success("deleted successfully");
     }
 
-    console.log("ddddddddddddd", res);
-
     try {
     } catch (error) {
       console.log("error", error);
@@ -107,10 +105,7 @@ const ManagerPage = () => {
             </IconButton>
 
             <Link href={`/dashboard/admin/manager/edit/${row?.id}`}>
-              <IconButton
-              // onClick={() => handleDelete(row.id)}
-              // aria-label="delete"
-              >
+              <IconButton>
                 <EditIcon />
               </IconButton>
             </Link>

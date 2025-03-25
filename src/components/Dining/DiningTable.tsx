@@ -26,12 +26,17 @@ import { useEffect, useState } from "react";
 import { useDebounced } from "@/redux/hooks";
 // import { useGetAllHallsQuery } from "@/redux/api/hallApi";
 import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
+import DiningModal from "@/app/(withCommonLayout)/dining/components/DiningModal";
+import { useGetAllHallsQuery } from "@/redux/api/hallApi";
+import { toast } from "sonner";
 
 const { currentYear, currentMonth } = currentDateBD();
 
 const DiningTable = () => {
   const query: Record<string, any> = {};
   const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [mealSelectedId, setMealSelectedId] = useState(null);
 
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
@@ -42,59 +47,40 @@ const DiningTable = () => {
     query["searchTerm"] = searchTerm;
   }
 
-  // const { data: hallData, isLoading: isHallLoading } = useGetAllHallsQuery({});
+  const { data: hallData, isLoading: isHallLoading } = useGetAllHallsQuery({});
   const { data: diningData, isLoading: isDiningLoading } =
     useGetAllDiningsQuery({});
   const { data, isLoading, refetch } = useGetAllMealQuery<any>({ ...query });
 
   useEffect(() => {
-    const mealCharge = diningData?.diningPolicies?.mealCharge;
+    // const mealCharge = diningData?.diningPolicies?.mealCharge;
 
-    const reservedSafetyDeposit =
-      diningData?.diningPolicies?.reservedSafetyDeposit;
+    // const reservedSafetyDeposit =
+    //   diningData?.diningPolicies?.reservedSafetyDeposit;
 
-    if (
-      data?.meals &&
-      data?.meals?.some(
-        (meal: any) =>
-          meal.mealStatus === "on" &&
-          meal.mealInfo[currentYear][currentMonth]?.currentDeposit >=
-            mealCharge + (mealCharge / 100) * reservedSafetyDeposit
-      )
-    ) {
-      const intervalId = setInterval(() => {
-        refetch();
-      }, 2000);
+    // if (
+    //   data?.meals &&
+    //   data?.meals?.some(
+    //     (meal: any) =>
+    //       meal.mealStatus === "on" &&
+    //       meal.mealInfo[currentYear][currentMonth]?.currentDeposit >=
+    //         mealCharge + (mealCharge / 100) * reservedSafetyDeposit
+    //   )
+    // ) {
+    const intervalId = setInterval(() => {
+      refetch();
+    }, 2000);
 
-      return () => clearInterval(intervalId);
-    }
+    return () => clearInterval(intervalId);
+    // }
   }, [data, refetch, diningData]);
 
   const meals = data?.meals;
 
-  // useEffect(() => {
-  //   refetch(); // ✅ Refresh data when the page loads
-  // }, []);
-
-  // const [updateMealStatus] = useUpdateMealStatusMutation();
-  // const handleUpdateMealStatus = async (id: string) => {
-  //   const res = await updateMealStatus(id).unwrap();
-
-  //   console.log("ddddddddddddd", res);
-  //   if (res?.id) {
-  //     toast.success("deleted successfully");
-  //   }
-
-  //   try {
-  //   } catch (error) {
-  //     console.log("error", error);
-  //   }
-  // };
-
   const [updateMealStatus] = useUpdateMealStatusMutation();
   // const meta = data?.meta;
 
-  console.log("mealssssssssss", data);
+  // console.log("mealssssssssss", data);
 
   const handleMealStatus = async (id: string, checked: boolean) => {
     const updatedMealStatus = checked ? "on" : "off";
@@ -105,8 +91,11 @@ const DiningTable = () => {
     };
 
     try {
-      const res = await updateMealStatus(mealData);
-      console.log("dddddd7777777777777", res);
+      const res = await updateMealStatus(mealData).unwrap();
+      if (res?.id) {
+        toast.success(`Meal is ${res?.mealStatus}`);
+      }
+
       refetch();
     } catch (error) {
       console.log("got and error", error);
@@ -121,22 +110,16 @@ const DiningTable = () => {
       renderCell: ({ row }) => {
         const baseMealObj = row.mealInfo?.[currentYear]?.[currentMonth] || {};
         const mealCharge = diningData?.diningPolicies?.mealCharge;
+        const maintenanceCharge = hallData?.hallPolicies?.maintenanceCharge;
 
         const reservedSafetyDeposit =
           diningData?.diningPolicies?.reservedSafetyDeposit;
 
         const isAvaiableCurrentDeposite =
-          isLoading || isDiningLoading
+          isLoading || isDiningLoading || isHallLoading
             ? "...Loading"
             : baseMealObj?.currentDeposit >=
               mealCharge + (mealCharge / 100) * reservedSafetyDeposit;
-        console.log(
-          "dddddddddddddddd",
-          row.student?.name?.firstName,
-          isAvaiableCurrentDeposite,
-          baseMealObj.currentDeposit,
-          mealCharge + (mealCharge / 100) * reservedSafetyDeposit
-        );
         return (
           <Switch
             onClick={(e: any) => {
@@ -145,7 +128,10 @@ const DiningTable = () => {
               }
             }}
             checked={isAvaiableCurrentDeposite && row.mealStatus === "on"}
-            disabled={!isAvaiableCurrentDeposite}
+            disabled={
+              !isAvaiableCurrentDeposite ||
+              maintenanceCharge < baseMealObj?.maintenanceFee
+            }
             color={row?.mealStatus === "off" ? "success" : "error"}
           />
         );
@@ -166,7 +152,7 @@ const DiningTable = () => {
           sx={{ width: "100%", height: "100%" }}
         >
           {row.student.profileImg !== "" ? (
-            <Box sx={{ borderRadius: "50%" }}>
+            <Box width={70} height={50} borderRadius="50%" overflow="hidden">
               <Image
                 src={row.student.profileImg}
                 width={50}
@@ -197,50 +183,124 @@ const DiningTable = () => {
       description: "This column has a value getter and is not sortable.",
       sortable: false,
       width: 160,
-      renderCell: ({ row }) => (
-        <Tooltip title="More other month." arrow>
-          <Box
-            display="flex"
-            alignItems="center"
-            // justifyContent="center"
-            gap={1}
-            sx={{ width: "100%", height: "100%" }}
+      renderCell: ({ row }) => {
+        const monthsWithZeroMaintenance: Record<string, string[]> = {}; // Object to store years and months
+
+        for (const year in row?.mealInfo) {
+          if (typeof row?.mealInfo[year] !== "object") continue; // Skip invalid years
+
+          for (const month in row?.mealInfo[year]) {
+            const monthData = row?.mealInfo[year][month];
+
+            if (
+              monthData &&
+              typeof monthData.maintenanceFee === "number" &&
+              monthData.maintenanceFee === 0
+            ) {
+              // ✅ Store the year inside the month key
+              if (!monthsWithZeroMaintenance[year]) {
+                monthsWithZeroMaintenance[year] = [];
+              }
+              monthsWithZeroMaintenance[year].push(month); // Store the year for this month
+            }
+          }
+        }
+
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+
+        const monthsArray = Object.entries(monthsWithZeroMaintenance)
+          .flatMap(([year, months]) =>
+            months.map((month) => ({
+              year: parseInt(year),
+              month,
+              monthIndex: monthNames.indexOf(month),
+            }))
+          )
+          .sort((a, b) => b.year - a.year || b.monthIndex - a.monthIndex) // Sort by most recent first
+          .slice(0, 3); // Get the last 3 months
+
+        return (
+          <Tooltip
+            title={Object.entries(monthsWithZeroMaintenance).map(
+              ([year, months], index) => (
+                <Typography variant="caption" display="inline" key={index}>
+                  {year}:-{" "}
+                  {months.map((data, monthIndex) => (
+                    <>
+                      <span key={monthIndex}>{data} </span>
+                      {/* Add divider except after the last month */}
+                      {monthIndex === months.length - 1 ? ",   " : "| "}
+                    </>
+                  ))}
+                </Typography>
+              )
+            )}
+            arrow
           >
-            <Box display="flex" flexDirection="column">
-              <Typography variant="body2">
-                {row && row.mealInfo[currentYear] ? (
-                  row.mealInfo[currentYear][currentMonth]?.maintenanceFee ===
-                  row.student.hall?.hallPolicies?.maintenanceCharge ? (
-                    "Paid"
+            <Box
+              display="flex"
+              alignItems="center"
+              // justifyContent="center"
+              gap={1}
+              sx={{ width: "100%", height: "100%" }}
+            >
+              <Box display="flex" flexDirection="column">
+                <Typography variant="body2">
+                  {row && row.mealInfo[currentYear] ? (
+                    row.mealInfo[currentYear][currentMonth]?.maintenanceFee ===
+                    row.student.hall?.hallPolicies?.maintenanceCharge ? (
+                      <Typography color={"success"} display="inline">
+                        Paid
+                      </Typography>
+                    ) : (
+                      <Typography color={"error"} display="inline">
+                        Unpaid
+                      </Typography>
+                    )
                   ) : (
-                    <Typography color={"error"} display="inline">
-                      Unpaid
+                    ""
+                  )}{" "}
+                  {" | "} {row.student.hall.hallPolicies.maintenanceCharge}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color={
+                    row.mealInfo[currentYear][currentMonth]?.dueMaintenanceFee >
+                    0
+                      ? "error"
+                      : "textSecondary"
+                  }
+                >
+                  DUE -
+                  {row &&
+                    row.mealInfo["2025"] &&
+                    row.mealInfo[currentYear][currentMonth]
+                      ?.dueMaintenanceFee}{" "}
+                  |{" "}
+                  {monthsArray.map((data, index) => (
+                    <Typography variant="caption" display="inline" key={index}>
+                      {data?.month.slice(0, 3)} |{" "}
                     </Typography>
-                  )
-                ) : (
-                  ""
-                )}{" "}
-                {" | "} {row.student.hall.hallPolicies.maintenanceCharge}
-              </Typography>
-              <Typography
-                variant="caption"
-                color={
-                  row.mealInfo[currentYear][currentMonth]?.dueMaintenanceFee > 0
-                    ? "error"
-                    : "textSecondary"
-                }
-              >
-                DUE -
-                {row &&
-                  row.mealInfo["2025"] &&
-                  row.mealInfo[currentYear][currentMonth]
-                    ?.dueMaintenanceFee}{" "}
-                | Jan | Feb | Mar
-              </Typography>
+                  ))}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-        </Tooltip>
-      ),
+          </Tooltip>
+        );
+      },
     },
     {
       field: "currentDeposit",
@@ -264,7 +324,7 @@ const DiningTable = () => {
                         row.mealInfo[currentYear][currentMonth]
                           ?.currentDeposit === 0
                           ? "error"
-                          : "success"
+                          : ""
                       }
                       display="inline"
                     >
@@ -312,7 +372,7 @@ const DiningTable = () => {
                         row.mealInfo[currentYear][currentMonth]?.totalMeals ===
                         0
                           ? "error"
-                          : "success"
+                          : ""
                       }
                       display="inline"
                     >
@@ -346,7 +406,6 @@ const DiningTable = () => {
       headerName: "Total Cost",
       width: 150,
       renderCell: ({ row }) => {
-        console.log("dddddddddddd", row);
         const regularMealCharge = row.student.dining.diningPolicies.mealCharge;
         const speacialMealCharge =
           row.student.dining.diningPolicies.specialMealCharge;
@@ -367,7 +426,7 @@ const DiningTable = () => {
                           row.mealInfo[currentYear][currentMonth]?.totalCost ===
                           0
                             ? "error"
-                            : "success"
+                            : ""
                         }
                         display="inline"
                       >
@@ -404,7 +463,7 @@ const DiningTable = () => {
     },
 
     {
-      field: "previousRefunded",
+      field: "refunded",
       headerName: "Deposit Adjustments",
       width: 170,
       renderCell: ({ row }) => {
@@ -424,15 +483,7 @@ const DiningTable = () => {
               <Typography variant="body2">
                 {row && row.mealInfo["2025"]
                   ? row.mealInfo[currentYear][currentMonth] && (
-                      <Typography
-                        color={
-                          row.mealInfo[currentYear][currentMonth]?.totalCost ===
-                          0
-                            ? "error"
-                            : "success"
-                        }
-                        display="inline"
-                      >
+                      <Typography display="inline">
                         Refunded -{" "}
                         {row.mealInfo[currentYear][currentMonth]?.refunded}
                         {/* |{" "} Rate- {regularMealCharge} */}
@@ -444,20 +495,14 @@ const DiningTable = () => {
               <Typography
                 variant="caption"
                 color={
-                  row.mealInfo[currentYear][currentMonth]?.totalCost === 0
+                  row.mealInfo[currentYear][currentMonth]?.refunded === 0
                     ? "error"
-                    : "textSecondary"
+                    : "success"
                 }
               >
-                {/* Regular-{" "} */}
-                Transferred Success {/* Transferred success{" "} */}
-                {/* {row.mealInfo[currentYear][currentMonth]?.totalMeals *
-                  regularMealCharge}{" "} */}
-                {/* + {""} */}
-                {/* Special-{" "} */}
-                {/* Spec.-{" "} */}
-                {/* {row.mealInfo[currentYear][currentMonth]?.totalSpecialMeals *
-                  speacialMealCharge} */}
+                {row.mealInfo[currentYear][currentMonth]?.refunded === 0
+                  ? "Have no Refunded."
+                  : "Transferred Success."}
               </Typography>
             </Box>
           </Box>
@@ -490,7 +535,7 @@ const DiningTable = () => {
                           row.mealInfo[currentYear][currentMonth]?.totalCost ===
                           0
                             ? "error"
-                            : "success"
+                            : ""
                         }
                         display="inline"
                       >
@@ -525,18 +570,32 @@ const DiningTable = () => {
       field: "action",
       headerName: "Deposit",
       width: 80,
-      renderCell: ({ row }) => {
-        return (
-          <IconButton onClick={() => console.log(row)} aria-label="delete">
+      renderCell: ({ row }) => (
+        <Box>
+          <IconButton
+            onClick={() => {
+              setIsModalOpen(true);
+              setMealSelectedId(row?._id);
+            }}
+            aria-label="delete"
+          >
             <AddCardIcon />
           </IconButton>
-        );
-      },
+        </Box>
+      ),
     },
   ];
 
   return (
     <Box>
+      <Stack>
+        <DiningModal
+          open={isModalOpen}
+          setOpen={setIsModalOpen}
+          mealId={mealSelectedId}
+        />
+      </Stack>
+
       <Stack alignItems="center" py={2}>
         <TextField
           onChange={(e) => setSearchTerm(e.target.value)}

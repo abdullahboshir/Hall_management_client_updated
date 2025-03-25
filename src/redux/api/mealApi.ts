@@ -20,6 +20,14 @@ const mealApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.meal],
     }),
 
+    getSingleMeal: build.query({
+      query: (mealId: any) => ({
+        url: `/meal/getSingleMeal/${mealId}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.meal],
+    }),
+
     updateMealStatus: build.mutation({
       query: ({ body, id }) => ({
         url: `/meal/meal-status/${id}`,
@@ -28,7 +36,21 @@ const mealApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.meal],
     }),
+
+    addDeposit: build.mutation({
+      query: ({ body, id }) => ({
+        url: `/meal/addDeposit/${id}`,
+        method: "PATCH",
+        data: body,
+      }),
+      invalidatesTags: [tagTypes.meal],
+    }),
   }),
 });
 
-export const { useGetAllMealQuery, useUpdateMealStatusMutation } = mealApi;
+export const {
+  useGetAllMealQuery,
+  useGetSingleMealQuery,
+  useUpdateMealStatusMutation,
+  useAddDepositMutation,
+} = mealApi;

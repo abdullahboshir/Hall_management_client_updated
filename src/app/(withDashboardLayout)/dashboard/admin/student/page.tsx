@@ -1,5 +1,13 @@
 "use client";
-import { Box, Button, IconButton, Stack, TextField } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 
 import { useDeleteManagerMutation } from "@/redux/api/managerApi";
@@ -22,27 +30,48 @@ const StudentPage = () => {
       toast.success("deleted successfully");
     }
 
-    console.log("ddddddddddddd", res);
-
     try {
     } catch (error) {
       console.log("error", error);
     }
   };
-  console.log("managerrrrrrr", data);
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 100 },
     {
       field: "fullName",
-      headerName: "Full name",
+      headerName: "Name",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
-      width: 160,
-      valueGetter: (value, row) =>
-        `${row.name.firstName || ""} ${row.name.middleName || ""} ${
-          row.name.lastName || ""
-        }`,
+      width: 250,
+      renderCell: ({ row }) => {
+        return (
+          <Box
+            display="flex"
+            alignItems="center"
+            // justifyContent="center"
+            gap={1}
+            sx={{ width: "100%", height: "100%" }}
+          >
+            {row.profileImg !== "" ? (
+              <Box width={50} height={50} overflow="hidden" borderRadius="50%">
+                <Image src={row.profileImg} width={50} height={50} alt="img" />
+              </Box>
+            ) : (
+              <Avatar src="/profile.png" />
+            )}
+
+            <Box display="flex" flexDirection="column">
+              {`${row.name.firstName || ""} ${row.name.middleName || ""} 
+              ${row.name.lastName || ""}`}
+
+              <Typography variant="caption" color="textSecondary">
+                {row.id} {row?.user?.role}
+                {/* | SEAT -{" "} {row.student.seatNumber} */}
+              </Typography>
+            </Box>
+          </Box>
+        );
+      },
     },
     {
       field: "designation",

@@ -50,7 +50,6 @@ const AdminModal = ({ open, setOpen }: TProps) => {
 
     try {
       const res = await createAdmin(data).unwrap();
-      console.log("Admin createdddddddddddd", res);
 
       if (res?.id) {
         toast.success("Admin created Successfully!!");

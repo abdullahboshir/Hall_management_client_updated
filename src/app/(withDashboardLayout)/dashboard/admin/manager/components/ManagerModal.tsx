@@ -50,7 +50,6 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
 
     try {
       const res = await createManager(data).unwrap();
-      console.log("manager createdddddddddddd", res);
 
       if (res?.id) {
         toast.success("Manager created Successfully!!");
