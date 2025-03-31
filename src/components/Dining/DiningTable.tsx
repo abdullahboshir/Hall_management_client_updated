@@ -121,19 +121,38 @@ const DiningTable = () => {
             : baseMealObj?.currentDeposit >=
               mealCharge + (mealCharge / 100) * reservedSafetyDeposit;
         return (
-          <Switch
-            onClick={(e: any) => {
-              if (isAvaiableCurrentDeposite) {
-                handleMealStatus(row._id, e.target.checked);
-              }
-            }}
-            checked={isAvaiableCurrentDeposite && row.mealStatus === "on"}
-            disabled={
-              !isAvaiableCurrentDeposite ||
-              maintenanceCharge < baseMealObj?.maintenanceFee
-            }
-            color={row?.mealStatus === "off" ? "success" : "error"}
-          />
+          <Box
+            width="100%"
+            height="100%"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            {row?.student?.user?.status === "active" ? (
+              <Switch
+                onClick={(e: any) => {
+                  if (isAvaiableCurrentDeposite) {
+                    handleMealStatus(row._id, e.target.checked);
+                  }
+                }}
+                checked={isAvaiableCurrentDeposite && row.mealStatus === "on"}
+                disabled={
+                  !isAvaiableCurrentDeposite ||
+                  maintenanceCharge < baseMealObj?.maintenanceFee
+                }
+                color={row?.mealStatus === "off" ? "success" : "error"}
+              />
+            ) : (
+              <Typography
+                variant="body2"
+                bgcolor="error.light"
+                sx={{ px: 0.5 }}
+                color="white"
+              >
+                {(row?.student?.user?.status).toUpperCase()}
+              </Typography>
+            )}
+          </Box>
         );
       },
     },
@@ -502,7 +521,7 @@ const DiningTable = () => {
               >
                 {row.mealInfo[currentYear][currentMonth]?.refunded === 0
                   ? "Have no Refunded."
-                  : "Transferred Success."}
+                  : "Refunded Success."}
               </Typography>
             </Box>
           </Box>

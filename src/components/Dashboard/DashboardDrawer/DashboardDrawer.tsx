@@ -41,7 +41,6 @@ export default function DashboardDrawer({
   };
 
   const { data, isLoading } = useGetSingleUserQuery({});
-  console.log("dddddddd", data);
 
   return (
     <Box sx={{ display: "flex" }}>

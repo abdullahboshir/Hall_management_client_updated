@@ -1,8 +1,6 @@
 import { FieldValues } from "react-hook-form";
 
 export const modifyPayload = (values: FieldValues) => {
-  console.log("Raw Form Data Before Conversion:", values);
-
   const obj = { ...values };
   const file = obj["file"];
   delete obj["file"];

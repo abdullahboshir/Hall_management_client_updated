@@ -11,7 +11,26 @@ const studentApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.student],
     }),
+    getSingleStudent: build.query({
+      query: (id: string | string[] | undefined) => ({
+        url: `/student/${id}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.student],
+    }),
+    updateStudent: build.mutation({
+      query: (data) => ({
+        url: `/student/${data?.id}`,
+        method: "PATCH",
+        data: data.body,
+      }),
+      invalidatesTags: [tagTypes.student],
+    }),
   }),
 });
 
-export const { useGetAllStudentQuery } = studentApi;
+export const {
+  useGetAllStudentQuery,
+  useGetSingleStudentQuery,
+  useUpdateStudentMutation,
+} = studentApi;

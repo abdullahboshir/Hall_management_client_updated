@@ -5,8 +5,8 @@ import HmModal from "@/components/Shared/HmModal/HmModal";
 import {
   useAddDepositMutation,
   useGetSingleMealQuery,
+  useUpdateDueMaintenanceFeeMutation,
 } from "@/redux/api/mealApi";
-
 import { Box, Button, Grid2, Stack, Typography } from "@mui/material";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
@@ -20,8 +20,8 @@ type TProps = {
 
 const DiningModal = ({ mealId, open, setOpen }: TProps) => {
   const [addDeposit] = useAddDepositMutation();
+  const [updateDueMaintenanceFee] = useUpdateDueMaintenanceFeeMutation();
   const { data, isLoading, refetch } = useGetSingleMealQuery<any>(mealId);
-  console.log("hellooooooooooooooo", data);
 
   const handleFormSubmit = async (values: FieldValues) => {
     refetch();
@@ -32,6 +32,21 @@ const DiningModal = ({ mealId, open, setOpen }: TProps) => {
       if (res?.id) {
         toast.success("Deposit has been added successfully!");
         setOpen(false);
+      }
+    } catch (error: any) {
+      console.log(error?.message);
+    }
+  };
+
+  const handleDueMaintenanceFee = async (year: string, month: string) => {
+    const dueMaintenanceFeeInfo = { id: mealId, body: { year, month } };
+
+    try {
+      const res = await updateDueMaintenanceFee(dueMaintenanceFeeInfo).unwrap();
+      if (res?.id) {
+        refetch();
+        toast.success("Deposit has been added successfully!");
+        // setOpen(false);
       }
     } catch (error: any) {
       console.log(error?.message);
@@ -151,7 +166,7 @@ const DiningModal = ({ mealId, open, setOpen }: TProps) => {
                         spacing={1}
                         sx={{ flexWrap: "wrap", mt: 1 }}
                       >
-                        {months.map((data, monthIndex) => (
+                        {months.map((month, monthIndex) => (
                           <Typography
                             key={monthIndex}
                             variant="body2"
@@ -163,17 +178,17 @@ const DiningModal = ({ mealId, open, setOpen }: TProps) => {
                             // sx={{ bgColor: "#9E9E9E" }}
                             sx={{ bgcolor: "primary.light" }}
                           >
-                            {data}{" "}
+                            {month}{" "}
                             <Button
                               size="small"
-                              // color="success"
+                              onClick={() =>
+                                handleDueMaintenanceFee(year, month)
+                              }
                               sx={{
                                 // color: "black",
                                 p: 0,
                                 minWidth: 1,
                                 mt: 0.5,
-                                // bgcolor: "#C5D6BC",
-                                // bgcolor: "#8dcd8d",
                                 bgcolor: "prmary.main",
                               }}
                             >

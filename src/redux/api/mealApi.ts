@@ -37,6 +37,15 @@ const mealApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.meal],
     }),
 
+    updateDueMaintenanceFee: build.mutation({
+      query: ({ body, id }) => ({
+        url: `/meal/updateMaintenanceFee/${id}`,
+        method: "PATCH",
+        data: body,
+      }),
+      invalidatesTags: [tagTypes.meal],
+    }),
+
     addDeposit: build.mutation({
       query: ({ body, id }) => ({
         url: `/meal/addDeposit/${id}`,
@@ -52,5 +61,6 @@ export const {
   useGetAllMealQuery,
   useGetSingleMealQuery,
   useUpdateMealStatusMutation,
+  useUpdateDueMaintenanceFeeMutation,
   useAddDepositMutation,
 } = mealApi;

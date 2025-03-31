@@ -30,6 +30,12 @@ export const axiosBaseQuery =
           "Content-Type": contentType || "application/json",
         },
       });
+      console.log("dgggggggggggggggggg", result);
+      if (!result || result?.data === undefined) {
+        throw new Error("Invalid API response: No data received.");
+      }
+
+      // return { data: result?.data || {} };
       return result;
     } catch (axiosError) {
       const err = axiosError as AxiosError;

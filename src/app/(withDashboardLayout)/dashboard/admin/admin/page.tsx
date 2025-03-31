@@ -24,9 +24,10 @@ const AdminPage = () => {
   const { data, isLoading } = useGetAllAdminQuery({});
   const [deleteManager] = useDeleteManagerMutation();
 
-  console.log("adminnnnnnnnnnnnnn", data);
   const handleDelete = async (id: string) => {
     const res = await deleteManager(id).unwrap();
+
+    console.log("adminnnnnnnnnnnnnn", res);
 
     if (res?.id) {
       toast.success("deleted successfully");

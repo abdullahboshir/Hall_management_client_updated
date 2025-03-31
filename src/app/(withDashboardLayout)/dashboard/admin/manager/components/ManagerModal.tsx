@@ -37,7 +37,7 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
       return;
     }
 
-    if (!hallData?.length || !diningData?.length || !userData?.id) {
+    if (!hallData || !diningData || !userData?.id) {
       toast.error("Failed to fetch required data. Please try again.");
       return;
     }

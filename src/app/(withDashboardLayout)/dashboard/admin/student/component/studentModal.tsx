@@ -5,14 +5,23 @@ import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import HmSelectField from "@/components/Form/HmSelectField";
 import HmFullScreenModal from "@/components/Shared/HmModal/HmFullScreenModal";
-import { BloodGroup, Gender } from "@/constant/common.constant";
-// import { useCreateManagerMutation } from "@/redux/api/managerApi";
-import { registerStudent } from "@/services/actions/registerStudent";
+import {
+  BloodGroup,
+  Department,
+  Faculty,
+  Gender,
+} from "@/constant/common.constant";
+import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
+import { useGetAllHallsQuery } from "@/redux/api/hallApi";
+import {
+  useCreateStudentMutation,
+  useGetSingleUserQuery,
+} from "@/redux/api/userApi";
 import { modifyPayload } from "@/utils/modifyPayload";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Divider, Grid2, Typography } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import React from "react";
+import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -101,6 +110,8 @@ const studentRegisterValidationSchema = z.object({
 
     roomNumber: z.string().min(1, "Room number is required"),
     seatNumber: z.string().min(1, "Seat number is required"),
+    academicFaculty: z.string().min(1, "Academic Faculty is required"),
+    academicDepartment: z.string().min(1, "Academic Department is required"),
     session: z.string().min(1, "Session is required"),
     classRoll: z.string().min(1, "Class roll is required"),
 
@@ -175,6 +186,8 @@ const studentRegisterDefaultValues = {
     email: "",
     roomNumber: "",
     seatNumber: "",
+    academicFaculty: "",
+    academicDepartment: "",
     session: "",
     classRoll: "",
     admissionDetails: {
@@ -213,30 +226,51 @@ type TProps = {
 };
 
 const StudentModal = ({ open, setOpen }: TProps) => {
-  //   const handleFormSubmit = async (value: FieldValues) => {
-  //     const data = modifyPayload(value, "managerData");
-  //     console.log("got valuessssssssss", data);
-  //     try {
-  //       const res = await createManager(data).unwrap();
-  //       if (res?.id) {
-  //         toast.success("Manager created Successfully!!");
-  //         setOpen(false);
-  //       }
-  //     } catch (error: any) {
-  //       console.log(error?.message);
-  //     }
-  //   };
+  const [selectedFaculty, setSelectedFaculty] = useState<
+    keyof typeof Department | ""
+  >("");
+  const [department, setDepartment] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (selectedFaculty && Department[selectedFaculty]) {
+      setDepartment(Department[selectedFaculty]);
+    } else {
+      setDepartment([]);
+    }
+  }, [selectedFaculty]);
+
+  const { data: userData, isLoading: userIsLoading } = useGetSingleUserQuery(
+    {}
+  );
+  const { data: hallData, isLoading: hallIsLoading } = useGetAllHallsQuery({});
+  const { data: diningData, isLoading: diningIsLoading } =
+    useGetAllDiningsQuery({});
+
+  const [createStudent] = useCreateStudentMutation();
 
   const handleStudentRegistration = async (values: FieldValues) => {
-    const data = modifyPayload(values, "studentData");
-    console.log("dataaaaaaaaaaa", data);
+    if (hallIsLoading || diningIsLoading || userIsLoading) {
+      toast.error("Please wait, data is still loading...");
+      return;
+    }
+
+    if (!hallData || !diningData || !userData?.id) {
+      toast.error("Failed to fetch required data. Please try again.");
+      return;
+    }
+
+    values.studentData.hall = hallData?._id;
+    values.studentData.dining = diningData?._id;
+    values.studentData.creator = userData?.id;
+    const data = modifyPayload(values);
 
     try {
-      const res = await registerStudent(data);
-      if (res?.data?.id) {
-        toast.success(res?.message);
+      const res = await createStudent(data).unwrap();
+
+      if (res.id) {
+        toast.success("Student has been created successfully");
+        setOpen(false);
       }
-      console.log("ressssssssssssssssss", res);
     } catch (error) {
       console.log("errorrrrrrrrr", error);
     }
@@ -306,6 +340,26 @@ const StudentModal = ({ open, setOpen }: TProps) => {
           <Grid2 size={3}>
             <HmInput name="studentData.seatNumber" label="Seat Number" />
           </Grid2>
+
+          <Grid2 size={3}>
+            <HmSelectField
+              items={Faculty}
+              name="studentData.academicFaculty"
+              label="Select your Faculty"
+              fullWidth={true}
+              onChange={(value) => setSelectedFaculty(value as any)}
+            ></HmSelectField>
+          </Grid2>
+
+          <Grid2 size={3}>
+            <HmSelectField
+              items={department}
+              name="studentData.academicDepartment"
+              label="Select Your Department"
+              fullWidth={true}
+            ></HmSelectField>
+          </Grid2>
+
           <Grid2 size={3}>
             <HmInput name="studentData.session" label="Session" />
           </Grid2>

@@ -5,12 +5,13 @@ import { MenuItem, TextField } from "@mui/material";
 
 type TTextField = {
   name: string;
-  label: string;
+  label?: string;
   size?: "small" | "medium";
   required?: boolean;
   fullWidth?: boolean;
   items: string[];
   sx?: SxProps;
+  onChange?: (value: string) => void;
 };
 
 export default function HmSelectField({
@@ -21,6 +22,7 @@ export default function HmSelectField({
   required,
   fullWidth = true,
   sx,
+  onChange,
 }: TTextField) {
   const { control, formState } = useFormContext();
   const isError = formState.errors[name] !== undefined;
@@ -39,6 +41,10 @@ export default function HmSelectField({
           size={size}
           error={isError}
           sx={{ ...sx }}
+          onChange={(event) => {
+            field.onChange(event);
+            onChange?.(event.target.value);
+          }}
           helperText={
             isError ? (formState.errors[name]?.message as string) : ""
           }
