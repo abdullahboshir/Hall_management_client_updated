@@ -10,79 +10,81 @@ import AddModeratorIcon from "@mui/icons-material/AddModerator";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import WarehouseIcon from "@mui/icons-material/Warehouse";
 import DiningIcon from "@mui/icons-material/Dining";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 export const drawerItems = (role: TUserRole): DrawerItem[] => {
   const roleMenus: DrawerItem[] = [];
 
+  const defaulltMenu = [
+    {
+      title: "Notices",
+      path: `${role}/notice`,
+      icon: CampaignIcon,
+    },
+    {
+      title: "Profile",
+      path: `${role}/profile`,
+      icon: AccountCircleIcon,
+    },
+    {
+      title: "Support / Help ",
+      path: `${role}/support `,
+      icon: AccountCircleIcon,
+    },
+  ];
+
+  const adminSharedMenus = [
+    {
+      title: "Admin",
+      path: `${role}/admin`,
+      icon: AdminPanelSettingsIcon,
+    },
+    {
+      title: "Manager",
+      path: `${role}/manager`,
+      icon: SupervisorAccountIcon,
+    },
+    {
+      title: "Moderator",
+      path: `${role}/moderator`,
+      icon: AddModeratorIcon,
+    },
+    {
+      title: "Student",
+      path: `${role}/student`,
+      icon: PersonAddAltIcon,
+    },
+    {
+      title: "Dining",
+      path: `${role}/dining`,
+      icon: DiningIcon,
+    },
+    {
+      title: "Dining Reports",
+      path: `${role}/dining-reports`,
+      icon: DiningIcon,
+    },
+  ];
+
   switch (role) {
     case USER_ROLE.superAdmin:
+      roleMenus.push(...adminSharedMenus);
       roleMenus.push(
-        {
-          title: "Admin",
-          path: `${role}/admin`,
-          icon: AdminPanelSettingsIcon,
-        },
-        {
-          title: "Manager",
-          path: `${role}/manager`,
-          icon: SupervisorAccountIcon,
-        },
-        {
-          title: "Moderator",
-          path: `${role}/moderator`,
-          icon: AddModeratorIcon,
-        },
-        {
-          title: "Student",
-          path: `${role}/student`,
-          icon: PersonAddAltIcon,
-        },
         {
           title: "Hall",
           path: `${role}/hall`,
           icon: WarehouseIcon,
         },
         {
-          title: "Dining",
-          path: `${role}/dining`,
-          icon: DiningIcon,
-        },
-        {
-          title: "Notices",
-          path: `${role}/notices`,
-          icon: CampaignIcon,
+          title: "Audit Logs",
+          path: `${role}/audit-logs`,
+          icon: WarehouseIcon,
         }
       );
       break;
 
     case USER_ROLE.admin:
-      roleMenus.push(
-        {
-          title: "Admin",
-          path: `${role}/admin`,
-          icon: AdminPanelSettingsIcon,
-        },
-        {
-          title: "Manager",
-          path: `${role}/manager`,
-          icon: SupervisorAccountIcon,
-        },
-        {
-          title: "Moderator",
-          path: `${role}/moderator`,
-          icon: AddModeratorIcon,
-        },
-        {
-          title: "Student",
-          path: `${role}/student`,
-          icon: PersonAddAltIcon,
-        },
-        {
-          title: "Notices",
-          path: `${role}/notices`,
-          icon: CampaignIcon,
-        }
-      );
+      roleMenus.push(...adminSharedMenus);
       break;
 
     case USER_ROLE.manager:
@@ -98,31 +100,31 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
           icon: WarehouseIcon,
         },
         {
-          title: "Notices",
-          path: `${role}/notices`,
-          icon: CampaignIcon,
+          title: "Daily Reports",
+          path: `${role}/daily-reports`,
+          icon: WarehouseIcon,
         }
       );
       break;
 
     case USER_ROLE.moderator:
-      roleMenus.push({
-        title: "Notices",
-        path: `${role}/notices`,
-        icon: CampaignIcon,
-      });
       break;
 
     case USER_ROLE.student:
       roleMenus.push(
         {
-          title: "Meal Information",
-          path: `${role}/meal-Information`,
+          title: "My Meals",
+          path: `${role}/my-meals`,
           icon: DiningIcon,
         },
         {
           title: "Payment History",
           path: `${role}/payment-history`,
+          icon: DiningIcon,
+        },
+        {
+          title: "Complaints",
+          path: `${role}/complaints`,
           icon: DiningIcon,
         }
       );
@@ -131,5 +133,5 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
       break;
   }
 
-  return [...roleMenus];
+  return [...roleMenus, ...defaulltMenu];
 };

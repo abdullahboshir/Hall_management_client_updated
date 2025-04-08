@@ -34,11 +34,12 @@ instance.interceptors.response.use(
       data: response?.data?.data,
       meta: response?.data?.meta,
     };
+
     return responseObject;
   },
   async function (error) {
     const config = error.config;
-    console.log("check user jwtttt", error);
+    console.log("GOT AN ERROR FROM axios Instance File", error);
     if (error?.response?.status === 500 && !config.sent) {
       config.sent = true;
       const response = await getNewAccessToken();
@@ -47,12 +48,12 @@ instance.interceptors.response.use(
       setToLocalStorage(authKey, accessToken);
       return instance(config);
     } else {
-      const responseObject: TGenericErrorResponse = {
-        statusCode: error?.response?.data?.statusCode || 500,
+      const responseErrorObject: TGenericErrorResponse = {
+        statusCode: error?.response?.status || 500,
         message: error?.response?.data?.message || "Something went wrong!!",
         errorMessages: error?.response?.data?.message,
       };
-      return responseObject;
+      return Promise.reject(responseErrorObject);
     }
   }
 );

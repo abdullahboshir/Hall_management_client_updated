@@ -30,7 +30,7 @@ export const axiosBaseQuery =
           "Content-Type": contentType || "application/json",
         },
       });
-      console.log("dgggggggggggggggggg", result);
+
       if (!result || result?.data === undefined) {
         throw new Error("Invalid API response: No data received.");
       }
@@ -41,7 +41,7 @@ export const axiosBaseQuery =
       const err = axiosError as AxiosError;
       return {
         error: {
-          status: err.response?.status,
+          status: err?.statusCode,
           data: err.response?.data || err.message,
         },
       };

@@ -42,6 +42,10 @@ export default function DashboardDrawer({
 
   const { data, isLoading } = useGetSingleUserQuery({});
 
+  if (isLoading) {
+    return <Typography>Loading...</Typography>;
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -87,8 +91,28 @@ export default function DashboardDrawer({
                   <CircleNotificationsIcon color="action" />
                 </IconButton>
               </Badge>
-              <Avatar alt={data?.name} src={data?.profileImg} />
-              <AccountMenu />
+
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                bgcolor="primary.light"
+                sx={{ paddingX: "3px", paddingY: "2px" }}
+                borderRadius={1}
+              >
+                <Avatar
+                  alt={data?.name}
+                  src={data?.profileImg}
+                  variant="rounded"
+                />
+                <Stack ml={1} display="flex" flexDirection="column" pr={1}>
+                  <Typography> {data?.fullName} </Typography>
+                  <Typography variant="caption" color="secondary.light">
+                    {data?.designation} {data?.user?.role} {data?.role}
+                  </Typography>
+                </Stack>
+                <AccountMenu />
+              </Box>
             </Stack>
           </Box>
         </Toolbar>

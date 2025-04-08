@@ -10,6 +10,8 @@ type TInputProps = {
   size?: "small" | "medium";
   required?: boolean;
   fullWidth?: boolean;
+  rows?: number;
+  isMultiline?: boolean;
   sx?: SxProps;
   defaultValue?: string;
 };
@@ -20,6 +22,8 @@ const HmInput = ({
   type = "text",
   size = "small",
   fullWidth = true,
+  rows = 4,
+  isMultiline = false,
   required,
   defaultValue,
   sx,
@@ -37,6 +41,8 @@ const HmInput = ({
           type={type}
           size={size}
           fullWidth={fullWidth}
+          rows={rows}
+          multiline={isMultiline}
           required={required}
           defaultValue={defaultValue}
           sx={{ ...sx }}

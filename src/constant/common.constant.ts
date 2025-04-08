@@ -1,6 +1,37 @@
 export const Gender = ["Male", "Female", "Other"];
 export const BloodGroup = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 export const Designation = ["Senior", "Junior", "Regular"];
+export const NoticeUsageType = [
+  "Once",
+  "Repeat",
+  "Daily",
+  "PerSession",
+  "Scheduled",
+];
+export const NoticeType = [
+  "General",
+  "Urgent",
+  "Event",
+  "Update",
+  "Info",
+  "Warning",
+  "Survey",
+  "Maintenace",
+  "System",
+  "Reminder",
+  "Policy",
+];
+export const NoticeAudience = [
+  "All",
+  "Student",
+  "Manager",
+  "Admin",
+  "Moderator",
+  "Guest",
+];
+export const NoticeStatus = ["Active", "Inactive", "Archived", "Pending"];
+export const NoticePriority = ["Low", "Medium", "High"];
+
 export const Faculty = ["BA", "BBA", "BSS", "BSC"];
 export const Department = {
   BA: [

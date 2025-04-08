@@ -26,5 +26,5 @@ export const formattedDate = (isoDateString: string) => {
   // Format the day with leading zero if less than 10
   const formattedDay = day < 10 ? `0${day}` : day;
 
-  return `${formattedDay}-${month}-${year}`;
+  return `${year}-${month}-${formattedDay}`;
 };

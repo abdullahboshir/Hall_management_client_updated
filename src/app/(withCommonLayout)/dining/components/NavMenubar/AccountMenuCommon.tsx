@@ -4,39 +4,33 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 
-// import Avatar from "@mui/material/Avatar";
-// import Button from "@mui/material/Button";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import dynamic from "next/dynamic";
 
-const AuthButton = dynamic(
-  () => import("@/components/UI/AuthButton/AuthButton"),
-  { ssr: false }
-);
+const pages = ["Products", "Pricing", "Blog"];
+const settings = ["Profile", "Dining", "Logout"];
 
-// const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Dining", <AuthButton key="auth-btn" />];
-
-function AccountMenu() {
-  // const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-  //   null
-  // );
+function AccountMenuCommon() {
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+    null
+  );
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
 
-  // const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-  //   setAnchorElNav(event.currentTarget);
-  // };
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  // const handleCloseNavMenu = () => {
-  //   setAnchorElNav(null);
-  // };
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -67,8 +61,8 @@ function AccountMenu() {
           open={Boolean(anchorElUser)}
           onClose={handleCloseUserMenu}
         >
-          {settings.map((setting, index) => (
-            <MenuItem key={index} onClick={handleCloseUserMenu}>
+          {settings.map((setting) => (
+            <MenuItem key={setting} onClick={handleCloseUserMenu}>
               <Typography sx={{ textAlign: "center" }}>{setting}</Typography>
             </MenuItem>
           ))}
@@ -77,4 +71,4 @@ function AccountMenu() {
     </React.Fragment>
   );
 }
-export default AccountMenu;
+export default AccountMenuCommon;

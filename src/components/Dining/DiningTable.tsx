@@ -26,9 +26,10 @@ import { useEffect, useState } from "react";
 import { useDebounced } from "@/redux/hooks";
 // import { useGetAllHallsQuery } from "@/redux/api/hallApi";
 import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
-import DiningModal from "@/app/(withCommonLayout)/dining/components/DiningModal";
+
 import { useGetAllHallsQuery } from "@/redux/api/hallApi";
 import { toast } from "sonner";
+import DiningModal from "@/app/(withCommonLayout)/dining/components/DiningModal";
 
 const { currentYear, currentMonth } = currentDateBD();
 
@@ -615,13 +616,25 @@ const DiningTable = () => {
         />
       </Stack>
 
-      <Stack alignItems="center" py={2}>
+      <Stack
+        display="flex"
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+        py={2}
+        px={6}
+        width="100%"
+      >
+        <Box>Show Total Meal Details</Box>
         <TextField
           onChange={(e) => setSearchTerm(e.target.value)}
           size="small"
           placeholder="Search Manager"
         />
+
+        <Box>Today Meals</Box>
       </Stack>
+
       {!isLoading ? (
         <Box>
           <DataGrid rows={meals ?? []} columns={columns} rowHeight={70} />

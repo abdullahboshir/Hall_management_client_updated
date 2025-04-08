@@ -27,7 +27,7 @@ const HmDatePicker = ({
     <Controller
       name={name}
       control={control}
-      defaultValue={dayjs(new Date().toDateString())}
+      defaultValue={dayjs()}
       render={({ field: { onChange, value, ...field } }) => {
         return (
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -37,7 +37,7 @@ const HmDatePicker = ({
               // disablePast
               {...field}
               onChange={(date) => onChange(date)}
-              value={value || Date.now()}
+              value={value || dayjs()}
               slotProps={{
                 textField: {
                   required: required,
