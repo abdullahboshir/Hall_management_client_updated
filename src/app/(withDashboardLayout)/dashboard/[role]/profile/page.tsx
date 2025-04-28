@@ -5,12 +5,8 @@ import { useGetSingleUserQuery } from "@/redux/api/userApi";
 
 const AdminProfile = () => {
   const { data, isLoading } = useGetSingleUserQuery({});
-  console.log("dataaaaaaaaaaaaaaa", data);
-  return (
-    <>
-      <Profile data={data} />
-    </>
-  );
+
+  return <>{isLoading ? "Loading..." : <Profile data={data} />}</>;
 };
 
 export default AdminProfile;

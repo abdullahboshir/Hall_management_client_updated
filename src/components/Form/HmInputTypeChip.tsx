@@ -14,7 +14,7 @@ type HmInputChipProps = {
   sx?: SxProps;
 };
 
-const HmInputChip = ({
+const HmInputTypeChip = ({
   name,
   label,
   size = "small",
@@ -98,4 +98,4 @@ const HmInputChip = ({
   );
 };
 
-export default HmInputChip;
+export default HmInputTypeChip;

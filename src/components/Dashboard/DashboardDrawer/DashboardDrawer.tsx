@@ -14,6 +14,7 @@ import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import { Avatar, Badge, Stack } from "@mui/material";
 import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
 import AccountMenu from "../AccountMenu/AccountMenu";
+import Link from "next/link";
 
 const drawerWidth = 240;
 
@@ -87,9 +88,11 @@ export default function DashboardDrawer({
 
             <Stack direction="row" gap={3}>
               <Badge color="secondary" overlap="circular" badgeContent={2}>
-                <IconButton sx={{ background: "#ffffff" }}>
-                  <CircleNotificationsIcon color="action" />
-                </IconButton>
+                <Link href={`/dashboard/${data?.role}/notifications`}>
+                  <IconButton sx={{ background: "#ffffff" }}>
+                    <CircleNotificationsIcon color="action" />
+                  </IconButton>
+                </Link>
               </Badge>
 
               <Box
@@ -166,6 +169,7 @@ export default function DashboardDrawer({
         }}
       >
         <Toolbar />
+
         <Box>{children}</Box>
       </Box>
     </Box>

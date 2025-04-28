@@ -11,6 +11,10 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import WarehouseIcon from "@mui/icons-material/Warehouse";
 import DiningIcon from "@mui/icons-material/Dining";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
+import ReportIcon from "@mui/icons-material/Report";
+import HelpIcon from "@mui/icons-material/Help";
+import BusinessIcon from "@mui/icons-material/Business";
 
 export const drawerItems = (role: TUserRole): DrawerItem[] => {
   const roleMenus: DrawerItem[] = [];
@@ -22,6 +26,11 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
       icon: CampaignIcon,
     },
     {
+      title: "Notifications",
+      path: `${role}/notifications`,
+      icon: CircleNotificationsIcon,
+    },
+    {
       title: "Profile",
       path: `${role}/profile`,
       icon: AccountCircleIcon,
@@ -29,7 +38,7 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
     {
       title: "Support / Help ",
       path: `${role}/support `,
-      icon: AccountCircleIcon,
+      icon: HelpIcon,
     },
   ];
 
@@ -62,7 +71,7 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
     {
       title: "Dining Reports",
       path: `${role}/dining-reports`,
-      icon: DiningIcon,
+      icon: ReportIcon,
     },
   ];
 
@@ -78,7 +87,7 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
         {
           title: "Audit Logs",
           path: `${role}/audit-logs`,
-          icon: WarehouseIcon,
+          icon: BusinessIcon,
         }
       );
       break;

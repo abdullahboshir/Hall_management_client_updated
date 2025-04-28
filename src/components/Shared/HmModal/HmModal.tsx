@@ -19,6 +19,7 @@ export const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 type TModalProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setError?: React.Dispatch<React.SetStateAction<string>> | undefined;
   title: string;
   children: React.ReactNode;
   sx?: SxProps;
@@ -27,12 +28,14 @@ type TModalProps = {
 export default function HmModal({
   open = false,
   setOpen,
+  setError,
   title = "",
   children,
   sx,
 }: TModalProps) {
   const handleClose = () => {
     setOpen(false);
+    setError?.("");
   };
 
   return (
@@ -46,6 +49,7 @@ export default function HmModal({
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           {title}
         </DialogTitle>
+
         <IconButton
           aria-label="close"
           onClick={handleClose}

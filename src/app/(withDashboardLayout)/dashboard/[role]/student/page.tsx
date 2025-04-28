@@ -31,6 +31,7 @@ import { formattedDate } from "@/utils/currentDateBD";
 import { useUpdateUserStatusMutation } from "@/redux/api/userApi";
 import { toast } from "sonner";
 import { IStudent } from "../../types/student.interface";
+import { useDebounced } from "@/redux/hooks";
 
 // Table Row Component
 const Row = ({ row, refetch }: { row: IStudent; refetch: any }) => {
@@ -384,9 +385,22 @@ const Row = ({ row, refetch }: { row: IStudent; refetch: any }) => {
 };
 
 const StudentPage = () => {
+  const query: Record<string, unknown> = {};
+  const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const { data, isLoading, refetch } = useGetAllStudentQuery({});
 
+  const debouncedTerm = useDebounced({
+    searchQuery: searchTerm,
+    delay: 600,
+  });
+
+  if (!!debouncedTerm) {
+    query["searchTerm"] = searchTerm;
+  }
+
+  const { data, isLoading, refetch } = useGetAllStudentQuery({ ...query });
+
+  console.log("resulttttttttttt", searchTerm);
   return (
     <Box>
       <Stack
@@ -397,7 +411,11 @@ const StudentPage = () => {
       >
         <Button onClick={() => setIsModalOpen(true)}>Add Student</Button>
         <StudentModal open={isModalOpen} setOpen={setIsModalOpen} />
-        <TextField size="small" placeholder="Search Student" />
+        <TextField
+          onChange={(e) => setSearchTerm(e.target.value)}
+          size="small"
+          placeholder="Search Student"
+        />
       </Stack>
 
       <TableContainer

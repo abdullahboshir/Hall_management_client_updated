@@ -4,7 +4,7 @@ export interface NoticeData {
   status: string;
   priority: string;
   type: string;
-  schedule: string;
+  scheduleAt: string;
   expiryDate?: string;
   location?: string;
   attachments?: File[];

@@ -3,7 +3,6 @@ import HmDatePicker from "@/components/Form/HmDatePicker";
 import HmFileUploader from "@/components/Form/HmFileUploader";
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
-import HmInputChip from "@/components/Form/HmInputChip";
 import HmSelectField from "@/components/Form/HmSelectField";
 import HmModal from "@/components/Shared/HmModal/HmModal";
 import {
@@ -11,6 +10,7 @@ import {
   NoticePriority,
   NoticeStatus,
   NoticeType,
+  ScheduleType,
 } from "@/constant/common.constant";
 
 import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
@@ -25,6 +25,8 @@ import { noticeDefaultValues } from "../../../constants/notice.constant";
 import { noticeValidationSchema } from "../../../validation/notice.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateNoticeMutation } from "@/redux/api/noticeApi";
+import HmInputTypeChip from "@/components/Form/HmInputTypeChip";
+import HmInputSelectChip from "@/components/Form/HmInputSelectChip";
 
 type TProps = {
   open: boolean;
@@ -46,7 +48,6 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
   const [createNotice] = useCreateNoticeMutation();
 
   const handleFormSubmit = async (values: FieldValues) => {
-    console.log("tagsssssssssssssss", tags, values);
     if (hallIsLoading || diningIsLoading || userIsLoading) {
       toast.error("Please wait, data is still loading...");
       return;
@@ -72,7 +73,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
         setOpen(false);
       }
     } catch (error: any) {
-      console.log(error?.message);
+      console.log("got errorrrrrrrrrrrrrrrrrr", error);
     }
   };
 
@@ -139,7 +140,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
             <Grid2 size={3}>
               <HmSelectField
                 items={NoticeType}
-                name="noticeData.type"
+                name="noticeData.noticeType"
                 label="Notice Type"
                 fullWidth
               />
@@ -148,16 +149,19 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
             {/* Type */}
             <Grid2 size={3}>
               <HmSelectField
-                items={NoticeType}
-                name="noticeData.type"
-                label="Usage Type"
+                items={ScheduleType}
+                name="noticeData.scheduleType"
+                label="Schedule Type"
                 fullWidth
               />
             </Grid2>
 
             {/* Schedule Date */}
             <Grid2 size={3}>
-              <HmDatePicker name="noticeData.schedule" label="Schedule Date" />
+              <HmDatePicker
+                name="noticeData.scheduleAt"
+                label="Schedule Date"
+              />
             </Grid2>
 
             {/* Expiry Date */}
@@ -177,7 +181,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
 
             {/* Tags */}
             <Grid2 size={6}>
-              <HmInputChip
+              <HmInputTypeChip
                 name="noticeData.tags"
                 label="Enter Tags"
                 tagInput={tagInput}
@@ -185,6 +189,15 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
                 setTagInput={setTagInput}
                 setTags={setTags}
                 handleKeyDown={handleKeyDown}
+              />
+            </Grid2>
+
+            <Grid2 size={6}>
+              <HmInputSelectChip
+                items={ScheduleType}
+                name="noticeData.scheduleType"
+                label="Scedule Type"
+                fullWidth
               />
             </Grid2>
 

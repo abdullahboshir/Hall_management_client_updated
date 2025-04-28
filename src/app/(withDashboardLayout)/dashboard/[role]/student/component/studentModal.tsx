@@ -26,6 +26,7 @@ import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import { studentRegisterValidationSchema } from "../../../validation/student.validation";
 import { studentRegisterDefaultValues } from "../../../constants/student.constant";
+import Spinner from "@/components/Shared/Spinner/Spinner";
 
 type TProps = {
   open: boolean;
@@ -33,6 +34,7 @@ type TProps = {
 };
 
 const StudentModal = ({ open, setOpen }: TProps) => {
+  const [error, setError] = useState("");
   const [selectedFaculty, setSelectedFaculty] = useState<
     keyof typeof Department | ""
   >("");
@@ -53,7 +55,8 @@ const StudentModal = ({ open, setOpen }: TProps) => {
   const { data: diningData, isLoading: diningIsLoading } =
     useGetAllDiningsQuery({});
 
-  const [createStudent] = useCreateStudentMutation();
+  const [createStudent, { isLoading: isCreateStudentLoading }] =
+    useCreateStudentMutation();
 
   const handleStudentRegistration = async (values: FieldValues) => {
     if (hallIsLoading || diningIsLoading || userIsLoading) {
@@ -73,18 +76,31 @@ const StudentModal = ({ open, setOpen }: TProps) => {
 
     try {
       const res = await createStudent(data).unwrap();
+      console.log("got dataaaaaaaaaaaa", res);
 
       if (res[0]?.id) {
         toast.success("Student has been created successfully");
         setOpen(false);
+        setError("");
       }
-    } catch (error) {
-      console.log("errorrrrrrrrr", error);
+    } catch (err: any) {
+      const isDuplicate = err?.data?.includes("E11000");
+      if (
+        (isDuplicate && err?.data?.includes("index: email_1")) ||
+        err?.data?.includes("index: phoneNumber_1")
+      ) {
+        setError("Email or Phone Number already has been registered!!");
+      }
     }
   };
 
   return (
-    <HmFullScreenModal open={open} setOpen={setOpen} title="Add Student">
+    <HmFullScreenModal
+      open={open}
+      setOpen={setOpen}
+      setError={setError}
+      title="Add Student"
+    >
       <HmForm
         onSubmit={handleStudentRegistration}
         resolver={zodResolver(studentRegisterValidationSchema)}
@@ -338,18 +354,29 @@ const StudentModal = ({ open, setOpen }: TProps) => {
             />
           </Grid2>
 
-          <Grid2 size={12}>
+          <Grid2 size={6}>
+            <Typography color="error.main">{error}</Typography>
+          </Grid2>
+
+          <Grid2 size={12} display="flex" justifyContent="end" width="100%">
             <Button
               type="submit"
+              disabled={hallIsLoading || diningIsLoading || userIsLoading}
               sx={{
-                padding: "10px 50px",
+                padding: "7px 20px",
                 marginTop: "10px",
-                position: "absolute",
-                right: 20,
-                bottom: 20,
               }}
             >
-              Submit
+              {hallIsLoading ||
+              diningIsLoading ||
+              userIsLoading ||
+              isCreateStudentLoading ? (
+                <Typography display="flex" gap={1} color="white">
+                  Processing <Spinner />
+                </Typography>
+              ) : (
+                "Create"
+              )}
             </Button>
           </Grid2>
         </Grid2>

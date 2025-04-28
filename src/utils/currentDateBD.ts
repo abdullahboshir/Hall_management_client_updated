@@ -28,3 +28,31 @@ export const formattedDate = (isoDateString: string) => {
 
   return `${year}-${month}-${formattedDay}`;
 };
+
+export const isYesterdayBD = (date: Date): boolean => {
+  const now = new Date();
+
+  // Get current time in BD
+  const currentBD = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Dhaka" })
+  );
+
+  // Get yesterday in BD
+  currentBD.setDate(currentBD.getDate() - 1);
+
+  // Format both dates to yyyy-mm-dd for easy comparison
+  const inputDate = new Date(
+    new Date(date).toLocaleString("en-US", { timeZone: "Asia/Dhaka" })
+  );
+
+  const format = (d: Date) =>
+    `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+
+  return format(inputDate) === format(currentBD);
+};
+
+export const convertToBDDate = (date: Date | string) => {
+  return new Date(
+    new Date(date).toLocaleString("en-US", { timeZone: "Asia/Dhaka" })
+  );
+};

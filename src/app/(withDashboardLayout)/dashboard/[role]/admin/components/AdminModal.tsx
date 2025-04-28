@@ -5,15 +5,16 @@ import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import HmSelectField from "@/components/Form/HmSelectField";
 import HmModal from "@/components/Shared/HmModal/HmModal";
+import Spinner from "@/components/Shared/Spinner/Spinner";
 import { BloodGroup, Designation, Gender } from "@/constant/common.constant";
 import { useCreateAdminMutation } from "@/redux/api/adminApi";
 import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
 import { useGetAllHallsQuery } from "@/redux/api/hallApi";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import { modifyPayload } from "@/utils/modifyPayload";
-import { Button, Grid2 } from "@mui/material";
+import { Button, Grid2, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import React from "react";
+import React, { useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -23,6 +24,7 @@ type TProps = {
 };
 
 const AdminModal = ({ open, setOpen }: TProps) => {
+  const [error, setError] = useState("");
   const { data: userData, isLoading: userIsLoading } = useGetSingleUserQuery(
     {}
   );
@@ -30,7 +32,8 @@ const AdminModal = ({ open, setOpen }: TProps) => {
   const { data: hallData, isLoading: hallIsLoading } = useGetAllHallsQuery({});
   const { data: diningData, isLoading: diningIsLoading } =
     useGetAllDiningsQuery({});
-  const [createAdmin] = useCreateAdminMutation();
+  const [createAdmin, { isLoading: isCreateAdminLoading }] =
+    useCreateAdminMutation();
 
   const handleFormSubmit = async (values: FieldValues) => {
     if (hallIsLoading || diningIsLoading || userIsLoading) {
@@ -57,8 +60,16 @@ const AdminModal = ({ open, setOpen }: TProps) => {
         toast.success("Admin has been created Successfully!!");
         setOpen(false);
       }
-    } catch (error: any) {
-      console.log("got an error", error?.message || error?.data);
+    } catch (err: any) {
+      console.log("got an error", err?.message || err?.data, err);
+
+      const isDuplicate = err?.data?.includes("E11000");
+      if (
+        (isDuplicate && err?.data?.includes("index: email_1")) ||
+        err?.data?.includes("index: phoneNumber_1")
+      ) {
+        setError("Email or Phone Number already has been registered!!");
+      }
     }
   };
 
@@ -81,7 +92,12 @@ const AdminModal = ({ open, setOpen }: TProps) => {
   };
 
   return (
-    <HmModal open={open} setOpen={setOpen} title="Add Admin">
+    <HmModal
+      open={open}
+      setOpen={setOpen}
+      setError={setError}
+      title="Create Admin"
+    >
       {hallIsLoading || diningIsLoading || userIsLoading ? (
         <p>Loading data, please wait...</p>
       ) : (
@@ -177,18 +193,29 @@ const AdminModal = ({ open, setOpen }: TProps) => {
               />
             </Grid2>
 
+            <Grid2 size={12}>
+              <Typography color="error.main">{error}</Typography>
+            </Grid2>
+
             <Grid2 size={6} display="flex" justifyContent="end" width="100%">
               <Button
                 type="submit"
                 disabled={hallIsLoading || diningIsLoading || userIsLoading}
                 sx={{
-                  padding: "10px 50px",
+                  padding: "7px 20px",
                   marginTop: "10px",
                 }}
               >
-                {hallIsLoading || diningIsLoading || userIsLoading
-                  ? "Loading..."
-                  : "Submit"}
+                {hallIsLoading ||
+                diningIsLoading ||
+                userIsLoading ||
+                isCreateAdminLoading ? (
+                  <Typography display="flex" gap={1} color="white">
+                    Processing <Spinner />
+                  </Typography>
+                ) : (
+                  "Create"
+                )}
               </Button>
             </Grid2>
           </Grid2>

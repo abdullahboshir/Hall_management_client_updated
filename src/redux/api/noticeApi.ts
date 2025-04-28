@@ -36,9 +36,9 @@ const noticeApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.manager],
     }),
-    updateManager: build.mutation({
+    updateNoticePinned: build.mutation({
       query: (data) => ({
-        url: `/manager/${data?.id}`,
+        url: `/notice/${data?.id}`,
         method: "PATCH",
         data: data.body,
       }),
@@ -52,5 +52,5 @@ export const {
   useGetAllNoticesQuery,
   useDeleteManagerMutation,
   useGetSingleManagerQuery,
-  useUpdateManagerMutation,
+  useUpdateNoticePinnedMutation,
 } = noticeApi;

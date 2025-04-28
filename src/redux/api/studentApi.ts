@@ -5,9 +5,10 @@ import { baseApi } from "./baseApi";
 const studentApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getAllStudent: build.query({
-      query: () => ({
+      query: (arg: Record<string, unknown>) => ({
         url: "/student/getStudents",
         method: "GET",
+        params: arg,
       }),
       providesTags: [tagTypes.student],
     }),

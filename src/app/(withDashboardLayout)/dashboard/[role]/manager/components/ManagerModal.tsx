@@ -18,6 +18,7 @@ import React, { useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import { managerValidaionSchema } from "../../../validation/manager.validation";
+import Spinner from "@/components/Shared/Spinner/Spinner";
 
 type TProps = {
   open: boolean;
@@ -32,7 +33,8 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
   const { data: hallData, isLoading: hallIsLoading } = useGetAllHallsQuery({});
   const { data: diningData, isLoading: diningIsLoading } =
     useGetAllDiningsQuery({});
-  const [createManager] = useCreateManagerMutation();
+  const [createManager, { isLoading: isCreateManagerLoading }] =
+    useCreateManagerMutation();
 
   const handleFormSubmit = async (values: FieldValues) => {
     if (hallIsLoading || diningIsLoading || userIsLoading) {
@@ -53,11 +55,11 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
 
     try {
       const res = await createManager(data).unwrap();
-      console.log("got a dataaaaaaaaaa", res);
 
       if (res[0]?.id) {
         toast.success("Manager created Successfully!!");
         setOpen(false);
+        setError("");
       }
     } catch (err: any) {
       const isDuplicate = err?.data?.includes("E11000");
@@ -89,7 +91,12 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
   };
 
   return (
-    <HmModal open={open} setOpen={setOpen} title="Add Manager">
+    <HmModal
+      open={open}
+      setOpen={setOpen}
+      setError={setError}
+      title="Create Manager"
+    >
       {hallIsLoading || diningIsLoading || userIsLoading ? (
         <p>Loading data, please wait...</p>
       ) : (
@@ -186,13 +193,20 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
                 type="submit"
                 disabled={hallIsLoading || diningIsLoading || userIsLoading}
                 sx={{
-                  padding: "10px 50px",
+                  padding: "7px 20px",
                   marginTop: "10px",
                 }}
               >
-                {hallIsLoading || diningIsLoading || userIsLoading
-                  ? "Loading..."
-                  : "Submit"}
+                {hallIsLoading ||
+                diningIsLoading ||
+                userIsLoading ||
+                isCreateManagerLoading ? (
+                  <Typography display="flex" gap={1} color="white">
+                    Processing <Spinner />
+                  </Typography>
+                ) : (
+                  "Create"
+                )}
               </Button>
             </Grid2>
           </Grid2>

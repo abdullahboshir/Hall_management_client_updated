@@ -103,6 +103,8 @@ const DiningTable = () => {
     }
   };
 
+  console.log("search resulttttttttt", searchTerm);
+
   const columns: GridColDef[] = [
     {
       field: "mealStatus",

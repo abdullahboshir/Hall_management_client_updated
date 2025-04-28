@@ -8,9 +8,9 @@ export const noticeValidationSchema = z.object({
     audience: z.string().min(1, "Audience is required"),
     status: z.string().min(1, "Status is required"),
     priority: z.string().min(1, "Priority is required"),
-    type: z.string().min(1, "Type is required"),
+    noticeType: z.string().min(1, "Type is required"),
 
-    schedule: z
+    scheduleAt: z
       .union([
         z.string().min(1, "Schedule date is required"),
         z.custom((val: any) => dayjs(val).isValid(), {
@@ -26,8 +26,6 @@ export const noticeValidationSchema = z.object({
         }),
       ])
       .optional(),
-
-    location: z.string().optional(),
     attachments: z.array(z.any()).optional(),
     tags: z.array(z.string()).optional(),
     relatedNotices: z.array(z.string()).optional(),

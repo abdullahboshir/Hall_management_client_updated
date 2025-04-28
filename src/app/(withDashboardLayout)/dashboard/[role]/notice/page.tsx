@@ -54,7 +54,6 @@ const Row = ({
   isExpendDefault: any;
 }) => {
   const [open, setOpen] = useState(isExpendDefault);
-  console.log("11111111111111111", isExpendDefault);
   const [updateUserStatus] = useUpdateUserStatusMutation();
 
   const handleUserStatus = async (status: string, id: string) => {
@@ -100,7 +99,7 @@ const Row = ({
           </Box>
         </TableCell>
 
-        <TableCell>
+        {/* <TableCell>
           <Box
             display="flex"
             flexDirection="column"
@@ -114,7 +113,7 @@ const Row = ({
               {row?.creatorInfo?.user?.role}
             </Typography>
           </Box>
-        </TableCell>
+        </TableCell> */}
 
         <TableCell>
           <Box
@@ -317,6 +316,9 @@ const Row = ({
         <TableCell sx={{ p: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ p: 2, bgcolor: "grey.100", borderRadius: 1 }}>
+              <Typography fontSize={15} gutterBottom>
+                {row?.description}
+              </Typography>
               <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
                 OTHERS INFORMATION
               </Typography>
@@ -325,7 +327,7 @@ const Row = ({
                   <TableRow>
                     {[
                       "CreatedBy",
-                      "Alliance",
+                      "Schedule Type",
                       "Sub District",
                       "District",
                       "Division",
@@ -339,8 +341,29 @@ const Row = ({
                 <TableBody>
                   <TableRow>
                     {" "}
-                    <TableCell>{row?.permanentAddress?.village}</TableCell>
-                    <TableCell>{row?.permanentAddress?.alliance}</TableCell>
+                    <TableCell>
+                      <Box display="flex" flexDirection="column">
+                        <Typography>{row?.createdBy?.email}</Typography>
+                        <Typography variant="caption">
+                          {row?.createdBy?.fullName}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      {" "}
+                      <Box display="flex" flexDirection="column">
+                        <Typography>
+                          Date: {new Date(row?.scheduleAt).getFullYear()} -{" "}
+                          {new Date(row?.scheduleAt).getMonth()} -{" "}
+                          {new Date(row?.scheduleAt).getDate()}
+                        </Typography>
+
+                        <Typography variant="caption">
+                          Time: {new Date(row?.scheduleAt).getUTCHours()}:{" "}
+                          {new Date(row?.scheduleAt).getMinutes()}
+                        </Typography>
+                      </Box>
+                    </TableCell>
                     <TableCell>{row?.permanentAddress?.subDistrict}</TableCell>
                     <TableCell>{row?.permanentAddress?.district}</TableCell>
                     <TableCell>{row?.permanentAddress?.division}</TableCell>
@@ -359,12 +382,11 @@ const AdminNotice = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { data, isLoading, refetch } = useGetAllNoticesQuery({});
 
+  console.log("checkkkkkkkkkkk", data);
+
   if (isLoading) {
     return "Loading...";
   }
-
-  const hasFirstNotice = data?.[0];
-  console.log("ddddddddddddddddddddddddgggggggggggggggggg", hasFirstNotice);
 
   // const [deleteManager] = useDeleteManagerMutation();
 
@@ -415,9 +437,8 @@ const AdminNotice = () => {
             <TableRow sx={{ bgcolor: "primary.main", color: "white" }}>
               {[
                 "Title of Notice",
-                "CreatedBy",
                 "Audience",
-                "Type",
+                "Notice Type",
                 "Priority",
                 "Status",
                 "Action",

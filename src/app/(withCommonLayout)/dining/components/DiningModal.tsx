@@ -7,6 +7,7 @@ import {
   useGetSingleMealQuery,
   useUpdateDueMaintenanceFeeMutation,
 } from "@/redux/api/mealApi";
+import { currentDateBD } from "@/utils/currentDateBD";
 import { Box, Button, Grid2, Stack, Typography } from "@mui/material";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
@@ -17,6 +18,8 @@ type TProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+const { currentYear, currentMonth } = currentDateBD();
 
 const DiningModal = ({ mealId, open, setOpen }: TProps) => {
   const [addDeposit] = useAddDepositMutation();
@@ -29,6 +32,7 @@ const DiningModal = ({ mealId, open, setOpen }: TProps) => {
 
     try {
       const res = await addDeposit(inputDepost).unwrap();
+
       if (res?.id) {
         toast.success("Deposit has been added successfully!");
         setOpen(false);
@@ -43,10 +47,13 @@ const DiningModal = ({ mealId, open, setOpen }: TProps) => {
 
     try {
       const res = await updateDueMaintenanceFee(dueMaintenanceFeeInfo).unwrap();
-      if (res?.id) {
+
+      if (res?.mealInfo[currentYear][currentMonth]?.currentDeposit < 50) {
+        toast.success("Your current Deposit is low!, Deposit before.");
+      } else if (res?.id) {
         refetch();
-        toast.success("Deposit has been added successfully!");
-        // setOpen(false);
+        toast.success("Maintenance Fee has been added successfully!");
+        setOpen(false);
       }
     } catch (error: any) {
       console.log(error?.message);

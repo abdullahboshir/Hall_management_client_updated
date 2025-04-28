@@ -217,7 +217,7 @@ const studentRegisterDefaultValues = {
 
 const RegisterPage = () => {
   const handleUserRegistration = async (values: FieldValues) => {
-    const data = modifyPayload(values, "studentData");
+    const data = modifyPayload(values);
     console.log("dataaaaaaaaaaa", data);
 
     try {
