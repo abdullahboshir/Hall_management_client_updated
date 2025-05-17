@@ -68,7 +68,7 @@ export const studentRegisterValidationSchema = z.object({
       motherContactNo: z
         .string()
         .min(11, "Mother's contact number must be at least 10 digits")
-        .max(11, "Mother's contact number must not exceed 15 digits")
+        .max(11, "Mother's contact number exact 11 digits")
         .regex(/^\d{11}$/, "Mother's contact number must only contain digits"),
     }),
 

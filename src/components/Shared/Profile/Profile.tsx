@@ -6,6 +6,7 @@ import React from "react";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 
 const Profile = ({ data }: any) => {
+  console.log('datataaaaaaaaaaaaaaaaa', data)
   return (
     <Box>
       <Stack position="relative" width="100%" height="50vh">
@@ -31,7 +32,7 @@ const Profile = ({ data }: any) => {
             // gap={1}
           >
             <Typography variant="h4" fontWeight="bold" color="primary.dark">
-              {data?.fullName.toUpperCase()}
+              {data?.fullName?.toUpperCase()}
             </Typography>
             <Typography variant="h5" fontWeight="500" color="text.secondary">
               {data?.designation}
@@ -49,10 +50,10 @@ const Profile = ({ data }: any) => {
                 🎂 Date Of Birth: {formattedDate(data?.dateOfBirth)}
               </Typography>
               <Typography variant="h6">
-                🎂 Present Address: {data?.presentAddress}
+                🎂 Present Address: {typeof(data?.presentAddress) === 'string'? data?.presentAddress : `${data?.presentAddress?.village},  ${data?.presentAddress?.alliance},  ${data?.presentAddress?.subDistrict},  ${data?.presentAddress?.division}`}
               </Typography>
               <Typography variant="h6">
-                🎂 Present Address: {data?.permanentAddress}
+                🎂 Present Address: {typeof(data?.permanentAddress) === 'string'? data?.permanentAddress : `${data?.permanentAddress?.village},  ${data?.permanentAddress?.alliance},  ${data?.permanentAddress?.subDistrict},  ${data?.permanentAddress?.division}`}
               </Typography>
             </Box>
           </Box>

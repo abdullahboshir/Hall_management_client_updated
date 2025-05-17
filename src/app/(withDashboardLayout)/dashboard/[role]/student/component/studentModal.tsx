@@ -63,17 +63,19 @@ const StudentModal = ({ open, setOpen }: TProps) => {
       toast.error("Please wait, data is still loading...");
       return;
     }
-
+    
     if (!hallData || !diningData || !userData?.id) {
       toast.error("Failed to fetch required data. Please try again.");
       return;
     }
-
+    console.log('iddddddddddddddddd', userData?._id)
+    
     values.studentData.hall = hallData?._id;
     values.studentData.dining = diningData?._id;
     values.studentData.createdBy = userData?._id;
+    
     const data = modifyPayload(values);
-
+    console.log('modeeeeeeeeeeeeee', values)
     try {
       const res = await createStudent(data).unwrap();
       console.log("got dataaaaaaaaaaaa", res);
@@ -103,7 +105,7 @@ const StudentModal = ({ open, setOpen }: TProps) => {
     >
       <HmForm
         onSubmit={handleStudentRegistration}
-        resolver={zodResolver(studentRegisterValidationSchema)}
+        // resolver={zodResolver(studentRegisterValidationSchema)}
         defaultValues={studentRegisterDefaultValues()}
       >
         <Grid2 container spacing={3} paddingX={12} paddingY={2}>
@@ -189,12 +191,7 @@ const StudentModal = ({ open, setOpen }: TProps) => {
           <Grid2 size={3}>
             <HmInput name="studentData.classRoll" label="Class Roll" />
           </Grid2>
-          <Grid2 size={3}>
-            <HmInput
-              name="studentData.admissionDetails.admissionFee"
-              label="Admission Fee"
-            />
-          </Grid2>
+ 
           <Grid2 size={3}>
             <HmInput
               name="studentData.emergencyContact"

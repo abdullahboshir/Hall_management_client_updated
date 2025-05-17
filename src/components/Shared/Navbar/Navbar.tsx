@@ -64,7 +64,7 @@ const Navbar = () => {
 
           <Typography
             component={Link}
-            href="/login"
+            href={`dashboard/${data?.user?.role}/notifications`}
             bgcolor="primary.light"
             borderRadius={1}
           >

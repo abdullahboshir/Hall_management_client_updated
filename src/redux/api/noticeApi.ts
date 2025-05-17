@@ -14,10 +14,12 @@ const noticeApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.notice],
     }),
     getAllNotices: build.query({
-      query: () => ({
+      query: (arg: Record<string, unknown>) => ({
         url: "/notice/getAllNotices",
         method: "GET",
+        params: arg
       }),
+      keepUnusedDataFor: 0,
       providesTags: [tagTypes.notice],
     }),
 
@@ -37,10 +39,9 @@ const noticeApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.manager],
     }),
     updateNoticePinned: build.mutation({
-      query: (data) => ({
-        url: `/notice/${data?.id}`,
+      query: (id) => ({
+        url: `/notice/${id}`,
         method: "PATCH",
-        data: data.body,
       }),
       invalidatesTags: [tagTypes.manager],
     }),

@@ -28,21 +28,22 @@ import {
 import { Chip, Stack } from "@mui/material";
 import { useUpdateNoticePinnedMutation } from "@/redux/api/noticeApi";
 import { toast } from "sonner";
+import { useGetSingleUserQuery } from "@/redux/api/userApi";
 
-export default function Notifications({ data, isLoading, refetch }: any) {
+export default function Notifications({ data, isLoading, refetch, setFilters}: any) {
   const [expandedId, setExpandedId] = React.useState<string | null>(null);
   const { currentDay } = currentDateBD();
 
   const [updateNoticePinned] = useUpdateNoticePinnedMutation();
 
+    const { data: userData, isLoading: userIsLoading } = useGetSingleUserQuery(
+      {}
+    ); 
+
   const handlePin = async (id: string, payload: boolean) => {
-    const data = {
-      id,
-      body: { isPinned: payload },
-    };
 
     try {
-      const res = await updateNoticePinned(data).unwrap();
+      const res = await updateNoticePinned(id).unwrap();
       if (res?.id) {
         toast.success(
           `Notification ${
@@ -56,7 +57,6 @@ export default function Notifications({ data, isLoading, refetch }: any) {
     }
   };
 
-  console.log("got dataaaaaaaaaaaaa", data);
 
   return (
     <React.Fragment>
@@ -79,19 +79,23 @@ export default function Notifications({ data, isLoading, refetch }: any) {
             <Typography variant="h5" sx={{ p: 2 }}>
               Notifications
             </Typography>
+            
+            {/* <Typography onClick={() => setMyNotifications(false)} variant="h5" sx={{ p: 2 }}>
+              My Notifications
+            </Typography> */}
 
             <Toolbar>
               <Box sx={{ flexGrow: 1 }} />
 
               {/* <IconButton color="inherit">ME</IconButton> */}
-              {/* <IconButton color="inherit">ME</IconButton> */}
-              <IconButton color="inherit">ALL</IconButton>
+              <IconButton onClick={() => setFilters({isAllNotication: false, isPinned: false})} color="inherit">Personal</IconButton>
+              <IconButton onClick={() => setFilters({isAllNotication: true, isPinned: false})} color="inherit">All</IconButton>
 
               {/* <IconButton color="inherit">
                 <SearchIcon />
               </IconButton> */}
 
-              <IconButton color="inherit">Wishlist</IconButton>
+              <IconButton onClick={() => setFilters({isAllNotication: false, isPinned: true})} color="inherit">Wishlist</IconButton>
               <IconButton color="inherit">
                 <MoreIcon />
               </IconButton>
@@ -189,9 +193,9 @@ export default function Notifications({ data, isLoading, refetch }: any) {
 
                               <Stack direction="row" spacing={1} mb={0.5}>
                                 <Typography
-                                  color={!item?.isPinned ? "error" : "success"}
+                                  color={!item?.isPinned?.includes(userData?._id)? "error" : "success"}
                                 >
-                                  {!item?.isPinned ? (
+                                  {!item?.isPinned?.includes(userData._id) ? (
                                     <PushPinOutlinedIcon
                                       sx={{ transform: "rotate(45deg)" }}
                                       onClick={() => handlePin(item?._id, true)}

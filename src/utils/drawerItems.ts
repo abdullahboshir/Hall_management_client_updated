@@ -15,6 +15,8 @@ import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
 import ReportIcon from "@mui/icons-material/Report";
 import HelpIcon from "@mui/icons-material/Help";
 import BusinessIcon from "@mui/icons-material/Business";
+import LockResetIcon from "@mui/icons-material/LockReset";
+import PasswordIcon from "@mui/icons-material/Password";
 
 export const drawerItems = (role: TUserRole): DrawerItem[] => {
   const roleMenus: DrawerItem[] = [];
@@ -34,6 +36,21 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
       title: "Profile",
       path: `${role}/profile`,
       icon: AccountCircleIcon,
+    },
+    {
+      title: "Reset Password",
+      path: `${role}/support `,
+      icon: LockResetIcon,
+    },
+    {
+      title: "Forgot Password",
+      path: `${role}/support `,
+      icon: PasswordIcon,
+    },
+    {
+      title: "Dining Reports",
+      path: `${role}/dining-reports`,
+      icon: ReportIcon,
     },
     {
       title: "Support / Help ",
@@ -67,11 +84,6 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
       title: "Dining",
       path: `${role}/dining`,
       icon: DiningIcon,
-    },
-    {
-      title: "Dining Reports",
-      path: `${role}/dining-reports`,
-      icon: ReportIcon,
     },
   ];
 

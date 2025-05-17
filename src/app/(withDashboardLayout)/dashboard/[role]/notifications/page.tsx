@@ -2,9 +2,16 @@
 "use client";
 import Notifications from "@/components/Shared/Notifications/Notifications";
 import { useGetAllNoticesQuery } from "@/redux/api/noticeApi";
+import { useState } from "react";
 
 const NotificationsPage = () => {
-  const { data, isLoading, refetch } = useGetAllNoticesQuery({});
+  const [filters, setFilters] = useState({
+    isAllNotication: true, 
+    isPinned: false
+  });
+  const { data, isLoading, refetch } = useGetAllNoticesQuery(filters);
+
+  console.log('isAlllllllllllll', filters)
 
   if (isLoading) {
     return "Loading...";
@@ -12,7 +19,7 @@ const NotificationsPage = () => {
 
   return (
     <div>
-      <Notifications data={data} refetch={refetch} isLoading={isLoading} />
+      <Notifications data={data} refetch={refetch} isLoading={isLoading} setFilters={setFilters} />
     </div>
   );
 };

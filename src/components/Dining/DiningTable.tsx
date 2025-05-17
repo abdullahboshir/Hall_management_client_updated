@@ -53,21 +53,22 @@ const DiningTable = () => {
     useGetAllDiningsQuery({});
   const { data, isLoading, refetch } = useGetAllMealQuery<any>({ ...query });
 
+  
   useEffect(() => {
     // const mealCharge = diningData?.diningPolicies?.mealCharge;
-
+    
     // const reservedSafetyDeposit =
     //   diningData?.diningPolicies?.reservedSafetyDeposit;
-
+    
     // if (
-    //   data?.meals &&
-    //   data?.meals?.some(
-    //     (meal: any) =>
-    //       meal.mealStatus === "on" &&
-    //       meal.mealInfo[currentYear][currentMonth]?.currentDeposit >=
-    //         mealCharge + (mealCharge / 100) * reservedSafetyDeposit
-    //   )
-    // ) {
+      //   data?.meals &&
+      //   data?.meals?.some(
+        //     (meal: any) =>
+        //       meal.mealStatus === "on" &&
+        //       meal.mealInfo[currentYear][currentMonth]?.currentDeposit >=
+        //         mealCharge + (mealCharge / 100) * reservedSafetyDeposit
+        //   )
+        // ) {
     const intervalId = setInterval(() => {
       refetch();
     }, 2000);
@@ -75,13 +76,14 @@ const DiningTable = () => {
     return () => clearInterval(intervalId);
     // }
   }, [data, refetch, diningData]);
-
+  
   const meals = data?.meals;
+  
 
   const [updateMealStatus] = useUpdateMealStatusMutation();
   // const meta = data?.meta;
 
-  // console.log("mealssssssssss", data);
+  console.log("mealssssssssss", meals);
 
   const handleMealStatus = async (id: string, checked: boolean) => {
     const updatedMealStatus = checked ? "on" : "off";
@@ -111,6 +113,7 @@ const DiningTable = () => {
       headerName: "ON/OFF",
       width: 100,
       renderCell: ({ row }) => {
+  
         const baseMealObj = row.mealInfo?.[currentYear]?.[currentMonth] || {};
         const mealCharge = diningData?.diningPolicies?.mealCharge;
         const maintenanceCharge = hallData?.hallPolicies?.maintenanceCharge;
@@ -152,7 +155,7 @@ const DiningTable = () => {
                 sx={{ px: 0.5 }}
                 color="white"
               >
-                {(row?.student?.user?.status).toUpperCase()}
+                {(row?.student?.user?.status)?.toUpperCase()}
               </Typography>
             )}
           </Box>
@@ -173,10 +176,10 @@ const DiningTable = () => {
           gap={1}
           sx={{ width: "100%", height: "100%" }}
         >
-          {row.student.profileImg !== "" ? (
+          {row?.student?.profileImg !== "" ? (
             <Box width={70} height={50} borderRadius="50%" overflow="hidden">
               <Image
-                src={row.student.profileImg}
+                src={row?.student?.profileImg}
                 width={50}
                 height={50}
                 alt="img"
@@ -188,8 +191,8 @@ const DiningTable = () => {
 
           <Box display="flex" flexDirection="column">
             <Typography variant="body2">
-              {row.student.name.firstName} {row.student.name.middleName}{" "}
-              {row.student.name.lastName}
+              {row?.student?.name?.firstName} {row?.student?.name?.middleName}{" "}
+              {row?.student?.name?.lastName}
             </Typography>
             <Typography variant="caption" color="textSecondary">
               ROOM - {row.student.roomNumber} | SEAT - {row.student.seatNumber}
