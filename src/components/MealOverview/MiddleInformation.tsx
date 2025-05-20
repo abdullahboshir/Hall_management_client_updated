@@ -4,7 +4,13 @@ import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
-import { Box, FormControlLabel, Grid2, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  FormControlLabel,
+  Grid2,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { currentDateBD } from "@/utils/currentDateBD";
 import { calculateTotalmaintenanceFee } from "../Dining/calculateTotalmaintenanceFee";
 import Progress from "./Progress";
@@ -33,72 +39,85 @@ const ScrollBox = styled(Box)(({ theme }) => ({
   },
 }));
 
-export default function MiddleInformation({ mealData, refetch, hallData, diningData }: any) {
+export default function MiddleInformation({
+  mealData,
+  refetch,
+  hallData,
+  diningData,
+}: any) {
   const [checked, setChecked] = React.useState(false);
+  const [mealError, setMealError] = React.useState("");
   const { currentMonth, currentYear } = currentDateBD();
   const baseMealObj = mealData?.mealInfo?.[currentYear]?.[currentMonth];
   const { monthsWithZeroMaintenance, monthsArray } =
     calculateTotalmaintenanceFee(mealData);
 
+  const [updateMealStatus] = useUpdateMealStatusMutation();
 
-      const [updateMealStatus] = useUpdateMealStatusMutation();
+  React.useEffect(() => {
+    const intervalId = setInterval(() => {
+      refetch();
+    }, 2000);
 
+    return () => clearInterval(intervalId);
+    // }
+  }, [mealData, refetch, diningData]);
 
+  // Set initial toggle state from server
+  React.useEffect(() => {
+    if (mealData?.mealStatus) {
+      setChecked(mealData.mealStatus === "on");
+    }
 
-        React.useEffect(() => {
-          const intervalId = setInterval(() => {
-            refetch();
-          }, 2000);
-      
-          return () => clearInterval(intervalId);
-          // }
-        }, [mealData, refetch, diningData]);
+    if (
+      baseMealObj?.currentDeposit < diningData?.diningPolicies?.minimumDeposit
+    ) {
+      setMealError("Your current Deposit is very low, Please Deposit");
+    } else {
+      setMealError(""); // Optional: Clear error if condition no longer met
+    }
+  }, [
+    mealData,
+    baseMealObj?.currentDeposit,
+    diningData?.diningPolicies?.minimumDeposit,
+  ]);
 
+  const handleToggleChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newChecked = event.target.checked;
 
+    if (
+      baseMealObj?.currentDeposit <
+        diningData?.diningPolicies?.minimumDeposit ||
+      baseMealObj?.maintenanceFee < hallData?.hallPolicies?.maintenanceCharge
+    ) {
+      return toast.message("You need to deposite");
+    }
 
-        // Set initial toggle state from server
-        React.useEffect(() => {
-          if (mealData?.mealStatus) {
-            setChecked(mealData.mealStatus === "on");
-          }
-        }, [mealData]);
-      
-      
-      
-        const handleToggleChange = async (
-          event: React.ChangeEvent<HTMLInputElement>
-        ) => {
-          const newChecked = event.target.checked;
-      
-      
-          if(baseMealObj?.currentDeposit < diningData?.diningPolicies?.minimumDeposit || baseMealObj?.maintenanceFee < hallData?.hallPolicies?.maintenanceCharge ){
-            return toast.message('You need to deposite')
-          }
-      
-          setChecked(newChecked);
-      
-          if (mealData?._id) {
-            const updatedMealStatus = newChecked ? "on" : "off";
-            const mealPayload = {
-              id: mealData._id,
-              body: { mealStatus: updatedMealStatus },
-            };
-      
-            try {
-              const res = await updateMealStatus(mealPayload).unwrap();
-              if (res?.id) {
-                toast.success(`Meal is ${res?.mealStatus}`);
-              }
-            } catch (error: any) {
-              console.error("Error updating meal status:", error);
-              toast.error(error?.data);
-            }
-          }
-        };
-    
-const isMealOn = mealData?.mealStatus === 'off' ? false : true 
+    setChecked(newChecked);
 
-console.log('meal onsssssssss', mealData?.mealStatus, mealData?.mealStatus === 'off', baseMealObj?.currentDeposit < diningData?.diningPolicies?.minimumDeposit )
+    if (mealData?._id) {
+      const updatedMealStatus = newChecked ? "on" : "off";
+      const mealPayload = {
+        id: mealData._id,
+        body: { mealStatus: updatedMealStatus },
+      };
+
+      try {
+        const res = await updateMealStatus(mealPayload).unwrap();
+        if (res?.id) {
+          toast.success(`Meal is ${res?.mealStatus}`);
+        }
+      } catch (error: any) {
+        console.error("Error updating meal status:", error);
+        setMealError(error?.data);
+        toast.error(error?.data);
+      }
+    }
+  };
+
+  const isMealOn = mealData?.mealStatus === "off" ? false : true;
 
   return (
     <Stack bgcolor="primary.light" borderRadius={3} width="40%">
@@ -238,7 +257,7 @@ console.log('meal onsssssssss', mealData?.mealStatus, mealData?.mealStatus === '
                 width="100%"
               >
                 <Typography fontSize="1em" fontWeight="bold">
-                  Total Meals
+                  Regular Meals
                 </Typography>
                 <Typography fontSize="2vw" fontWeight="bold">
                   {baseMealObj?.totalMeals}
@@ -281,10 +300,10 @@ console.log('meal onsssssssss', mealData?.mealStatus, mealData?.mealStatus === '
                 width="100%"
               >
                 <Typography fontSize="1em" fontWeight="bold">
-                  Special Meal
+                  Special Meals
                 </Typography>
                 <Typography fontSize="2vw" fontWeight="bold">
-                  {baseMealObj?.totalSpecialMeals} TK
+                  {baseMealObj?.totalSpecialMeals}
                 </Typography>
               </Box>
 
@@ -308,47 +327,83 @@ console.log('meal onsssssssss', mealData?.mealStatus, mealData?.mealStatus === '
           </Grid2>
         </Grid2>
 
+        <Grid2 size={12} container>
+          <Grid2 size={4}>
+            <Box
+              display="flex"
+              width="100%"
+              // height="100%"
+              justifyContent="center"
+              alignItems="center"
+              bgcolor="white"
+              p={2}
+              borderRadius={2}
+            >
+              <Box>
+                <MealLoader isOn={isMealOn} />
+              </Box>
+            </Box>
+          </Grid2>
 
-<Grid2 size={12}>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          bgcolor="white"
-          borderRadius={2}
-          p={2}
-        >
-          <FormControlLabel
-            control={
-              <MealToggleSwitch checked={checked} onChange={handleToggleChange} />
-            }
-            label=""
-          />
-          <Typography fontWeight="bold">
-            Toggle to Meal {checked ? "OFF" : "ON"}
-          </Typography>
-        </Box>
-</Grid2>
+          <Grid2 size={8}>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              bgcolor="white"
+              borderRadius={2}
+              p={2}
+              mb={1}
+            >
+              <FormControlLabel
+                control={
+                  <MealToggleSwitch
+                    checked={checked}
+                    onChange={handleToggleChange}
+                  />
+                }
+                label=""
+              />
+              <Typography fontWeight="bold">
+                Toggle to Meal {checked ? "OFF" : "ON"}
+              </Typography>
+            </Box>
 
-
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              bgcolor="white"
+              borderRadius={2}
+              p={2}
+            >
+              <Typography fontWeight="bold">
+                This is a Heading Notice Board
+              </Typography>
+            </Box>
+          </Grid2>
+        </Grid2>
 
         <Grid2 size={12}>
           <Box
             display="flex"
-            width="100%"
-            // height="100%"
             justifyContent="center"
             alignItems="center"
-            bgcolor='white'
+            bgcolor="white"
+            borderRadius={2}
             p={2}
           >
-          <Box>
-              <MealLoader isOn={isMealOn}/>
-          </Box>
-
+            {mealError ? (
+              <Typography color="error.main" fontWeight="bold">
+                {mealError}
+              </Typography>
+            ) : (
+              <Typography color="green" fontWeight="bold">
+                You have Healthy Deposit
+              </Typography>
+            )}
           </Box>
         </Grid2>
-
       </Grid2>
     </Stack>
   );

@@ -11,7 +11,7 @@ const LoaderContainer = styled(Box)({
 });
 
 const MealLoader = ({ isOn = true }: { isOn?: boolean }) => {
-  const size = 7.5; // base size in vw
+  const size = 8; // base size in vw
   const ringGap = 0.5; // ring gap in vw
   
 

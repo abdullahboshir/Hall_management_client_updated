@@ -24,9 +24,11 @@ const today = dayjs();
 
 
 export default function MealDateCalendar({mealData, hallData, diningData, isMealLoading, userIsLoading, isHallLoading, isDiningLoading}: any) {
+
   const [mealDays, setMealDays] = React.useState<number[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [currentViewDate, setCurrentViewDate] = React.useState<Dayjs>(today);
+
   const [checked, setChecked] = React.useState(false);
 
   const { currentMonth, currentYear } = currentDateBD();
@@ -52,6 +54,7 @@ export default function MealDateCalendar({mealData, hallData, diningData, isMeal
     setMealDays(activeDays);
   }, [mealData, currentViewDate]);
 
+  
   const handleMonthChange = (date: Dayjs) => {
     setIsLoading(true);
     setCurrentViewDate(date);
@@ -112,19 +115,19 @@ export default function MealDateCalendar({mealData, hallData, diningData, isMeal
         borderRadius={2}
         p={3}
       >
-        {/* <FormControlLabel
+        <FormControlLabel
           control={
             <MealToggleSwitch checked={checked} onChange={handleToggleChange} />
           }
           label=""
-        /> */}
-        {/* <Typography fontWeight="bold">
+        />
+        <Typography fontWeight="bold">
           Toggle to Meal {checked ? "OFF" : "ON"}
-        </Typography> */}
+        </Typography>
       </Box>
 
 
-     <Box bgcolor="white" borderRadius={2} my={2} position="relative" display='flex' flexDirection='column' alignItems='center'>
+     <Box bgcolor="white" borderRadius={2} my={1} position="relative" display='flex' flexDirection='column' alignItems='center'>
 
   <LocalizationProvider dateAdapter={AdapterDayjs}>
     {/* DUE in center of calendar box */}
@@ -169,9 +172,8 @@ export default function MealDateCalendar({mealData, hallData, diningData, isMeal
         bgcolor="white"
         borderRadius={2}
       >
-        <Typography variant="h5" fontWeight="bold" padding={2}>
-          Total Meals -{" "}
-          {mealData?.mealInfo?.[currentYear]?.[currentMonth]?.totalMeals}
+        <Typography fontSize='1vw' fontWeight="bold" padding={3}>
+          This is Notification Slider, which is running
         </Typography>
       </Box>
     </Stack>

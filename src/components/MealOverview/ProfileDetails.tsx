@@ -39,12 +39,18 @@ const ProfileDetails = () => {
           <CardContent sx={{ padding: 0, marginTop: 1 }}>
             <Box height="50vh">
               <Card
-                sx={{ display: "flex", alignItems: "center", padding: "15px" }}
+                sx={{ display: "flex",  flexDirection: 'column', padding: "15px" }}
+                
               >
-                <Typography fontSize='2vw' fontWeight="bold">
+                <Typography fontSize='2vw' fontWeight="bold" lineHeight={1}>
                   {data?.fullName.toUpperCase()}
                 </Typography>
+
+                  <Typography fontSize='1.2vw' fontWeight="bold" color="text.secondary">
+                  {data?.email}
+                </Typography>
               </Card>
+
 
               <Box display="flex" justifyContent="space-between" gap={1} my={1}>
                 <Card
@@ -87,12 +93,10 @@ const ProfileDetails = () => {
                 <Card   sx={{
                     display: "flex",
                     width: "100%",
-                    height: '50%',
+                    height: '35%',
                     justifyContent: "center",
                     alignItems: "center",
                   }}>
-               
-                    {/* <Progress /> */}
                 </Card>
               </Box>
 
