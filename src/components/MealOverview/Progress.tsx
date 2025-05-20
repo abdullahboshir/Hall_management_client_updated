@@ -13,11 +13,11 @@ export default function Progress() {
   }, []);
 
   return (
-    <Box sx={{ position: 'relative', width: 120, height: 120 }}>
+    <Box sx={{ position: 'relative', width: 80, height: 80 }}>
       {/* Slower, larger background spinner */}
       <CircularProgress
         thickness={3}
-        size={120}
+        size={80}
         sx={{
           position: 'absolute',
           top: 0,
@@ -30,7 +30,7 @@ export default function Progress() {
       <CircularProgress
         variant="determinate"
         value={progress}
-        size={80}
+        size={60}
         sx={{
           position: 'absolute',
           top: '50%',

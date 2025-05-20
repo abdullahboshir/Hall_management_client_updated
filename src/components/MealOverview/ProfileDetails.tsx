@@ -41,8 +41,8 @@ const ProfileDetails = () => {
               <Card
                 sx={{ display: "flex", alignItems: "center", padding: "15px" }}
               >
-                <Typography component="div" variant="h5" fontWeight="bold">
-                  {data?.fullName}
+                <Typography fontSize='2vw' fontWeight="bold">
+                  {data?.fullName.toUpperCase()}
                 </Typography>
               </Card>
 
@@ -57,10 +57,9 @@ const ProfileDetails = () => {
                   }}
                 >
                   <Typography
-                    variant="h6"
-                    component="div"
+                    fontSize='1.4vw'
                     fontWeight="bold"
-                    sx={{ color: "text.secondary" }}
+                    color="text.secondary"
                   >
                     Room No. - {data?.roomNumber}
                   </Typography>
@@ -75,10 +74,9 @@ const ProfileDetails = () => {
                   }}
                 >
                   <Typography
-                    variant="h6"
-                    component="div"
+                     fontSize='1.4vw'
                     fontWeight="bold"
-                    sx={{ color: "text.secondary" }}
+                    color="text.secondary"
                   >
                     Seat No. - {data?.seatNumber}
                   </Typography>
@@ -94,9 +92,7 @@ const ProfileDetails = () => {
                     alignItems: "center",
                   }}>
                
-                    <Progress />
-                    
-                 
+                    {/* <Progress /> */}
                 </Card>
               </Box>
 

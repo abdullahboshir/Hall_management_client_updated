@@ -4,9 +4,14 @@ import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
-import { Box, Grid2, Tooltip, Typography } from "@mui/material";
+import { Box, FormControlLabel, Grid2, Tooltip, Typography } from "@mui/material";
 import { currentDateBD } from "@/utils/currentDateBD";
 import { calculateTotalmaintenanceFee } from "../Dining/calculateTotalmaintenanceFee";
+import Progress from "./Progress";
+import { MealToggleSwitch } from "./MealToggleSwitch";
+import { useUpdateMealStatusMutation } from "@/redux/api/mealApi";
+import { toast } from "sonner";
+import MealLoader from "./MealLoader";
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -16,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const ScrollBox = styled(Box)(({ theme }) => ({
   overflowY: "scroll",
-  height: "30vh",
+  height: "31.2vh",
   // scrollbarWidth: "thin", // Firefox
   // scrollbarColor: "#888 transparent", // Firefox
   "&::-webkit-scrollbar": {
@@ -28,198 +33,323 @@ const ScrollBox = styled(Box)(({ theme }) => ({
   },
 }));
 
-export default function MiddleInformation({ mealData, hallData }: any) {
+export default function MiddleInformation({ mealData, refetch, hallData, diningData }: any) {
+  const [checked, setChecked] = React.useState(false);
   const { currentMonth, currentYear } = currentDateBD();
   const baseMealObj = mealData?.mealInfo?.[currentYear]?.[currentMonth];
   const { monthsWithZeroMaintenance, monthsArray } =
     calculateTotalmaintenanceFee(mealData);
 
+
+      const [updateMealStatus] = useUpdateMealStatusMutation();
+
+
+
+        React.useEffect(() => {
+          const intervalId = setInterval(() => {
+            refetch();
+          }, 2000);
+      
+          return () => clearInterval(intervalId);
+          // }
+        }, [mealData, refetch, diningData]);
+
+
+
+        // Set initial toggle state from server
+        React.useEffect(() => {
+          if (mealData?.mealStatus) {
+            setChecked(mealData.mealStatus === "on");
+          }
+        }, [mealData]);
+      
+      
+      
+        const handleToggleChange = async (
+          event: React.ChangeEvent<HTMLInputElement>
+        ) => {
+          const newChecked = event.target.checked;
+      
+      
+          if(baseMealObj?.currentDeposit < diningData?.diningPolicies?.minimumDeposit || baseMealObj?.maintenanceFee < hallData?.hallPolicies?.maintenanceCharge ){
+            return toast.message('You need to deposite')
+          }
+      
+          setChecked(newChecked);
+      
+          if (mealData?._id) {
+            const updatedMealStatus = newChecked ? "on" : "off";
+            const mealPayload = {
+              id: mealData._id,
+              body: { mealStatus: updatedMealStatus },
+            };
+      
+            try {
+              const res = await updateMealStatus(mealPayload).unwrap();
+              if (res?.id) {
+                toast.success(`Meal is ${res?.mealStatus}`);
+              }
+            } catch (error: any) {
+              console.error("Error updating meal status:", error);
+              toast.error(error?.data);
+            }
+          }
+        };
+    
+const isMealOn = mealData?.mealStatus === 'off' ? false : true 
+
+console.log('meal onsssssssss', mealData?.mealStatus, mealData?.mealStatus === 'off', baseMealObj?.currentDeposit < diningData?.diningPolicies?.minimumDeposit )
+
   return (
-    <Stack
-      bgcolor="primary.light"
-      borderRadius={3}
-      height="100vh"
-      width="40%"
-      direction="row"
-      spacing={2}
-      display="flex"
-      justifyContent="center"
-    >
-      <Box>
-        <Grid2 container spacing={1} sx={{ width: "100%" }} p={2}>
-          {/* Current Deposit */}
-          <Box
-            width="55%"
-            p={2}
-            bgcolor="white"
-            borderRadius={1}
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            <Typography fontSize={20} fontWeight="bold">
-              Your Current Deposit is
-            </Typography>
-            <Typography fontSize={25} fontWeight="bold">
-              {baseMealObj?.currentDeposit} TK
-            </Typography>
-          </Box>
+    <Stack bgcolor="primary.light" borderRadius={3} width="40%">
+      <Grid2 container spacing={1} p={2}>
+        {/* Current Deposit */}
+        <Grid2
+          size={6}
+          p={2}
+          bgcolor="white"
+          borderRadius={1}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+        >
+          <Typography fontSize="1em" fontWeight="bold">
+            Your Current Deposit is
+          </Typography>
+          <Typography fontSize="2vw" fontWeight="bold">
+            {baseMealObj?.currentDeposit}TK
+          </Typography>
+        </Grid2>
 
-          {/* Total Deposit */}
-          <Box
-            width="43%"
-            p={2}
-            bgcolor="white"
-            borderRadius={1}
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            <Typography fontSize={19} fontWeight="bold">
-              Total Deposit is
-            </Typography>
-            <Typography fontSize={25} fontWeight="bold">
-              {baseMealObj?.totalDeposit} TK
-            </Typography>
-          </Box>
+        {/* Total Deposit */}
+        <Grid2
+          size={6}
+          p={2}
+          bgcolor="white"
+          borderRadius={1}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+        >
+          <Typography fontSize="1em" fontWeight="bold">
+            Total Deposit is
+          </Typography>
+          <Typography fontSize="2vw" fontWeight="bold">
+            {baseMealObj?.totalDeposit} TK
+          </Typography>
+        </Grid2>
 
-          {/* Zero Maintenance Months ScrollBox */}
-          <ScrollBox width="28%" bgcolor="white" borderRadius={1}>
-   
+        <Grid2 container size={12} gap={1}>
+          <Grid2 size={4}>
+            <ScrollBox bgcolor="white" borderRadius={1}>
               <Box
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
+                flexDirection="column"
                 gap={2}
-                px={1}
-                pt={1}
+                p={2}
+                px={2}
               >
-                <Box>
-                  
-                  <Typography fontSize={12} fontWeight='bold' my={1}>Maintenance Fee</Typography>
+                <Typography fontSize="1vw" fontWeight="bold">
+                  Maintenance Fee
+                </Typography>
 
-                  <Typography
-                fontSize={20}
-                    fontWeight="bold"
-                        // mb={0.5}
-                        display="flex"
-                        // flexDirection="column"
-                        alignItems="center"
-                        justifyContent='center'
-                        borderRadius={1}
-                        boxShadow={5}
-                        p={2}
-                        
-                        color={baseMealObj?.maintenanceFee < hallData?.hallPolicies?.maintenanceCharge? 'error.main' : 'green'}
-                  >
-                    {baseMealObj?.maintenanceFee < hallData?.hallPolicies?.maintenanceCharge? 'DUE': 'PAID'} 
-                  </Typography>
+                <Typography
+                  fontSize="2vw"
+                  fontWeight="bold"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  borderRadius={1}
+                  boxShadow={5}
+                  p={2}
+                  width="100%"
+                  color={
+                    baseMealObj?.maintenanceFee <
+                    hallData?.hallPolicies?.maintenanceCharge
+                      ? "error.main"
+                      : "green"
+                  }
+                >
+                  {baseMealObj?.maintenanceFee <
+                  hallData?.hallPolicies?.maintenanceCharge
+                    ? "DUE"
+                    : "PAID"}
+                </Typography>
 
-                  {Object.entries(monthsWithZeroMaintenance).map(
-                    ([year, months], index) => (
+                {Object.entries(monthsWithZeroMaintenance).map(
+                  ([year, months], index) => (
+                    <Box
+                      key={index}
+                      display="flex"
+                      flexDirection="column"
+                      alignItems="center"
+                      width="100%"
+                      borderRadius={1}
+                      boxShadow={5}
+                      p={2}
+                    >
+                      <Typography
+                        fontWeight="bold"
+                        fontSize="2vw"
+                        color="error.main"
+                      >
+                        {year}
+                      </Typography>
+
                       <Box
-                        key={index}
-                        // mb={0.5}
                         display="flex"
                         flexDirection="column"
                         alignItems="center"
-                        borderRadius={1}
-                        boxShadow={5}
-                        p={2}
-                        my={3}
                       >
-                        <Typography fontWeight="bold" fontSize={18} color="error.main">{year}</Typography>
-                        <Box
-                          display="flex"
-                          flexDirection="column"
-                          alignItems="center"
-                        >
-                          {months.map((month, i) => (
-                            <Typography key={i} fontWeight="bold" color="error.main">
-                              {month}
-                            </Typography>
-                          ))}
-                        </Box>
+                        {months.map((month, i) => (
+                          <Typography
+                            key={i}
+                            fontWeight="bold"
+                            color="error.main"
+                            fontSize="1em"
+                          >
+                            {month}
+                          </Typography>
+                        ))}
                       </Box>
-                    )
-                  )}
-                </Box>
+                    </Box>
+                  )
+                )}
               </Box>
-          </ScrollBox>
+            </ScrollBox>
+          </Grid2>
 
-          {/* Total Meals */}
+          <Grid2 size={4}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              gap={1}
+            >
+              <Box
+                p={2}
+                bgcolor="white"
+                borderRadius={1}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                width="100%"
+              >
+                <Typography fontSize="1em" fontWeight="bold">
+                  Total Meals
+                </Typography>
+                <Typography fontSize="2vw" fontWeight="bold">
+                  {baseMealObj?.totalMeals}
+                </Typography>
+              </Box>
+
+              <Box
+                p={2}
+                bgcolor="white"
+                borderRadius={1}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                width="100%"
+              >
+                <Typography fontSize="1em" fontWeight="bold">
+                  Total Cost
+                </Typography>
+                <Typography fontSize="2vw" fontWeight="bold">
+                  {baseMealObj?.totalCost} TK
+                </Typography>
+              </Box>
+            </Box>
+          </Grid2>
+
+          <Grid2 size={4}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              gap={1}
+            >
+              <Box
+                p={2}
+                bgcolor="white"
+                borderRadius={1}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                width="100%"
+              >
+                <Typography fontSize="1em" fontWeight="bold">
+                  Special Meal
+                </Typography>
+                <Typography fontSize="2vw" fontWeight="bold">
+                  {baseMealObj?.totalSpecialMeals} TK
+                </Typography>
+              </Box>
+
+              <Box
+                p={2}
+                bgcolor="white"
+                borderRadius={1}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                width="100%"
+              >
+                <Typography fontSize="1em" fontWeight="bold">
+                  Refunded
+                </Typography>
+                <Typography fontSize="2vw" fontWeight="bold">
+                  {baseMealObj?.refunded} TK
+                </Typography>
+              </Box>
+            </Box>
+          </Grid2>
+        </Grid2>
+
+
+<Grid2 size={12}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          bgcolor="white"
+          borderRadius={2}
+          p={2}
+        >
+          <FormControlLabel
+            control={
+              <MealToggleSwitch checked={checked} onChange={handleToggleChange} />
+            }
+            label=""
+          />
+          <Typography fontWeight="bold">
+            Toggle to Meal {checked ? "OFF" : "ON"}
+          </Typography>
+        </Box>
+</Grid2>
+
+
+
+        <Grid2 size={12}>
           <Box
-            width="43%"
-            p={2}
-            bgcolor="white"
-            borderRadius={1}
             display="flex"
-            flexDirection="column"
+            width="100%"
+            // height="100%"
+            justifyContent="center"
             alignItems="center"
+            bgcolor='white'
+            p={2}
           >
-            <Typography fontSize={19} fontWeight="bold">
-              Total Meals
-            </Typography>
-            <Typography fontSize={25} fontWeight="bold">
-              {baseMealObj?.totalMeals}
-            </Typography>
+          <Box>
+              <MealLoader isOn={isMealOn}/>
           </Box>
 
-          {/* Special Meals */}
-          <Box
-            width="55%"
-            p={2}
-            bgcolor="white"
-            borderRadius={1}
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            <Typography fontSize={19} fontWeight="bold">
-              Total Special Meal is
-            </Typography>
-            <Typography fontSize={25} fontWeight="bold">
-              {baseMealObj?.totalSpecialMeals} TK
-            </Typography>
-          </Box>
-
-          {/* Total Cost */}
-          <Box
-            width="43%"
-            p={2}
-            bgcolor="white"
-            borderRadius={1}
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            <Typography fontSize={19} fontWeight="bold">
-              Total Cost
-            </Typography>
-            <Typography fontSize={25} fontWeight="bold">
-              {baseMealObj?.totalCost} TK
-            </Typography>
-          </Box>
-
-          {/* Refunded */}
-          <Box
-            width="43%"
-            p={2}
-            bgcolor="white"
-            borderRadius={1}
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            <Typography fontSize={19} fontWeight="bold">
-              Refunded Deposit
-            </Typography>
-            <Typography fontSize={25} fontWeight="bold">
-              {baseMealObj?.refunded} TK
-            </Typography>
           </Box>
         </Grid2>
-      </Box>
+
+      </Grid2>
     </Stack>
   );
 }

@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -10,7 +9,6 @@ import {
   Box,
   FormControlLabel,
   Stack,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import {useUpdateMealStatusMutation} from "@/redux/api/mealApi";
@@ -18,7 +16,7 @@ import { currentDateBD } from "@/utils/currentDateBD";
 import { toast } from "sonner";
 import { MealToggleSwitch } from "./MealToggleSwitch";
 import { MealDay } from "./MealDay";
-import { calculateTotalmaintenanceFee } from "../Dining/calculateTotalmaintenanceFee";
+
 
 
 const today = dayjs();
@@ -102,8 +100,6 @@ export default function MealDateCalendar({mealData, hallData, diningData, isMeal
     }
   };
 
-
-      const {monthsWithZeroMaintenance, monthsArray} = calculateTotalmaintenanceFee(mealData)
       
 
   return (
@@ -116,100 +112,19 @@ export default function MealDateCalendar({mealData, hallData, diningData, isMeal
         borderRadius={2}
         p={3}
       >
-        <FormControlLabel
+        {/* <FormControlLabel
           control={
             <MealToggleSwitch checked={checked} onChange={handleToggleChange} />
           }
           label=""
-        />
-        <Typography fontWeight="bold">
+        /> */}
+        {/* <Typography fontWeight="bold">
           Toggle to Meal {checked ? "OFF" : "ON"}
-        </Typography>
+        </Typography> */}
       </Box>
 
 
      <Box bgcolor="white" borderRadius={2} my={2} position="relative" display='flex' flexDirection='column' alignItems='center'>
-
-     
-          <Tooltip
-  title={
-    <Box>
-      {Object.entries(monthsWithZeroMaintenance).map(
-        ([year, months], index) => (
-          <Box key={index} mb={0.5}>
-            <Typography variant="caption" fontWeight="bold" display="block">
-              {year}:
-            </Typography>
-            <Typography variant="caption" display="block">
-              {months.map((month, i) => (
-                <span key={i}>
-                  {month}
-                  {i !== months.length - 1 && " | "}
-                </span>
-              ))}
-            </Typography>
-          </Box>
-        )
-      )}
-    </Box>
-  }
-  arrow
->
-  <Box
-    display="flex"
-    alignItems="center"
-    justifyContent="space-between"
-    width="100%"
-    gap={2}
-    px={1}
-    pt={1}
-  >
-    {/* Paid / Unpaid */}
-    <Typography>
-      {mealData && mealData.mealInfo[currentYear] ? (
-        mealData.mealInfo[currentYear][currentMonth]?.maintenanceFee ===
-        mealData.student.hall?.hallPolicies?.maintenanceCharge ? (
-          <Typography color="success.main" component="span">
-            Paid
-          </Typography>
-        ) : (
-          <Typography color="error.main" component="span">
-            Unpaid
-          </Typography>
-        )
-      ) : (
-        ""
-      )}{" "}
-      - {mealData.student.hall.hallPolicies.maintenanceCharge}
-    </Typography>
-
-    {/* Due and months list */}
-    <Typography
-      color={
-        mealData.mealInfo[currentYear][currentMonth]?.dueMaintenanceFee > 0
-          ? "error.main"
-          : "textSecondary"
-      }
-    >
-      DUE -{" "}
-      {mealData.mealInfo[currentYear][currentMonth]?.dueMaintenanceFee} |{" "}
-      {monthsArray.map((data, index) => (
-        <span key={index}>
-          {data?.month.slice(0, 3)}
-          {index !== monthsArray.length - 1 && " | "}
-        </span>
-      ))}
-    </Typography>
-  </Box>
-</Tooltip>
-
-  
-
-
-
-
-
-
 
   <LocalizationProvider dateAdapter={AdapterDayjs}>
     {/* DUE in center of calendar box */}

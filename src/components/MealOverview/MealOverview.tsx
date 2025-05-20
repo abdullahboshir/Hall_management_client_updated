@@ -15,7 +15,7 @@ const MealOverview = () => {
         const { data: diningData, isLoading: isDiningLoading } = useGetAllDiningsQuery({});
     
       const { data: userData, isLoading: userIsLoading } = useGetSingleUserQuery({});
-      const { data: mealData, isLoading: isMealLoading } =useGetSingleMealQuery<any>(userData?.meals);
+      const { data: mealData, isLoading: isMealLoading, refetch } =useGetSingleMealQuery<any>(userData?.meals);
 
       if(userIsLoading || isMealLoading || isHallLoading || isDiningLoading){
         return <Spinner/>
@@ -26,7 +26,7 @@ const MealOverview = () => {
         <Box display='flex' gap={2} p={2} justifyContent='space-between'>
             <ProfileDetails/>
 
-            <MiddleInformation mealData={mealData} isMealLoading={isMealLoading} hallData={hallData}/>
+            <MiddleInformation mealData={mealData} refetch={refetch} isMealLoading={isMealLoading} hallData={hallData} diningData={diningData}/>
 
             <MealDateCalender mealData={mealData} hallData={hallData} diningData={diningData} isMealLoading={isMealLoading} userIsLoading={userIsLoading} isHallLoading={isHallLoading} isDiningLoading/>
         </Box>
