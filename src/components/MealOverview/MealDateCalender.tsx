@@ -5,38 +5,41 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { DayCalendarSkeleton } from "@mui/x-date-pickers/DayCalendarSkeleton";
-import {
-  Box,
-  FormControlLabel,
-  Stack,
-  Typography,
-} from "@mui/material";
-import {useUpdateMealStatusMutation} from "@/redux/api/mealApi";
+import { Box, FormControlLabel, IconButton, Stack, Typography } from "@mui/material";
+import { useUpdateMealStatusMutation } from "@/redux/api/mealApi";
 import { currentDateBD } from "@/utils/currentDateBD";
 import { toast } from "sonner";
+import AddCardIcon from "@mui/icons-material/AddCard";
 import { MealToggleSwitch } from "./MealToggleSwitch";
 import { MealDay } from "./MealDay";
-
-
+import NotificationSlider from "./NotificationSlider";
+import DiningModal from "@/app/(withCommonLayout)/dining/components/DiningModal";
 
 const today = dayjs();
 
-
-
-export default function MealDateCalendar({mealData, hallData, diningData, isMealLoading, userIsLoading, isHallLoading, isDiningLoading}: any) {
-
+export default function MealDateCalendar({
+  mealData,
+  hallData,
+  diningData,
+  isMealLoading,
+  userIsLoading,
+  isHallLoading,
+  isDiningLoading,
+}: any) {
   const [mealDays, setMealDays] = React.useState<number[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
+      const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+      const [mealSelectedId, setMealSelectedId] = React.useState(null);
   const [currentViewDate, setCurrentViewDate] = React.useState<Dayjs>(today);
+  
 
   const [checked, setChecked] = React.useState(false);
 
   const { currentMonth, currentYear } = currentDateBD();
 
-
   const [updateMealStatus] = useUpdateMealStatusMutation();
 
-      const baseMealObj = mealData?.mealInfo?.[currentYear]?.[currentMonth];
+  const baseMealObj = mealData?.mealInfo?.[currentYear]?.[currentMonth];
 
   React.useEffect(() => {
     if (!mealData || !currentViewDate) return;
@@ -54,13 +57,11 @@ export default function MealDateCalendar({mealData, hallData, diningData, isMeal
     setMealDays(activeDays);
   }, [mealData, currentViewDate]);
 
-  
   const handleMonthChange = (date: Dayjs) => {
     setIsLoading(true);
     setCurrentViewDate(date);
     setTimeout(() => setIsLoading(false), 300);
   };
-
 
   // Set initial toggle state from server
   React.useEffect(() => {
@@ -69,17 +70,17 @@ export default function MealDateCalendar({mealData, hallData, diningData, isMeal
     }
   }, [mealData]);
 
-
-
   const handleToggleChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newChecked = event.target.checked;
 
-
-
-    if(baseMealObj?.currentDeposit < diningData?.diningPolicies?.minimumDeposit || baseMealObj?.maintenanceFee < hallData?.hallPolicies?.maintenanceCharge ){
-      return toast.message('You need to deposite')
+    if (
+      baseMealObj?.currentDeposit <
+        diningData?.diningPolicies?.minimumDeposit ||
+      baseMealObj?.maintenanceFee < hallData?.hallPolicies?.maintenanceCharge
+    ) {
+      return toast.message("You need to deposite");
     }
 
     setChecked(newChecked);
@@ -103,8 +104,6 @@ export default function MealDateCalendar({mealData, hallData, diningData, isMeal
     }
   };
 
-      
-
   return (
     <Stack bgcolor="primary.light" p={2} borderRadius={2}>
       <Box
@@ -126,56 +125,77 @@ export default function MealDateCalendar({mealData, hallData, diningData, isMeal
         </Typography>
       </Box>
 
-
-     <Box bgcolor="white" borderRadius={2} my={1} position="relative" display='flex' flexDirection='column' alignItems='center'>
-
-  <LocalizationProvider dateAdapter={AdapterDayjs}>
-    {/* DUE in center of calendar box */}
-    <Box
-      position="absolute"
-      top="10%"
-      left="58%"
-      sx={{
-        transform: "translate(-50%, -50%)",
-        zIndex: 10,
-        pointerEvents: "none",
-      }}
-    >
-
-          {/* <Typography color={baseMealObj?.maintenanceFee > 0? 'green' : 'red'} fontSize={15}fontWeight="bold">
-                   {baseMealObj?.maintenanceFee > 0? 'PAID' : 'DUE'}
-                  </Typography> */}
-    </Box>
-
-    {/* Calendar */}
-    <DateCalendar
-      value={null}
-      loading={isLoading || isMealLoading || userIsLoading}
-      onMonthChange={handleMonthChange}
-      renderLoading={() => <DayCalendarSkeleton />}
-      slots={{ day: MealDay }}
-      slotProps={{
-        day: {
-          mealDays,
-        } as any,
-      }}
-    />
-  </LocalizationProvider>
-</Box>
-
-
-
       <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
         bgcolor="white"
         borderRadius={2}
+        my={1}
+        position="relative"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
       >
-        <Typography fontSize='1vw' fontWeight="bold" padding={3}>
-          This is Notification Slider, which is running
-        </Typography>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          {/* DUE in center of calendar box */}
+          <Box
+            position="absolute"
+            top="10%"
+            left="58%"
+            sx={{
+              transform: "translate(-50%, -50%)",
+              zIndex: 10,
+              pointerEvents: "none",
+            }}
+          >
+            {/* <Typography color={baseMealObj?.maintenanceFee > 0? 'green' : 'red'} fontSize={15}fontWeight="bold">
+                   {baseMealObj?.maintenanceFee > 0? 'PAID' : 'DUE'}
+                  </Typography> */}
+          </Box>
+
+          {/* Calendar */}
+          <DateCalendar
+            value={null}
+            loading={isLoading || isMealLoading || userIsLoading}
+            onMonthChange={handleMonthChange}
+            renderLoading={() => <DayCalendarSkeleton />}
+            slots={{ day: MealDay }}
+            slotProps={{
+              day: {
+                mealDays,
+              } as any,
+            }}
+          />
+        </LocalizationProvider>
       </Box>
+
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    bgcolor="white"
+                    borderRadius={2}
+                    p={1}
+                  >
+      
+                <IconButton
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    setMealSelectedId(mealData?._id);
+                  }}
+                  aria-label="delete"
+                >
+               <Typography px={2} fontWeight='bold'>Add to Deposit</Typography>  <AddCardIcon />
+                </IconButton>
+      
+      
+            <Stack>
+              <DiningModal
+                open={isModalOpen}
+                setOpen={setIsModalOpen}
+                mealId={mealSelectedId}
+              />
+            </Stack>
+      
+                  </Box>
     </Stack>
   );
 }

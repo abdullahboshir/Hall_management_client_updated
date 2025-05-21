@@ -10,7 +10,8 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import Progress from "./Progress";
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import Link from "next/link";
 
 const ProfileDetails = () => {
   const { data, isLoading } = useGetSingleUserQuery({});
@@ -42,7 +43,7 @@ const ProfileDetails = () => {
                 sx={{ display: "flex",  flexDirection: 'column', padding: "15px" }}
                 
               >
-                <Typography fontSize='2vw' fontWeight="bold" lineHeight={1}>
+                <Typography fontSize='1.5vw' fontWeight="bold" lineHeight={1}>
                   {data?.fullName.toUpperCase()}
                 </Typography>
 
@@ -67,7 +68,7 @@ const ProfileDetails = () => {
                     fontWeight="bold"
                     color="text.secondary"
                   >
-                    Room No. - {data?.roomNumber}
+                    Room No. ({data?.roomNumber})
                   </Typography>
                 </Card>
 
@@ -84,28 +85,65 @@ const ProfileDetails = () => {
                     fontWeight="bold"
                     color="text.secondary"
                   >
-                    Seat No. - {data?.seatNumber}
+                    Seat No.  ({data?.seatNumber})
                   </Typography>
                 </Card>
               </Box>
 
-              <Box height='100%' >
-                <Card   sx={{
+           
+              <Box display="flex" justifyContent="space-between" gap={1} my={1}>
+                <Card
+                  sx={{
                     display: "flex",
                     width: "100%",
-                    height: '35%',
                     justifyContent: "center",
                     alignItems: "center",
-                  }}>
+                    padding: "10px",
+                  }}
+                >
+                        <Link href={`${data?.user?.role}/profile`}>
+                  <Typography
+                     fontSize='1.4vw'
+                     fontWeight="bold"
+                     color="text.secondary"
+                     >
+                Edit <ArrowOutwardIcon/>
+                  </Typography>
+                    </Link>
+                </Card>
+
+                <Card
+                  sx={{
+                    display: "flex",
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Link href={`dashboard/${data?.user?.role}/profile`}>
+                  <Typography
+                     fontSize='1.4vw'
+                     fontWeight="bold"
+                     color="text.secondary"
+                     >
+                Profile <ArrowOutwardIcon/>
+                  </Typography>
+                    </Link>
+
                 </Card>
               </Box>
 
+                    <Card
+                sx={{ display: "flex",  flexDirection: 'column', padding: "15px" }}
+                
+              >
+                  <Typography sx={{textDecoration: 'underline', cursor: 'pointer'}} fontSize='1.2vw' fontWeight="bold" color="text.secondary" textAlign='center'>
+                  See The Hall Policies
+                </Typography>
+              </Card>
+
             </Box>
           </CardContent>
-          {/* <CardActions>
-            <Button size="small">Share</Button>
-            <Button size="small">Learn More</Button>
-        //   </CardActions> */}
         </Card>
       </Box>
     </Stack>

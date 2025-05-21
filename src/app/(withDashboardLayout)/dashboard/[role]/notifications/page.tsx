@@ -11,7 +11,6 @@ const NotificationsPage = () => {
   });
   const { data, isLoading, refetch } = useGetAllNoticesQuery(filters);
 
-  console.log('isAlllllllllllll', filters)
 
   if (isLoading) {
     return "Loading...";

@@ -14,7 +14,7 @@ const noticeApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.notice],
     }),
     getAllNotices: build.query({
-      query: (arg: Record<string, unknown>) => ({
+      query: (arg?: Record<string, unknown>) => ({
         url: "/notice/getAllNotices",
         method: "GET",
         params: arg

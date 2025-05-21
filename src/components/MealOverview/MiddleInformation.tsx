@@ -8,6 +8,7 @@ import {
   Box,
   FormControlLabel,
   Grid2,
+  IconButton,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -18,6 +19,8 @@ import { MealToggleSwitch } from "./MealToggleSwitch";
 import { useUpdateMealStatusMutation } from "@/redux/api/mealApi";
 import { toast } from "sonner";
 import MealLoader from "./MealLoader";
+import DiningModal from "@/app/(withCommonLayout)/dining/components/DiningModal";
+import NotificationSlider from "./NotificationSlider";
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -355,32 +358,27 @@ export default function MiddleInformation({
               p={2}
               mb={1}
             >
-              <FormControlLabel
-                control={
-                  <MealToggleSwitch
-                    checked={checked}
-                    onChange={handleToggleChange}
-                  />
-                }
-                label=""
-              />
               <Typography fontWeight="bold">
-                Toggle to Meal {checked ? "OFF" : "ON"}
+               Add Meal Schedule
               </Typography>
             </Box>
 
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              bgcolor="white"
-              borderRadius={2}
-              p={2}
-            >
-              <Typography fontWeight="bold">
-                This is a Heading Notice Board
-              </Typography>
-            </Box>
+   <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        bgcolor="white"
+        borderRadius={2}
+        px={1}
+        height='52%'
+      >
+        {/* <Typography fontSize='1vw' fontWeight="bold" padding={3}>
+          This is Notification Slider, which is running
+        </Typography> */}
+
+        <NotificationSlider />
+      </Box>
+      
           </Grid2>
         </Grid2>
 
