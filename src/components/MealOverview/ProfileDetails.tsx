@@ -15,7 +15,7 @@ import Link from "next/link";
 
 const ProfileDetails = () => {
   const { data, isLoading } = useGetSingleUserQuery({});
-  console.log("dataaaaaaaaaaaaaaaa", data);
+
 
   return (
     <Stack

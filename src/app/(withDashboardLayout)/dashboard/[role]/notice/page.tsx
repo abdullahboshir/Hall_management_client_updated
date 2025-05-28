@@ -42,6 +42,7 @@ import {
   NoticeType,
 } from "@/constant/common.constant";
 import NoticeModal from "./components/NoticeModal";
+import Spinner from "@/components/Shared/Spinner/Spinner";
 
 // Table Row Component
 const Row = ({
@@ -385,7 +386,7 @@ const AdminNotice = () => {
   console.log("checkkkkkkkkkkk", data);
 
   if (isLoading) {
-    return "Loading...";
+    return   <Spinner/>
   }
 
   // const [deleteManager] = useDeleteManagerMutation();

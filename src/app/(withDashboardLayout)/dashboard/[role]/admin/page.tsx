@@ -20,6 +20,7 @@ import {
   useGetAllAdminQuery,
 } from "@/redux/api/adminApi";
 import AdminModal from "./components/AdminModal";
+import Spinner from "@/components/Shared/Spinner/Spinner";
 
 const AdminPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -132,7 +133,7 @@ const AdminPage = () => {
           <DataGrid rows={data} columns={columns} rowHeight={60} hideFooter />
         </Box>
       ) : (
-        <h1>Loading.......</h1>
+          <Spinner/>
       )}
     </Box>
   );

@@ -5,42 +5,49 @@ import HmFileUploader from "@/components/Form/HmFileUploader";
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import HmSelectField from "@/components/Form/HmSelectField";
+import Progress from "@/components/Shared/Spinner/Progress";
+import Spinner from "@/components/Shared/Spinner/Spinner";
 import { BloodGroup, Gender } from "@/constant/common.constant";
-import {
-  useGetSingleManagerQuery,
-  useUpdateManagerMutation,
-} from "@/redux/api/managerApi";
+import { useGetSingleAdminQuery, useUpdateAdminMutation } from "@/redux/api/adminApi";
 import { Box, Button, Grid2, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
 
 const AdminUpdatePage = () => {
   const params = useParams();
-  const managerId = params?.managerId as string;
+  const adminId = params?.adminId as string;
 
-  const { data, isLoading } = useGetSingleManagerQuery(managerId);
-  const [updateManager] = useUpdateManagerMutation();
+  const { data, isLoading } = useGetSingleAdminQuery(adminId);
+  const [updateAdmin, {isLoading: isAdminLoading}] = useUpdateAdminMutation();
+
+
+
+  const router = useRouter();
 
   const handleFormSubmit = async (values: FieldValues) => {
-    values.id = managerId;
+    values.id = adminId;
 
-    const managerData = { id: values.id, body: values };
+    const adminData = { id: values.id, body: values };
 
-    console.log("got valuessssssssss", data, params);
     try {
-      const res = await updateManager(managerData);
-      console.log("update managerrrrrrrrrr", res);
-      //   if (res?.id) {
-      //     toast.success("Manager created Successfully!!");
-      //     setOpen(false);
-      //   }
+      const res = await updateAdmin(adminData);
+        if (res?.data?.id) {
+          toast.success("Admin updated Successfully!!");
+          router.back()
+        }
     } catch (error: any) {
       console.log(error?.message);
     }
   };
 
-  const managerDefaultValues = {
+
+    
+
+
+  const adminDefaultValues = {
     name: {
       firstName: data?.name?.firstName || "",
       middleName: data?.name?.middleName || "",
@@ -57,10 +64,12 @@ const AdminUpdatePage = () => {
     file: null,
   };
 
+
+
   return (
     <Box>
       <Typography variant="h5" mb={2}>
-        Update Manager
+        Update Admin
       </Typography>
 
       {isLoading ? (
@@ -68,7 +77,7 @@ const AdminUpdatePage = () => {
       ) : (
         <HmForm
           onSubmit={handleFormSubmit}
-          defaultValues={data && managerDefaultValues}
+          defaultValues={data && adminDefaultValues}
         >
           <Grid2 container spacing={2}>
             <Grid2 size={4}>
@@ -137,7 +146,14 @@ const AdminUpdatePage = () => {
                 type="submit"
                 sx={{ padding: "10px 50px", marginTop: "10px" }}
               >
-                Submit
+                   {isLoading ||
+                               isAdminLoading ? (
+                                 <Typography display="flex" gap={1} color="white">
+                                   Processing <Progress />
+                                 </Typography>
+                               ) : (
+                                 "Update"
+                               )}
               </Button>
             </Grid2>
           </Grid2>

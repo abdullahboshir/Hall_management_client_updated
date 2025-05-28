@@ -20,6 +20,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { toast } from "sonner";
 import Link from "next/link";
 import ManagerModal from "./components/ManagerModal";
+import Spinner from "@/components/Shared/Spinner/Spinner";
 
 const ManagerPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -132,7 +133,7 @@ const ManagerPage = () => {
           <DataGrid rows={data} columns={columns} rowHeight={60} hideFooter />
         </Box>
       ) : (
-        <h1>Loading.......</h1>
+         <Spinner/>
       )}
     </Box>
   );

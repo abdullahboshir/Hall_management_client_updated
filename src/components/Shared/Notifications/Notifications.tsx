@@ -29,6 +29,7 @@ import { Chip, Stack } from "@mui/material";
 import { useUpdateNoticePinnedMutation } from "@/redux/api/noticeApi";
 import { toast } from "sonner";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
+import Spinner from "../Spinner/Spinner";
 
 export default function Notifications({ data, isLoading, refetch, setFilters}: any) {
   const [expandedId, setExpandedId] = React.useState<string | null>(null);
@@ -61,7 +62,7 @@ export default function Notifications({ data, isLoading, refetch, setFilters}: a
   return (
     <React.Fragment>
       {isLoading ? (
-        "Loading..."
+        <Spinner/>
       ) : (
         <Paper square sx={{ height: "88vh", overflow: "auto", p: -3, m: -3 }}>
           <Box

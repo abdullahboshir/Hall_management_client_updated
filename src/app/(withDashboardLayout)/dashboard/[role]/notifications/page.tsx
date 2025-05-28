@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Notifications from "@/components/Shared/Notifications/Notifications";
+import Spinner from "@/components/Shared/Spinner/Spinner";
 import { useGetAllNoticesQuery } from "@/redux/api/noticeApi";
 import { useState } from "react";
 
@@ -13,7 +14,7 @@ const NotificationsPage = () => {
 
 
   if (isLoading) {
-    return "Loading...";
+    return   <Spinner/>
   }
 
   return (

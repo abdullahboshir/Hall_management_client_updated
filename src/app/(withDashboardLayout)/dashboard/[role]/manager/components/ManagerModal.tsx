@@ -19,6 +19,7 @@ import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import { managerValidaionSchema } from "../../../validation/manager.validation";
 import Spinner from "@/components/Shared/Spinner/Spinner";
+import Progress from "@/components/Shared/Spinner/Progress";
 
 type TProps = {
   open: boolean;
@@ -38,8 +39,7 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
 
   const handleFormSubmit = async (values: FieldValues) => {
     if (hallIsLoading || diningIsLoading || userIsLoading) {
-      toast.error("Please wait, data is still loading...");
-      return;
+        <Spinner/>
     }
 
     if (!hallData || !diningData || !userData?.id) {
@@ -202,7 +202,7 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
                 userIsLoading ||
                 isCreateManagerLoading ? (
                   <Typography display="flex" gap={1} color="white">
-                    Processing <Spinner />
+                    Processing <Progress />
                   </Typography>
                 ) : (
                   "Create"

@@ -15,6 +15,7 @@ import { Avatar, Badge, Stack } from "@mui/material";
 import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
 import AccountMenu from "../AccountMenu/AccountMenu";
 import Link from "next/link";
+import Spinner from "@/components/Shared/Spinner/Spinner";
 
 const drawerWidth = 240;
 
@@ -45,7 +46,7 @@ export default function DashboardDrawer({
   console.log('single user goted', data)
 
   if (isLoading) {
-    return <Typography>Loading...</Typography>;
+    return <Spinner />;
   }
 
   return (
@@ -165,7 +166,7 @@ export default function DashboardDrawer({
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          p: 2,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >

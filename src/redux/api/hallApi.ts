@@ -11,7 +11,15 @@ const hallApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.hall],
     }),
+          updateHall: build.mutation({
+            query: (data) => ({
+              url: `/hall/${data?.id}`,
+              method: "PATCH",
+              data: data.body,
+            }),
+            invalidatesTags: [tagTypes.hall],
+          }),
   }),
 });
 
-export const { useGetAllHallsQuery } = hallApi;
+export const { useGetAllHallsQuery, useUpdateHallMutation } = hallApi;

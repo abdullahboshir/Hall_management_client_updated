@@ -5,6 +5,7 @@ import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import HmSelectField from "@/components/Form/HmSelectField";
 import HmModal from "@/components/Shared/HmModal/HmModal";
+import Progress from "@/components/Shared/Spinner/Progress";
 import Spinner from "@/components/Shared/Spinner/Spinner";
 import { BloodGroup, Designation, Gender } from "@/constant/common.constant";
 import { useCreateAdminMutation } from "@/redux/api/adminApi";
@@ -37,8 +38,7 @@ const AdminModal = ({ open, setOpen }: TProps) => {
 
   const handleFormSubmit = async (values: FieldValues) => {
     if (hallIsLoading || diningIsLoading || userIsLoading) {
-      toast.error("Please wait, data is still loading...");
-      return;
+        <Spinner/>
     }
 
     if (!hallData || !diningData || !userData?.id) {
@@ -211,7 +211,7 @@ const AdminModal = ({ open, setOpen }: TProps) => {
                 userIsLoading ||
                 isCreateAdminLoading ? (
                   <Typography display="flex" gap={1} color="white">
-                    Processing <Spinner />
+                    Processing <Progress />
                   </Typography>
                 ) : (
                   "Create"

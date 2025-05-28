@@ -6,6 +6,7 @@ import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import {
   Box,
+  Button,
   FormControlLabel,
   Grid2,
   IconButton,
@@ -14,13 +15,14 @@ import {
 } from "@mui/material";
 import { currentDateBD } from "@/utils/currentDateBD";
 import { calculateTotalmaintenanceFee } from "../Dining/calculateTotalmaintenanceFee";
-import Progress from "./Progress";
 import { MealToggleSwitch } from "./MealToggleSwitch";
 import { useUpdateMealStatusMutation } from "@/redux/api/mealApi";
 import { toast } from "sonner";
 import MealLoader from "./MealLoader";
 import DiningModal from "@/app/(withCommonLayout)/dining/components/DiningModal";
 import NotificationSlider from "./NotificationSlider";
+import MealScheduleDatePicker from "./MealScheduleDatePicker";
+import HmModal from "../Shared/HmModal/HmModal";
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -50,6 +52,8 @@ export default function MiddleInformation({
 }: any) {
   const [checked, setChecked] = React.useState(false);
   const [mealError, setMealError] = React.useState("");
+  const [isScheduleMealOn, setIsScheduleMealOn] = React.useState("");
+  const [open, setOpen] = React.useState(false);
   const { currentMonth, currentYear } = currentDateBD();
   const baseMealObj = mealData?.mealInfo?.[currentYear]?.[currentMonth];
   const { monthsWithZeroMaintenance, monthsArray } =
@@ -120,7 +124,9 @@ export default function MiddleInformation({
     }
   };
 
-  const isMealOn = mealData?.mealStatus === "off" ? false : true;
+
+  const isMealOn = mealData?.mealStatus === "off" || !mealData?.mealStatus ? false : true;
+  console.log(isMealOn, mealData)
 
   return (
     <Stack bgcolor="primary.light" borderRadius={3} width="40%">
@@ -195,7 +201,7 @@ export default function MiddleInformation({
                   }
                 >
                   {baseMealObj?.maintenanceFee <
-                  hallData?.hallPolicies?.maintenanceCharge
+                  hallData?.hallPolicies?.maintenanceCharge || !baseMealObj?.maintenanceFee
                     ? "DUE"
                     : "PAID"}
                 </Typography>
@@ -349,18 +355,28 @@ export default function MiddleInformation({
           </Grid2>
 
           <Grid2 size={8}>
+  <HmModal open={open} setOpen={setOpen} title={`Meal ${isScheduleMealOn.toUpperCase()} Schedule`}>
+    <MealScheduleDatePicker isScheduleMealOn={isScheduleMealOn}/>
+    </HmModal>
             <Box
+          onClick={() => setOpen(!open)}
+           sx={{cursor: 'pointer'}}
               display="flex"
-              justifyContent="center"
+              justifyContent="space-between"
               alignItems="center"
               bgcolor="white"
               borderRadius={2}
-              p={2}
+              p={1}
               mb={1}
             >
+            <Button size="small" onClick={() => setIsScheduleMealOn('on')}>ON</Button>
+
               <Typography fontWeight="bold">
-               Add Meal Schedule
+              Meal Schedule 
               </Typography>
+                    {/* <Box width='100%' display='flex' justifyContent='space-between'> 
+           </Box> */}
+             <Button onClick={() => setIsScheduleMealOn('off')} size="small" sx={{bgcolor: '#fe5c00'}}>OFF</Button>
             </Box>
 
    <Box

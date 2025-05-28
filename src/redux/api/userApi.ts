@@ -8,7 +8,7 @@ const userApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: "/user/create-student",
         method: "POST",
-        // contentType: "multipart/form-data",
+        contentType: "multipart/form-data",
         data,
       }),
       invalidatesTags: [tagTypes.student],

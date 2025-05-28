@@ -5,6 +5,7 @@ import { Box, Typography } from '@mui/material';
 import { keyframes } from '@emotion/react';
 import { useGetAllNoticesQuery } from '@/redux/api/noticeApi';
 import Image from 'next/image';
+import Spinner from '../Shared/Spinner/Spinner';
 
 // Keyframe to move the strip leftward slowly
 const slideLeft = keyframes`
@@ -24,7 +25,7 @@ export default function NotificationSlider() {
 
   const { data, isLoading } = useGetAllNoticesQuery(filters);
 
-  if (isLoading) return 'Loading...';
+  if (isLoading) return <Spinner />;
 
   const notices = data?.slice(0, 3) || [];
 

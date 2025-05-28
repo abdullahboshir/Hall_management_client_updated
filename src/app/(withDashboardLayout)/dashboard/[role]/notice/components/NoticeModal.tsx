@@ -27,6 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateNoticeMutation } from "@/redux/api/noticeApi";
 import HmInputTypeChip from "@/components/Form/HmInputTypeChip";
 import HmInputSelectChip from "@/components/Form/HmInputSelectChip";
+import Spinner from "@/components/Shared/Spinner/Spinner";
 
 type TProps = {
   open: boolean;
@@ -49,8 +50,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
 
   const handleFormSubmit = async (values: FieldValues) => {
     if (hallIsLoading || diningIsLoading || userIsLoading) {
-      toast.error("Please wait, data is still loading...");
-      return;
+        <Spinner/>
     }
 
     if (!hallData || !diningData || !userData?.id) {
@@ -237,7 +237,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
                 }}
               >
                 {hallIsLoading || diningIsLoading || userIsLoading
-                  ? "Loading..."
+                  ?   <Spinner/>
                   : "Create"}
               </Button>
             </Grid2>

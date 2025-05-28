@@ -30,6 +30,7 @@ import { useGetAllHallsQuery } from "@/redux/api/hallApi";
 import { toast } from "sonner";
 import DiningModal from "@/app/(withCommonLayout)/dining/components/DiningModal";
 import { calculateTotalmaintenanceFee } from "./calculateTotalmaintenanceFee";
+import Spinner from "../Shared/Spinner/Spinner";
 
 const { currentYear, currentMonth } = currentDateBD();
 
@@ -602,7 +603,7 @@ const DiningTable = () => {
           <DataGrid rows={meals ?? []} columns={columns} rowHeight={70} />
         </Box>
       ) : (
-        <h1>Loading.......</h1>
+       <Spinner/>
       )}
     </Box>
   );

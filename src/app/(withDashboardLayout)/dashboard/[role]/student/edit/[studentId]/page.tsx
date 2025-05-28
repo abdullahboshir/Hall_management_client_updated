@@ -5,6 +5,7 @@ import HmDatePicker from "@/components/Form/HmDatePicker";
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import HmSelectField from "@/components/Form/HmSelectField";
+import Spinner from "@/components/Shared/Spinner/Spinner";
 import {
   BloodGroup,
   Department,
@@ -47,13 +48,12 @@ const StudentUpdatePage = () => {
   const [updateStudent] = useUpdateStudentMutation();
 
   if (userIsLoading) {
-    <Typography>Loading...</Typography>;
+     <Spinner/>
   }
 
   const handleStudentUpdate = async (values: FieldValues) => {
     if (userIsLoading) {
-      toast.error("Please wait, data is still loading...");
-      return;
+        <Spinner/>
     }
 
     if (!userData?.id) {
@@ -83,7 +83,7 @@ const StudentUpdatePage = () => {
       </Typography>
 
       {userIsLoading ? (
-        "Loading..."
+       <Spinner/>
       ) : (
         <HmForm
           onSubmit={handleStudentUpdate}

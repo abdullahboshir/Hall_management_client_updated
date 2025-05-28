@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import { studentRegisterValidationSchema } from "../../../validation/student.validation";
 import { studentRegisterDefaultValues } from "../../../constants/student.constant";
 import Spinner from "@/components/Shared/Spinner/Spinner";
+import Progress from "@/components/Shared/Spinner/Progress";
 
 type TProps = {
   open: boolean;
@@ -60,15 +61,13 @@ const StudentModal = ({ open, setOpen }: TProps) => {
 
   const handleStudentRegistration = async (values: FieldValues) => {
     if (hallIsLoading || diningIsLoading || userIsLoading) {
-      toast.error("Please wait, data is still loading...");
-      return;
+      return <Spinner />;
     }
     
     if (!hallData || !diningData || !userData?.id) {
-      toast.error("Failed to fetch required data. Please try again.");
-      return;
+     return toast.error("Failed to fetch required data. Please try again.");;
     }
-    console.log('iddddddddddddddddd', userData?._id)
+
     
     values.studentData.hall = hallData?._id;
     values.studentData.dining = diningData?._id;
@@ -369,7 +368,7 @@ const StudentModal = ({ open, setOpen }: TProps) => {
               userIsLoading ||
               isCreateStudentLoading ? (
                 <Typography display="flex" gap={1} color="white">
-                  Processing <Spinner />
+                  Processing <Progress />
                 </Typography>
               ) : (
                 "Create"

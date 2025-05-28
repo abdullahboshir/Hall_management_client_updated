@@ -11,7 +11,15 @@ const diningApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.dining],
     }),
+      updateDining: build.mutation({
+        query: (data) => ({
+          url: `/dining/${data?.id}`,
+          method: "PATCH",
+          data: data.body,
+        }),
+        invalidatesTags: [tagTypes.dining],
+      }),
   }),
 });
 
-export const { useGetAllDiningsQuery } = diningApi;
+export const { useGetAllDiningsQuery, useUpdateDiningMutation } = diningApi;

@@ -32,6 +32,7 @@ import { useUpdateUserStatusMutation } from "@/redux/api/userApi";
 import { toast } from "sonner";
 import { IStudent } from "../../types/student.interface";
 import { useDebounced } from "@/redux/hooks";
+import Spinner from "@/components/Shared/Spinner/Spinner";
 
 // Table Row Component
 const Row = ({ row, refetch }: { row: IStudent; refetch: any }) => {
@@ -454,7 +455,7 @@ const StudentPage = () => {
 
           <TableBody>
             {isLoading
-              ? "Loading..."
+              ?  <Spinner/>
               : data?.map((row: any) => (
                   <Row key={row.id} row={row} refetch={refetch} />
                 ))}

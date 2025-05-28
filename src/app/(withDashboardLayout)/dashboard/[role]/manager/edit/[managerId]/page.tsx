@@ -5,6 +5,7 @@ import HmFileUploader from "@/components/Form/HmFileUploader";
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import HmSelectField from "@/components/Form/HmSelectField";
+import Progress from "@/components/Shared/Spinner/Progress";
 import { BloodGroup, Gender } from "@/constant/common.constant";
 import {
   useGetSingleManagerQuery,
@@ -12,29 +13,30 @@ import {
 } from "@/redux/api/managerApi";
 import { Box, Button, Grid2, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
 
 const ManagerUpdatePage = () => {
   const params = useParams();
   const managerId = params?.managerId as string;
 
   const { data, isLoading } = useGetSingleManagerQuery(managerId);
-  const [updateManager] = useUpdateManagerMutation();
+  const [updateManager, {isLoading: isManagerLoading}] = useUpdateManagerMutation();
+
+  const router = useRouter();
 
   const handleFormSubmit = async (values: FieldValues) => {
     values.id = managerId;
 
     const managerData = { id: values.id, body: values };
 
-    console.log("got valuessssssssss", data, params);
     try {
       const res = await updateManager(managerData);
-      console.log("update managerrrrrrrrrr", res);
-      //   if (res?.id) {
-      //     toast.success("Manager created Successfully!!");
-      //     setOpen(false);
-      //   }
+        if (res?.data?.id) {
+          toast.success("Manager Updated Successfully!!");
+          router.back();
+        }
     } catch (error: any) {
       console.log(error?.message);
     }
@@ -137,7 +139,14 @@ const ManagerUpdatePage = () => {
                 type="submit"
                 sx={{ padding: "10px 50px", marginTop: "10px" }}
               >
-                Submit
+                          {isLoading ||
+                                              isManagerLoading ? (
+                                                <Typography display="flex" gap={1} color="white">
+                                                  Processing <Progress />
+                                                </Typography>
+                                              ) : (
+                                                "Update"
+                                              )}
               </Button>
             </Grid2>
           </Grid2>
