@@ -12,6 +12,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FieldValues } from "react-hook-form";
@@ -108,7 +109,7 @@ const LoginPage = () => {
                   <HmInput name="password" label="Password" type="password" />
                 </Grid2>
               </Grid2>
-              <Typography textAlign="end">Forgot Password?</Typography>
+              <Typography textAlign="end" sx={{ textDecoration: 'underline'}}><Link href='forget-password'>Forgot Password?</Link></Typography>
               <Button
                 type="submit"
                 sx={{ margin: "10px 0px" }}

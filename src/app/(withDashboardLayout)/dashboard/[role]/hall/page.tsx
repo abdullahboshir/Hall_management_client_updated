@@ -36,12 +36,13 @@ const HallPage = () => {
   // const [value, setValue] = useState<DateRange<Date>>([null, null]);
   const [updateHall] = useUpdateHallMutation();
 
+
   useEffect(() => {
     if (data) {
       setHallData({
         hallName: data.hallName || "The hall of Nazrul Hall",
-        phoneNumber: data.phoneNumber || "+888 123 456 7890",
-        email: data.email || "superAdmin@gmail.com",
+        // phoneNumber: data.phoneNumber || "+888 123 456 7890",
+        // email: data.email || "superAdmin@gmail.com",
         numberOfSeats: data.numberOfSeats || "500",
         applicationStartDate:
           data.applicationStartDate || new Date().toISOString().split("T")[0],
@@ -49,7 +50,7 @@ const HallPage = () => {
           data.applicationEndDate || new Date().toISOString().split("T")[0],
         hallPolicies: {
           admissionCharge: data.hallPolicies?.admissionCharge || 100,
-          maintenanceFee: data.hallPolicies?.maintenanceFee || 200,
+          maintenanceCharge: data.hallPolicies?.maintenanceCharge || 200,
           festivalCharge: data.hallPolicies?.festivalCharge || 1000,
         },
         hallSummary: {
@@ -110,21 +111,21 @@ const HallPage = () => {
               py={2}
               px={3}
             >
-              <Typography variant="h6" fontWeight={600}>
+              <Typography fontSize='1.2vw' fontWeight={600}>
                 Phone Number:{" "}
-                <Box component="span" color="text.secondary">
-                  {hallData?.phoneNumber || "N/A"}
+                <Box component="span" color="text.secondary" fontSize='1.5vw'>
+                  {data.phoneNumber || "N/A"}
                 </Box>
               </Typography>
 
-              <Typography variant="h6" fontWeight={600}>
+              <Typography fontSize='1.2vw' fontWeight={600}>
                 Email:{" "}
-                <Box component="span" color="text.secondary">
-                  {hallData?.email || "N/A"}
+                <Box component="span" color="text.secondary" fontSize='1.5vw'>
+                  {data?.email || "N/A"}
                 </Box>
               </Typography>
 
-              <Link href={`/dashboard/admin/admin/edit/$`}>
+              <Link href={`/dashboard/superAdmin/hall/edit/${data?._id}`}>
                 <IconButton>
                   <EditIcon />
                 </IconButton>
@@ -163,7 +164,7 @@ const HallPage = () => {
                     },
                     {
                       label: "Maintenance Fee",
-                      value: hallData?.hallPolicies?.maintenanceFee,
+                      value: hallData?.hallPolicies?.maintenanceCharge,
                       icon: "🪑",
                       color: "#388e3c",
                     },
@@ -269,7 +270,7 @@ const HallPage = () => {
 
                 <Grid2 size={12}>
                   <HmInput
-                    name="hallPolicies.maintenanceFee"
+                    name="hallPolicies.maintenanceCharge"
                     label="Maintenance Fee"
                     type="number"
                     size="small"

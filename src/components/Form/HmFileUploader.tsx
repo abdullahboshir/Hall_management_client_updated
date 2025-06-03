@@ -20,15 +20,24 @@ export default function HmFileUploader({ name, label, sx }: TProps) {
       name={name}
       control={control}
       render={({ field: { onChange, value, ...field } }) => {
-        React.useEffect(() => {
-          if (value && typeof value !== "string") {
-            const url = URL.createObjectURL(value);
-            setPreview(url);
-            return () => URL.revokeObjectURL(url);
-          } else {
-            setPreview(null);
-          }
-        }, [value]);
+React.useEffect(() => {
+  
+  if (typeof window === "undefined") return;
+
+  if (value instanceof File || value instanceof Blob) {
+    const url = URL.createObjectURL(value);
+    setPreview(url);
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  } else if (typeof value === "string") {
+    setPreview(value); // Possibly a URL from server
+  } else {
+    setPreview(null); // Unknown or unsupported type
+  }
+}, [value]);
+
 
         return (
           <Box>

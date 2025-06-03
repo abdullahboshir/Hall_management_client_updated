@@ -160,6 +160,7 @@ export default function Notifications({ data, isLoading, refetch, setFilters}: a
                               variant="caption"
                               marginTop={0.5}
                               fontSize={10}
+                              component='div'
                             >
                               {item?.createdBy?.role !== "superAdmin" ? (
                                 item?.createdBy?.role?.toUpperCase()
@@ -170,6 +171,7 @@ export default function Notifications({ data, isLoading, refetch, setFilters}: a
                                   variant="caption"
                                   lineHeight="15px"
                                   fontSize={10}
+                                  component='span'
                                 >
                                   <span>
                                     {item?.createdBy?.role
@@ -244,7 +246,7 @@ export default function Notifications({ data, isLoading, refetch, setFilters}: a
                                     {expandedId === item.id
                                       ? item.description
                                       : item.description.slice(0, 200) + "... "}
-                                    <span
+                                    <Typography component='span'
                                       onClick={() =>
                                         setExpandedId(
                                           expandedId === item.id
@@ -260,7 +262,7 @@ export default function Notifications({ data, isLoading, refetch, setFilters}: a
                                       {expandedId === item.id
                                         ? " Read less"
                                         : "Read more"}
-                                    </span>
+                                    </Typography>
                                   </Typography>
                                 ) : (
                                   <Typography

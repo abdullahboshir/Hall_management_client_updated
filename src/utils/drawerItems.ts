@@ -38,13 +38,8 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
       icon: AccountCircleIcon,
     },
     {
-      title: "Reset Password",
-      path: `${role}/support `,
-      icon: LockResetIcon,
-    },
-    {
-      title: "Forgot Password",
-      path: `${role}/support `,
+      title: "Change Password",
+      path: `${role}/change-password`,
       icon: PasswordIcon,
     },
     {

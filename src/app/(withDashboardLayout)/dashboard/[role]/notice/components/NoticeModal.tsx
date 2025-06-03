@@ -106,7 +106,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
           resolver={zodResolver(noticeValidationSchema)}
         >
           <Grid2 container spacing={2}>
-            {/* Audience */}
+      
             <Grid2 size={3}>
               <HmSelectField
                 items={NoticeAudience}
@@ -116,7 +116,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
               />
             </Grid2>
 
-            {/* Status */}
+     
             <Grid2 size={3}>
               <HmSelectField
                 items={NoticeStatus}
@@ -126,7 +126,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
               />
             </Grid2>
 
-            {/* Priority */}
+         
             <Grid2 size={3}>
               <HmSelectField
                 items={NoticePriority}
@@ -136,7 +136,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
               />
             </Grid2>
 
-            {/* Type */}
+        
             <Grid2 size={3}>
               <HmSelectField
                 items={NoticeType}
@@ -146,7 +146,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
               />
             </Grid2>
 
-            {/* Type */}
+           
             <Grid2 size={3}>
               <HmSelectField
                 items={ScheduleType}
@@ -156,7 +156,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
               />
             </Grid2>
 
-            {/* Schedule Date */}
+       
             <Grid2 size={3}>
               <HmDatePicker
                 name="noticeData.scheduleAt"
@@ -164,7 +164,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
               />
             </Grid2>
 
-            {/* Expiry Date */}
+       
             <Grid2 size={3}>
               <HmDatePicker name="noticeData.expiryDate" label="Expiry Date" />
             </Grid2>
@@ -175,7 +175,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
                 name="noticeData.attachments"
                 label="Attachments"
                 sx={{ width: "100%" }}
-                //   multiple
+                  // multiple
               />
             </Grid2>
 

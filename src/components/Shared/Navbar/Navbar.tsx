@@ -19,7 +19,6 @@ import HomeIcon from "@mui/icons-material/Home";
 
 const Navbar = () => {
   const { data, isLoading } = useGetSingleUserQuery({});
-  console.log("suerrrrrrrrrrrrrrrrr", data);
   return (
     <Container>
       <Stack

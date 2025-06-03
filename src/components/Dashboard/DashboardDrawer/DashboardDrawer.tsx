@@ -43,7 +43,7 @@ export default function DashboardDrawer({
   };
 
   const { data, isLoading } = useGetSingleUserQuery({});
-  console.log('single user goted', data)
+  
 
   if (isLoading) {
     return <Spinner />;
