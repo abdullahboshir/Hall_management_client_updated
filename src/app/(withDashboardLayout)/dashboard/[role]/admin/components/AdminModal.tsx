@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import HmDatePicker from "@/components/Form/HmDatePicker";
 import HmFileUploader from "@/components/Form/HmFileUploader";
 import HmForm from "@/components/Form/HmForm";
@@ -60,7 +60,7 @@ const AdminModal = ({ open, setOpen }: TProps) => {
         toast.success("Admin has been created Successfully!!");
         setOpen(false);
       }
-    } catch (err: any) {
+    } catch (err:any) {
       console.log("got an error", err?.message || err?.data, err);
 
       const isDuplicate = err?.data?.includes("E11000");

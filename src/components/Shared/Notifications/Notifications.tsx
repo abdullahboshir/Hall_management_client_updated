@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -31,17 +31,19 @@ import { toast } from "sonner";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import Spinner from "../Spinner/Spinner";
 
-export default function Notifications({ data, isLoading, refetch, setFilters}: any) {
+export default function Notifications({ data, isLoading, refetch, setFilters}:any) {
   const [expandedId, setExpandedId] = React.useState<string | null>(null);
   const { currentDay } = currentDateBD();
 
   const [updateNoticePinned] = useUpdateNoticePinnedMutation();
 
-    const { data: userData, isLoading: userIsLoading } = useGetSingleUserQuery(
+    const { data: userData, isLoading: isUserLoading } = useGetSingleUserQuery(
       {}
     ); 
 
-  const handlePin = async (id: string, payload: boolean) => {
+  if (isUserLoading) {return <Spinner />;}
+
+  const handlePin = async (id: string) => {
 
     try {
       const res = await updateNoticePinned(id).unwrap();
@@ -81,9 +83,6 @@ export default function Notifications({ data, isLoading, refetch, setFilters}: a
               Notifications
             </Typography>
             
-            {/* <Typography onClick={() => setMyNotifications(false)} variant="h5" sx={{ p: 2 }}>
-              My Notifications
-            </Typography> */}
 
             <Toolbar>
               <Box sx={{ flexGrow: 1 }} />
@@ -105,7 +104,7 @@ export default function Notifications({ data, isLoading, refetch, setFilters}: a
 
           <List sx={{ mb: 2 }}>
             {Object.entries(
-              data.reduce((acc: any, item: any) => {
+              data.reduce((acc:any, item:any) => {
                 const date = convertToBDDate(item?.createdAt);
                 const day = date.getDate();
                 const month = date.getMonth() + 1;
@@ -127,13 +126,13 @@ export default function Notifications({ data, isLoading, refetch, setFilters}: a
 
                 return acc;
               }, {})
-            ).map(([dateLabel, items]: any) => (
+            ).map(([dateLabel, items]:any) => (
               <React.Fragment key={dateLabel}>
                 <ListSubheader sx={{ bgcolor: "background.paper" }}>
                   {dateLabel}
                 </ListSubheader>
 
-                {items.map((item: any) => {
+                {items.map((item:any) => {
                   return (
                     <ListItemButton key={item?.id}>
                       <Stack
@@ -201,7 +200,7 @@ export default function Notifications({ data, isLoading, refetch, setFilters}: a
                                   {!item?.isPinned?.includes(userData._id) ? (
                                     <PushPinOutlinedIcon
                                       sx={{ transform: "rotate(45deg)" }}
-                                      onClick={() => handlePin(item?._id, true)}
+                                      onClick={() => handlePin(item?._id)}
                                     />
                                   ) : (
                                     // <FavoriteBorderIcon />
@@ -209,7 +208,7 @@ export default function Notifications({ data, isLoading, refetch, setFilters}: a
                                     <PushPinIcon
                                       sx={{ transform: "rotate(45deg)" }}
                                       onClick={() =>
-                                        handlePin(item?._id, false)
+                                        handlePin(item?._id)
                                       }
                                     />
                                   )}

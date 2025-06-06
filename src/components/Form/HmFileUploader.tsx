@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Controller, useFormContext } from "react-hook-form";
 import { Input, Box } from "@mui/material";
+import Image from "next/image";
 
 type TProps = {
   name: string;
@@ -43,7 +44,7 @@ React.useEffect(() => {
           <Box>
             <label style={{ cursor: "pointer" }}>
               {preview ? (
-                <img
+                <Image
                   src={preview}
                   alt="Uploaded preview"
                   style={{

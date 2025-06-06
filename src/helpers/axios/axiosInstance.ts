@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+ 
 import { authKey } from "@/constant/authKey";
 import { getNewAccessToken } from "@/services/auth.services";
 import { TGenericErrorResponse, TResponseSuccess } from "@/types";
@@ -28,7 +28,7 @@ instance.interceptors.request.use(
 
 // Add a response interceptor
 instance.interceptors.response.use(
-  // @ts-ignore
+    // @ts-expect-error no need to worry about this error
   function (response) {
     const responseObject: TResponseSuccess = {
       data: response?.data?.data,

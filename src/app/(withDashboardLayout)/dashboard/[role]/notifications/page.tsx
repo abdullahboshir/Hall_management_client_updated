@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 import Notifications from "@/components/Shared/Notifications/Notifications";
 import Spinner from "@/components/Shared/Spinner/Spinner";

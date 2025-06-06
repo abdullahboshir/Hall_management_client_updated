@@ -48,11 +48,17 @@ const LoginPage = () => {
       if (res?.data?.accessToken) {
         toast.success(res?.message);
         storeUserInfo(res?.data?.accessToken);
-        router.push("/dashboard");
+
+        if (res?.data?.user?.role === "student") {
+          router.push("/");
+        } else if (res?.data?.user?.role === "manager") {
+          router.push("/user/dining");
+        } else {
+          router.push(`/dashboard`);
+        }
       } else {
         setError(res?.message);
       }
-      console.log("resssssssssssss", res);
     } catch (error) {
       console.log("errorrrrrrrr", error);
     }
@@ -109,7 +115,9 @@ const LoginPage = () => {
                   <HmInput name="password" label="Password" type="password" />
                 </Grid2>
               </Grid2>
-              <Typography textAlign="end" sx={{ textDecoration: 'underline'}}><Link href='forget-password'>Forgot Password?</Link></Typography>
+              <Typography textAlign="end" sx={{ textDecoration: "underline" }}>
+                <Link href="forget-password">Forgot Password?</Link>
+              </Typography>
               <Button
                 type="submit"
                 sx={{ margin: "10px 0px" }}

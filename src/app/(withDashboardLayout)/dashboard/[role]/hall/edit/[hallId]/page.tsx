@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
@@ -33,7 +33,7 @@ const HallUpdatePage = () => {
         toast.success("Manager Updated Successfully!!");
         router.back();
       }
-    } catch (error: any) {
+    } catch (error:any) {
       console.log(error?.message);
     }
   };

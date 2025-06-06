@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 import React, { useState } from "react";
 import {
@@ -35,7 +35,7 @@ import { useDebounced } from "@/redux/hooks";
 import Spinner from "@/components/Shared/Spinner/Spinner";
 
 // Table Row Component
-const Row = ({ row, refetch }: { row: IStudent; refetch: any }) => {
+const Row = ({ row, refetch }: { row: IStudent; refetch:any }) => {
   const [open, setOpen] = useState(false);
 
   const [updateUserStatus] = useUpdateUserStatusMutation();
@@ -456,7 +456,7 @@ const StudentPage = () => {
           <TableBody>
             {isLoading
               ?  <Spinner/>
-              : data?.map((row: any) => (
+              : data?.map((row:any) => (
                   <Row key={row.id} row={row} refetch={refetch} />
                 ))}
           </TableBody>

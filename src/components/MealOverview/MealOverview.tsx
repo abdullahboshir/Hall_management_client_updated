@@ -14,9 +14,12 @@ const MealOverview = () => {
         const { data: hallData, isLoading: isHallLoading } = useGetAllHallsQuery({});
         const { data: diningData, isLoading: isDiningLoading } = useGetAllDiningsQuery({});
     
-      const { data: userData, isLoading: userIsLoading } = useGetSingleUserQuery({});
+      const { data: userData, isLoading: userIsLoading, refetch: userRefetch } = useGetSingleUserQuery({});
       const { data: mealData, isLoading: isMealLoading, refetch } =useGetSingleMealQuery<any>(userData?.meals);
 
+      React.useEffect(() => {userRefetch(), refetch()}, [userData, refetch, userRefetch]);
+
+      
       if(userIsLoading || isMealLoading || isHallLoading || isDiningLoading){
         return <Spinner/>
       }

@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { formattedDate } from "@/utils/currentDateBD";
 import { Box, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import React from "react";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 
-const Profile = ({ data }: any) => {
+const Profile = ({ data }:any) => {
   console.log('datataaaaaaaaaaaaaaaaa', data)
   return (
     <Box>

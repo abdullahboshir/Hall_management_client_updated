@@ -14,8 +14,6 @@ import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import { useForgetPasswordMutation } from "@/redux/api/userApi";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { removeUser } from "@/services/auth.services";
 import CheckIcon from "@mui/icons-material/Check";
 
 // ✅ Zod schema that validates either a valid email or Bangladeshi phone number
@@ -35,9 +33,8 @@ const forgetPasswordSchema = z.object({
 
 const ForgetPasswordPage = () => {
   const [forgetPassword, { isSuccess }] = useForgetPasswordMutation();
-  const router = useRouter();
 
-  const handleOnSubmit = async (data: any) => {
+  const handleOnSubmit = async (data:any) => {
     const isPhone = /^01[3-9]\d{8}$/.test(data.emailOrPhoneNumber);
     const body = isPhone
       ? { phoneNumber: data.emailOrPhoneNumber }

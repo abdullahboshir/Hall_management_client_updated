@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 import {
   Avatar,
@@ -64,7 +64,7 @@ const DiningTable = () => {
     // if (
       //   data?.meals &&
       //   data?.meals?.some(
-        //     (meal: any) =>
+        //     (meal:any) =>
         //       meal.mealStatus === "on" &&
         //       meal.mealInfo[currentYear][currentMonth]?.currentDeposit >=
         //         mealCharge + (mealCharge / 100) * reservedSafetyDeposit
@@ -137,7 +137,7 @@ const DiningTable = () => {
           >
             {row?.student?.user?.status === "active" ? (
               <Switch
-                onClick={(e: any) => {
+                onClick={(e:any) => {
                   if (isAvaiableCurrentDeposite) {
                     handleMealStatus(row._id, e.target.checked);
                   }

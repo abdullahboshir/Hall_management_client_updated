@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import HmDatePicker from "@/components/Form/HmDatePicker";
 import HmFileUploader from "@/components/Form/HmFileUploader";
 import HmForm from "@/components/Form/HmForm";
@@ -32,7 +32,7 @@ import Spinner from "@/components/Shared/Spinner/Spinner";
 type TProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  refetch: any;
+  refetch:any;
 };
 
 const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
@@ -72,7 +72,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
         refetch();
         setOpen(false);
       }
-    } catch (error: any) {
+    } catch (error:any) {
       console.log("got errorrrrrrrrrrrrrrrrrr", error);
     }
   };

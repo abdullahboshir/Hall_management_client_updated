@@ -42,7 +42,9 @@ export default function DashboardDrawer({
     }
   };
 
-  const { data, isLoading } = useGetSingleUserQuery({});
+  const { data, isLoading, refetch } = useGetSingleUserQuery({});
+
+  React.useEffect(() => {refetch()}, [data, refetch]);
   
 
   if (isLoading) {

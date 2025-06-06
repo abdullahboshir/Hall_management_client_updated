@@ -10,10 +10,8 @@ import {
   Snackbar,
   Alert,
   Stack,
-  Avatar,
   Grid2,
 } from "@mui/material";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import DinnerDiningIcon from "@mui/icons-material/DinnerDining";
 import HmForm from "@/components/Form/HmForm";
@@ -55,7 +53,7 @@ const DiningPage = () => {
     }
   }, [data]);
 
-  const handleSave = async (values: any) => {
+  const handleSave = async (values:any) => {
     const diningDataToUpdate = {
       id: data?._id,
       body: values,
@@ -65,13 +63,14 @@ const DiningPage = () => {
       if (res?._id) {
         toast.success("Dining settings saved successfully!");
         setOpenSnackbar(true);
-        setDiningData((prev: any) => ({
+        setDiningData((prev:any) => ({
           ...prev,
           diningPolicies: { ...values },
         }));
       }
     } catch (error) {
-      // handle error
+      console.error("Error saving dining settings:", error);
+      toast.error("Failed to save dining settings. Please try again.");
     }
   };
 

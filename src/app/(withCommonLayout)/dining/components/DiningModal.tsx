@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import HmModal from "@/components/Shared/HmModal/HmModal";
@@ -37,7 +37,7 @@ const DiningModal = ({ mealId, open, setOpen }: TProps) => {
         toast.success("Deposit has been added successfully!");
         setOpen(false);
       }
-    } catch (error: any) {
+    } catch (error:any) {
       console.log(error?.message);
     }
   };
@@ -55,7 +55,7 @@ const DiningModal = ({ mealId, open, setOpen }: TProps) => {
         toast.success("Maintenance Fee has been added successfully!");
         setOpen(false);
       }
-    } catch (error: any) {
+    } catch (error:any) {
       console.log(error?.message);
     }
   };

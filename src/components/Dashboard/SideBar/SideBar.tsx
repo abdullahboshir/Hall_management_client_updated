@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { Box, List, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";

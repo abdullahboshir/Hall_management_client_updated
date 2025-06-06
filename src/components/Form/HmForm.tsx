@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import React from "react";
 import {
   FieldValues,
@@ -8,7 +8,7 @@ import {
 } from "react-hook-form";
 
 type TFormConfig = {
-  resolver?: any;
+  resolver?:any;
   defaultValues?: Record<string, any>;
 };
 

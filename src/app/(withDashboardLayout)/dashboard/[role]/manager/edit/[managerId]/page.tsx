@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 import HmDatePicker from "@/components/Form/HmDatePicker";
 import HmFileUploader from "@/components/Form/HmFileUploader";
@@ -37,7 +37,7 @@ const ManagerUpdatePage = () => {
           toast.success("Manager Updated Successfully!!");
           router.back();
         }
-    } catch (error: any) {
+    } catch (error:any) {
       console.log(error?.message);
     }
   };

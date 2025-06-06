@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import AddCardIcon from "@mui/icons-material/AddCard";
 import { MealToggleSwitch } from "./MealToggleSwitch";
 import { MealDay } from "./MealDay";
-import NotificationSlider from "./NotificationSlider";
 import DiningModal from "@/app/(withCommonLayout)/dining/components/DiningModal";
 
 const today = dayjs();
@@ -23,9 +22,7 @@ export default function MealDateCalendar({
   diningData,
   isMealLoading,
   userIsLoading,
-  isHallLoading,
-  isDiningLoading,
-}: any) {
+}:any) {
   const [mealDays, setMealDays] = React.useState<number[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
       const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
@@ -63,7 +60,7 @@ export default function MealDateCalendar({
     setTimeout(() => setIsLoading(false), 300);
   };
 
-  // Set initial toggle state from server
+ 
   React.useEffect(() => {
     if (mealData?.mealStatus) {
       setChecked(mealData.mealStatus === "on");
@@ -97,7 +94,7 @@ export default function MealDateCalendar({
         if (res?.id) {
           toast.success(`Meal is ${res?.mealStatus}`);
         }
-      } catch (error: any) {
+      } catch (error:any) {
         console.error("Error updating meal status:", error);
         toast.error(error?.data);
       }
@@ -146,9 +143,6 @@ export default function MealDateCalendar({
               pointerEvents: "none",
             }}
           >
-            {/* <Typography color={baseMealObj?.maintenanceFee > 0? 'green' : 'red'} fontSize={15}fontWeight="bold">
-                   {baseMealObj?.maintenanceFee > 0? 'PAID' : 'DUE'}
-                  </Typography> */}
           </Box>
 
           {/* Calendar */}

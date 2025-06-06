@@ -41,7 +41,6 @@ const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-type TResetPassword = z.infer<typeof resetPasswordSchema>;
 
 const ResetPasswordPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -61,7 +60,7 @@ const ResetPasswordPage = () => {
 
   const handleToggleVisibility = () => setShowPassword((prev) => !prev);
 
-  const handleOnSubmit = async (data: any) => {
+  const handleOnSubmit = async (data:any) => {
     const body = {
       id,
       newPassword: data.password,
@@ -110,7 +109,7 @@ const ResetPasswordPage = () => {
             type={showPassword ? "text" : "password"}
             required
             sx={{ mb: 2 }}
-            // @ts-ignorea
+           // @ts-expect-error no need to worry about this error
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -127,7 +126,7 @@ const ResetPasswordPage = () => {
             label="Confirm Password"
             type={showPassword ? "text" : "password"}
             required
-            // @ts-ignore
+              // @ts-expect-error no need to worry about this error
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import HmDatePicker from "@/components/Form/HmDatePicker";
 import HmFileUploader from "@/components/Form/HmFileUploader";
 import HmForm from "@/components/Form/HmForm";
@@ -74,17 +74,17 @@ const StudentModal = ({ open, setOpen }: TProps) => {
     values.studentData.createdBy = userData?._id;
     
     const data = modifyPayload(values);
-    console.log('modeeeeeeeeeeeeee', values)
+ 
     try {
       const res = await createStudent(data).unwrap();
-      console.log("got dataaaaaaaaaaaa", res);
+
 
       if (res[0]?.id) {
         toast.success("Student has been created successfully");
         setOpen(false);
         setError("");
       }
-    } catch (err: any) {
+    } catch (err:any) {
       const isDuplicate = err?.data?.includes("E11000");
       if (
         (isDuplicate && err?.data?.includes("index: email_1")) ||
@@ -104,7 +104,7 @@ const StudentModal = ({ open, setOpen }: TProps) => {
     >
       <HmForm
         onSubmit={handleStudentRegistration}
-        // resolver={zodResolver(studentRegisterValidationSchema)}
+        resolver={zodResolver(studentRegisterValidationSchema)}
         defaultValues={studentRegisterDefaultValues()}
       >
         <Grid2 container spacing={3} paddingX={12} paddingY={2}>

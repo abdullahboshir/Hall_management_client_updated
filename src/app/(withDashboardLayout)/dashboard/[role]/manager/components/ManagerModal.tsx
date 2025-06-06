@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import HmDatePicker from "@/components/Form/HmDatePicker";
 import HmFileUploader from "@/components/Form/HmFileUploader";
 import HmForm from "@/components/Form/HmForm";
@@ -61,7 +61,7 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
         setOpen(false);
         setError("");
       }
-    } catch (err: any) {
+    } catch (err:any) {
       const isDuplicate = err?.data?.includes("E11000");
       if (
         (isDuplicate && err?.data?.includes("index: email_1")) ||

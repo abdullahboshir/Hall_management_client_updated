@@ -1,21 +1,23 @@
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import {
   Box,
-  Button,
   Card,
-  CardActions,
   CardContent,
   CardMedia,
   Stack,
   Typography,
 } from "@mui/material";
 import React from "react";
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import Link from "next/link";
+import Spinner from "../Shared/Spinner/Spinner";
 
 const ProfileDetails = () => {
   const { data, isLoading } = useGetSingleUserQuery({});
 
+  if (isLoading || !data) {
+    return <Spinner />;
+  }
 
   return (
     <Stack
@@ -40,18 +42,24 @@ const ProfileDetails = () => {
           <CardContent sx={{ padding: 0, marginTop: 1 }}>
             <Box height="50vh">
               <Card
-                sx={{ display: "flex",  flexDirection: 'column', padding: "15px" }}
-                
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  padding: "15px",
+                }}
               >
-                <Typography fontSize='1.5vw' fontWeight="bold" lineHeight={1}>
+                <Typography fontSize="1.5vw" fontWeight="bold" lineHeight={1}>
                   {data?.fullName.toUpperCase()}
                 </Typography>
 
-                  <Typography fontSize='1.2vw' fontWeight="bold" color="text.secondary">
+                <Typography
+                  fontSize="1.2vw"
+                  fontWeight="bold"
+                  color="text.secondary"
+                >
                   {data?.email}
                 </Typography>
               </Card>
-
 
               <Box display="flex" justifyContent="space-between" gap={1} my={1}>
                 <Card
@@ -64,7 +72,7 @@ const ProfileDetails = () => {
                   }}
                 >
                   <Typography
-                    fontSize='1.4vw'
+                    fontSize="1.4vw"
                     fontWeight="bold"
                     color="text.secondary"
                   >
@@ -81,16 +89,15 @@ const ProfileDetails = () => {
                   }}
                 >
                   <Typography
-                     fontSize='1.4vw'
+                    fontSize="1.4vw"
                     fontWeight="bold"
                     color="text.secondary"
                   >
-                    Seat No.  ({data?.seatNumber})
+                    Seat No. ({data?.seatNumber})
                   </Typography>
                 </Card>
               </Box>
 
-           
               <Box display="flex" justifyContent="space-between" gap={1} my={1}>
                 <Card
                   sx={{
@@ -101,15 +108,15 @@ const ProfileDetails = () => {
                     padding: "10px",
                   }}
                 >
-                        <Link href={`${data?.user?.role}/profile`}>
-                  <Typography
-                     fontSize='1.4vw'
-                     fontWeight="bold"
-                     color="text.secondary"
-                     >
-                Edit <ArrowOutwardIcon/>
-                  </Typography>
-                    </Link>
+                  <Link href={`${data?.user?.role}/profile`}>
+                    <Typography
+                      fontSize="1.4vw"
+                      fontWeight="bold"
+                      color="text.secondary"
+                    >
+                      Edit <ArrowOutwardIcon />
+                    </Typography>
+                  </Link>
                 </Card>
 
                 <Card
@@ -121,27 +128,34 @@ const ProfileDetails = () => {
                   }}
                 >
                   <Link href={`dashboard/${data?.user?.role}/profile`}>
-                  <Typography
-                     fontSize='1.4vw'
-                     fontWeight="bold"
-                     color="text.secondary"
-                     >
-                Profile <ArrowOutwardIcon/>
-                  </Typography>
-                    </Link>
-
+                    <Typography
+                      fontSize="1.4vw"
+                      fontWeight="bold"
+                      color="text.secondary"
+                    >
+                      Profile <ArrowOutwardIcon />
+                    </Typography>
+                  </Link>
                 </Card>
               </Box>
 
-                    <Card
-                sx={{ display: "flex",  flexDirection: 'column', padding: "15px" }}
-                
+              <Card
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  padding: "15px",
+                }}
               >
-                  <Typography sx={{textDecoration: 'underline', cursor: 'pointer'}} fontSize='1.2vw' fontWeight="bold" color="text.secondary" textAlign='center'>
+                <Typography
+                  sx={{ textDecoration: "underline", cursor: "pointer" }}
+                  fontSize="1.2vw"
+                  fontWeight="bold"
+                  color="text.secondary"
+                  textAlign="center"
+                >
                   See The Hall Policies
                 </Typography>
               </Card>
-
             </Box>
           </CardContent>
         </Card>

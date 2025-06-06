@@ -18,7 +18,8 @@ import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread";
 import HomeIcon from "@mui/icons-material/Home";
 
 const Navbar = () => {
-  const { data, isLoading } = useGetSingleUserQuery({});
+  const { data, isLoading, refetch } = useGetSingleUserQuery({});
+   React.useEffect(() => {refetch()}, [data, refetch]);
   return (
     <Container>
       <Stack

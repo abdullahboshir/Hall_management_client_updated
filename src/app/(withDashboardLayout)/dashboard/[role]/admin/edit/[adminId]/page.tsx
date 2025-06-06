@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 import HmDatePicker from "@/components/Form/HmDatePicker";
 import HmFileUploader from "@/components/Form/HmFileUploader";
@@ -6,7 +6,6 @@ import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import HmSelectField from "@/components/Form/HmSelectField";
 import Progress from "@/components/Shared/Spinner/Progress";
-import Spinner from "@/components/Shared/Spinner/Spinner";
 import { BloodGroup, Gender } from "@/constant/common.constant";
 import { useGetSingleAdminQuery, useUpdateAdminMutation } from "@/redux/api/adminApi";
 import { Box, Button, Grid2, Typography } from "@mui/material";
@@ -38,7 +37,7 @@ const AdminUpdatePage = () => {
           toast.success("Admin updated Successfully!!");
           router.back()
         }
-    } catch (error: any) {
+    } catch (error:any) {
       console.log(error?.message);
     }
   };

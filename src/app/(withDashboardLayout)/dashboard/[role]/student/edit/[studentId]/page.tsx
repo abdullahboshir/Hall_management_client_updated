@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 import { studentRegisterDefaultValues } from "@/app/(withDashboardLayout)/dashboard/constants/student.constant";
 import HmDatePicker from "@/components/Form/HmDatePicker";
@@ -71,7 +71,7 @@ const StudentUpdatePage = () => {
         toast.success("Student updated has been Successfully!!");
         router.back();
       }
-    } catch (error: any) {
+    } catch (error:any) {
       console.log(error?.message);
     }
   };

@@ -43,6 +43,7 @@ const userApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: [tagTypes.user],
+
     }),
     updateUserStatus: build.mutation({
       query: ({ body, id }) => ({

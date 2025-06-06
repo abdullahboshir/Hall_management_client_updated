@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import dayjs from "dayjs";
 import { z } from "zod";
 
@@ -13,7 +13,7 @@ export const noticeValidationSchema = z.object({
     scheduleAt: z
       .union([
         z.string().min(1, "Schedule date is required"),
-        z.custom((val: any) => dayjs(val).isValid(), {
+        z.custom((val:any) => dayjs(val).isValid(), {
           message: "Invalid schedule date",
         }),
       ])
@@ -21,7 +21,7 @@ export const noticeValidationSchema = z.object({
     expiryDate: z
       .union([
         z.string().optional(),
-        z.custom((val: any) => dayjs(val).isValid(), {
+        z.custom((val:any) => dayjs(val).isValid(), {
           message: "Invalid expiry date",
         }),
       ])

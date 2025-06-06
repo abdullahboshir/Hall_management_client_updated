@@ -1,40 +1,25 @@
 "use client";
 
 import * as React from "react";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import {
   Box,
   Button,
-  FormControlLabel,
   Grid2,
-  IconButton,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { currentDateBD } from "@/utils/currentDateBD";
 import { calculateTotalmaintenanceFee } from "../Dining/calculateTotalmaintenanceFee";
-import { MealToggleSwitch } from "./MealToggleSwitch";
-import { useUpdateMealStatusMutation } from "@/redux/api/mealApi";
-import { toast } from "sonner";
 import MealLoader from "./MealLoader";
-import DiningModal from "@/app/(withCommonLayout)/dining/components/DiningModal";
 import NotificationSlider from "./NotificationSlider";
 import MealScheduleDatePicker from "./MealScheduleDatePicker";
 import HmModal from "../Shared/HmModal/HmModal";
 
-const Item = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
 
-const ScrollBox = styled(Box)(({ theme }) => ({
+const ScrollBox = styled(Box)(() => ({
   overflowY: "scroll",
   height: "31.2vh",
-  // scrollbarWidth: "thin", // Firefox
-  // scrollbarColor: "#888 transparent", // Firefox
   "&::-webkit-scrollbar": {
     width: "5px",
   },
@@ -56,10 +41,9 @@ export default function MiddleInformation({
   const [open, setOpen] = React.useState(false);
   const { currentMonth, currentYear } = currentDateBD();
   const baseMealObj = mealData?.mealInfo?.[currentYear]?.[currentMonth];
-  const { monthsWithZeroMaintenance, monthsArray } =
+  const { monthsWithZeroMaintenance } =
     calculateTotalmaintenanceFee(mealData);
 
-  const [updateMealStatus] = useUpdateMealStatusMutation();
 
   React.useEffect(() => {
     const intervalId = setInterval(() => {
@@ -67,10 +51,9 @@ export default function MiddleInformation({
     }, 2000);
 
     return () => clearInterval(intervalId);
-    // }
   }, [mealData, refetch, diningData]);
 
-  // Set initial toggle state from server
+
   React.useEffect(() => {
     if (mealData?.mealStatus) {
       setChecked(mealData.mealStatus === "on");
@@ -89,40 +72,6 @@ export default function MiddleInformation({
     diningData?.diningPolicies?.minimumDeposit,
   ]);
 
-  const handleToggleChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const newChecked = event.target.checked;
-
-    if (
-      baseMealObj?.currentDeposit <
-        diningData?.diningPolicies?.minimumDeposit ||
-      baseMealObj?.maintenanceFee < hallData?.hallPolicies?.maintenanceCharge
-    ) {
-      return toast.message("You need to deposite");
-    }
-
-    setChecked(newChecked);
-
-    if (mealData?._id) {
-      const updatedMealStatus = newChecked ? "on" : "off";
-      const mealPayload = {
-        id: mealData._id,
-        body: { mealStatus: updatedMealStatus },
-      };
-
-      try {
-        const res = await updateMealStatus(mealPayload).unwrap();
-        if (res?.id) {
-          toast.success(`Meal is ${res?.mealStatus}`);
-        }
-      } catch (error: any) {
-        console.error("Error updating meal status:", error);
-        setMealError(error?.data);
-        toast.error(error?.data);
-      }
-    }
-  };
 
 
   const isMealOn = mealData?.mealStatus === "off" || !mealData?.mealStatus ? false : true;

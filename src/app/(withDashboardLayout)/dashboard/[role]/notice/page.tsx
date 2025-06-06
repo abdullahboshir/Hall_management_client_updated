@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 
 // import {
@@ -50,9 +50,9 @@ const Row = ({
   refetch,
   isExpendDefault,
 }: {
-  row: any;
-  refetch: any;
-  isExpendDefault: any;
+  row:any;
+  refetch:any;
+  isExpendDefault:any;
 }) => {
   const [open, setOpen] = useState(isExpendDefault);
   const [updateUserStatus] = useUpdateUserStatusMutation();
@@ -463,7 +463,7 @@ const AdminNotice = () => {
           <TableBody>
             {isLoading
               ? "Loading..."
-              : data?.map((row: any, index: number) => (
+              : data?.map((row:any, index: number) => (
                   <Row
                     key={row.id}
                     row={row}

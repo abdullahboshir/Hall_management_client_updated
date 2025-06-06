@@ -63,7 +63,7 @@ const HallPage = () => {
     }
   }, [data]);
 
-  const handleSave = async (values: any) => {
+  const handleSave = async (values:any) => {
     console.log("values", values);
     const hallDataToUpdate = {
       id: data?._id,
@@ -73,13 +73,14 @@ const HallPage = () => {
       const res = await updateHall(hallDataToUpdate).unwrap();
       if (res?._id) {
         toast.success("hall settings saved successfully!");
-        setHallData((prev: any) => ({
+        setHallData((prev:any) => ({
           ...prev,
           hallPolicies: { ...values },
         }));
       }
     } catch (error) {
-      // handle error
+          console.error("Error saving dining settings:", error);
+           toast.error("Failed to save dining settings. Please try again.");
     }
   };
 

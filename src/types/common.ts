@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { USER_ROLE } from "@/constant/role";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { SvgIconTypeMap } from "@mui/material";
@@ -22,7 +22,7 @@ export interface DrawerItem {
 }
 
 export type TResponseSuccess = {
-  data: any;
+  data:any;
   meta?: TMeta;
 };
 

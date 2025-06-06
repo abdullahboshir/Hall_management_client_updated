@@ -11,19 +11,20 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
-import { useChangePasswordMutation } from "@/redux/api/userApi";
+import { useChangePasswordMutation, } from "@/redux/api/userApi";
 import { toast } from "sonner";
-import { useRouter, useSearchParams } from 'next/navigation'
-import { removeUser, storeUserInfo } from "@/services/auth.services";
+import { useRouter } from 'next/navigation'
+import { removeUser } from "@/services/auth.services";
 
 
 
 const changePasswordSchema = z
   .object({
-      password: z
+    oldPassword: z.string(),
+      newPassword: z
     .string()
     .min(6, "Password must be at least 6 characters long") // Minimum length of 6 characters
     .max(20, "Password must be at most 20 characters long") // Maximum length of 20 characters
@@ -36,39 +37,24 @@ const changePasswordSchema = z
     ), 
     confirmPassword: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
 
-type TChangePassword = z.infer<typeof changePasswordSchema>;
+
 
 const ChangePasswordPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [changePassword] = useChangePasswordMutation();
   const router = useRouter();
 
-  const searchParams = useSearchParams();
-
-  const id = searchParams.get('id');
-  const token = searchParams.get('token');
-
-  useEffect(() => {
-    if(!token) return;
-      storeUserInfo(token);
-  }, [token])
-
-
   const handleToggleVisibility = () => setShowPassword((prev) => !prev);
 
-  const handleOnSubmit = async (data: any) => {
-    const body = {
-      id,
-      newPassword: data.password,
-    };
+  const handleOnSubmit = async (data:any) => {
 
     try {
-      const res = await changePassword({ body }).unwrap();
+      const res = await changePassword({ body: data }).unwrap();
       if (res?.id) {
         toast.success("Your Password Change has been Successfully!!");
             removeUser()
@@ -105,12 +91,29 @@ const ChangePasswordPage = () => {
           defaultValues={{ password: "", confirmPassword: "" }}
         >
           <HmInput
-            name="password"
+            name="oldPassword"
+            label="Old Password"
+            type={showPassword ? "text" : "password"}
+            required
+              // @ts-expect-error no need to worry about this errora
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleToggleVisibility} edge="end">
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            />
+
+          <HmInput
+            name="newPassword"
             label="New Password"
             type={showPassword ? "text" : "password"}
             required
-            sx={{ mb: 2 }}
-            // @ts-ignorea
+            sx={{ my: 2 }}
+              // @ts-expect-error no need to worry about this error
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -122,12 +125,13 @@ const ChangePasswordPage = () => {
             }}
           />
 
-          <HmInput
+
+                   <HmInput
             name="confirmPassword"
             label="Confirm Password"
             type={showPassword ? "text" : "password"}
             required
-            // @ts-ignore
+              // @ts-expect-error no need to worry about this error
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
