@@ -1,6 +1,7 @@
 "use client";
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
+import Progress from "@/components/Shared/Spinner/Progress";
 import { UserLogin } from "@/services/actions/userLogin";
 import { storeUserInfo } from "@/services/auth.services";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,8 +42,10 @@ const loginValidationSchema = z.object({
 const LoginPage = () => {
   const router = useRouter();
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (data: FieldValues) => {
+    setIsLoading(true);
     try {
     
       const res = await UserLogin(data);
@@ -63,6 +66,10 @@ const LoginPage = () => {
     } catch (error) {
       console.log("errorrrrrrrr", error);
     }
+
+
+    setIsLoading(false);
+
   };
 
   return (
@@ -124,7 +131,14 @@ const LoginPage = () => {
                 sx={{ margin: "10px 0px" }}
                 fullWidth={true}
               >
-                Login
+                          {
+                                isLoading ? (
+                                  <Typography display="flex" gap={1} color="white">
+                                    Processing <Progress />
+                                  </Typography>
+                                ) : (
+                                  "Login"
+                                )}
               </Button>
             </HmForm>
           </Box>

@@ -32,9 +32,8 @@ const MealOverview = () => {
     return <Spinner />;
   }
 
-  // console.log("mealDataaaaaaaaaaaaaaa", studentData, mealData);
   return (
-    <Box display="flex" gap={2} p={2} justifyContent="space-between">
+    <Box display="flex" gap='1vw' p='1vw' justifyContent="space-between">
       <ProfileDetails data={studentData? studentData : userData} />
 
       <MiddleInformation

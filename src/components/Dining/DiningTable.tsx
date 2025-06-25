@@ -541,7 +541,7 @@ const DiningTable = () => {
           row.student.dining.diningPolicies.specialMealCharge;
 
         return (
-          <Link href={`/mealOverview/${row?._id}`}>
+          <Link href={`/mealOverview/${row?._id}`} >
           <Box
             display="flex"
             alignItems="center"
@@ -596,9 +596,10 @@ const DiningTable = () => {
       renderCell: ({ row }) => (
         <Box>
           <IconButton
-            onClick={() => {
+            onClick={(e) => {
               setIsModalOpen(true);
               setMealSelectedId(row?._id);
+               e.stopPropagation();
             }}
             aria-label="delete"
           >

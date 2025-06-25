@@ -51,7 +51,7 @@ const Navbar = () => {
         >
           <Typography
             component={Link}
-            href="/"
+            href={data?.user?.role === "student" ? "/" : "/dining"}
             bgcolor="primary.light"
             borderRadius={1}
           >
@@ -88,7 +88,7 @@ const Navbar = () => {
 
           <Typography
             component={Link}
-            href="/dashboard"
+            href={!['moderator', 'student', 'manager'].includes(data?.user?.role || data?.role)? `/dashboard/${data?.user?.role || data?.role}/student` : data?.user?.role === 'manager'? `/dashboard/${data?.user?.role}/dining` : `/dashboard/${data?.user?.role || data?.role}/notifications`}
             bgcolor="primary.light"
             borderRadius={1}
           >

@@ -78,7 +78,7 @@ export default function MiddleInformation({
 
   return (
     <Stack bgcolor="primary.light" borderRadius={3} width="40%">
-      <Grid2 container spacing={1} p={2}>
+      <Grid2 container spacing={1} p='1vw'>
         {/* Current Deposit */}
         <Grid2
           size={6}
@@ -222,7 +222,7 @@ export default function MiddleInformation({
               </Box>
 
               <Box
-                p={2}
+                p={2.9}
                 bgcolor="white"
                 borderRadius={1}
                 display="flex"
@@ -265,7 +265,7 @@ export default function MiddleInformation({
               </Box>
 
               <Box
-                p={2}
+                p={2.9}
                 bgcolor="white"
                 borderRadius={1}
                 display="flex"

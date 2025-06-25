@@ -18,7 +18,7 @@ const ProfileDetails = ({data}: any) => {
     <Stack
       width="30%"
       // height="100vh"
-      p={2}
+      p='1vw'
       bgcolor="primary.light"
       borderRadius={2}
       spacing={2}

@@ -104,7 +104,7 @@ setMealDays(activeDays);
   };
 
   return (
-    <Stack bgcolor="primary.light" p={2} borderRadius={2}>
+    <Stack bgcolor="primary.light" p='1vw' borderRadius={2}>
       <Box
         display="flex"
         justifyContent="center"
