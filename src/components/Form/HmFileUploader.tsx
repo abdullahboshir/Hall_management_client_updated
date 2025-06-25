@@ -14,37 +14,57 @@ type TProps = {
 
 export default function HmFileUploader({ name, label, sx }: TProps) {
   const { control } = useFormContext();
+  const [value, setValue] = React.useState({});
   const [preview, setPreview] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (value instanceof File || value instanceof Blob) {
+      const url = URL.createObjectURL(value);
+      setPreview(url);
+
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    } else if (typeof value === "string") {
+      setPreview(value); 
+    } else {
+      setPreview(null); 
+    }
+  }, [value]);
 
   return (
     <Controller
       name={name}
       control={control}
       render={({ field: { onChange, value, ...field } }) => {
-React.useEffect(() => {
-  
-  if (typeof window === "undefined") return;
+        setValue(value);
 
-  if (value instanceof File || value instanceof Blob) {
-    const url = URL.createObjectURL(value);
-    setPreview(url);
+        if (typeof window === "undefined") {
+          return (
+            <Box>
+              <Button
+                component="span"
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+                sx={{ ...sx }}
+                disabled
+              >
+                {label || "Upload"}
+              </Button>
+            </Box>
+          );
+        }
 
-    return () => {
-      URL.revokeObjectURL(url);
-    };
-  } else if (typeof value === "string") {
-    setPreview(value); // Possibly a URL from server
-  } else {
-    setPreview(null); // Unknown or unsupported type
-  }
-}, [value]);
-
+        setValue(value);
 
         return (
           <Box>
             <label style={{ cursor: "pointer" }}>
               {preview ? (
                 <Image
+                  width={200}
+                  height={200}
                   src={preview}
                   alt="Uploaded preview"
                   style={{
@@ -60,7 +80,7 @@ React.useEffect(() => {
                   variant="contained"
                   tabIndex={-1}
                   startIcon={<CloudUploadIcon />}
-                  sx={{...sx }}
+                  sx={{ ...sx }}
                 >
                   {label || "Upload"}
                 </Button>
@@ -70,7 +90,7 @@ React.useEffect(() => {
                 {...field}
                 type="file"
                 onChange={(e) => {
-                  const file = (e?.target as HTMLInputElement)?.files?.[0]; 
+                  const file = (e?.target as HTMLInputElement)?.files?.[0];
                   if (file) {
                     onChange(file);
                   }
@@ -89,7 +109,7 @@ React.useEffect(() => {
 
 
 
-// import * as React from "react"; 
+// import * as React from "react";
 // import { SxProps } from "@mui/material/styles";
 // import Button from "@mui/material/Button";
 // import CloudUploadIcon from "@mui/icons-material/CloudUpload";

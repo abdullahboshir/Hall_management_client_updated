@@ -40,10 +40,11 @@ const loginValidationSchema = z.object({
 
 const LoginPage = () => {
   const router = useRouter();
-  const [error, setError] = useState();
+  const [error, setError] = useState('');
 
   const handleLogin = async (data: FieldValues) => {
     try {
+    
       const res = await UserLogin(data);
       if (res?.data?.accessToken) {
         toast.success(res?.message);
@@ -52,7 +53,7 @@ const LoginPage = () => {
         if (res?.data?.user?.role === "student") {
           router.push("/");
         } else if (res?.data?.user?.role === "manager") {
-          router.push("/user/dining");
+          router.push("/dining");
         } else {
           router.push(`/dashboard`);
         }
@@ -92,7 +93,7 @@ const LoginPage = () => {
           {error && (
             <Box>
               <Typography variant="h6" color="red" marginBottom={3}>
-                {error}
+                {typeof error === "string" && error.includes('ENOTFOUND ') ? "Network Error" : error}
               </Typography>
             </Box>
           )}

@@ -77,14 +77,14 @@ const Navbar = () => {
             </Badge>
           </Typography>
 
-          <Typography
+          {!['moderator', 'student'].includes(data?.user?.role) && <Typography
             component={Link}
             href="/dining"
             bgcolor="primary.light"
             borderRadius={1}
           >
             <DiningIcon color="action" sx={{ fontSize: "45px" }} />
-          </Typography>
+          </Typography>}
 
           <Typography
             component={Link}
@@ -109,7 +109,7 @@ const Navbar = () => {
               >
                 <Avatar
                   alt={data?.name}
-                  src="https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg?t=st=1743484372~exp=1743487972~hmac=ebdaf94f961548443eaa01a75f238bce13e1a2d00767008fd702ec88337e6f7a&w=1380"
+                   src={data?.profileImg}
                   variant="rounded"
                 />
                 <Stack ml={1} display="flex" flexDirection="column" pr={1}>

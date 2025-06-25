@@ -1,4 +1,3 @@
-import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import {
   Box,
   Card,
@@ -9,33 +8,29 @@ import {
 } from "@mui/material";
 import React from "react";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
+import EditIcon from "@mui/icons-material/Edit";
 import Link from "next/link";
-import Spinner from "../Shared/Spinner/Spinner";
 
-const ProfileDetails = () => {
-  const { data, isLoading } = useGetSingleUserQuery({});
 
-  if (isLoading || !data) {
-    return <Spinner />;
-  }
+const ProfileDetails = ({data}: any) => {
 
   return (
     <Stack
       width="30%"
-      height="100vh"
+      // height="100vh"
       p={2}
       bgcolor="primary.light"
-      borderRadius="3%"
+      borderRadius={2}
       spacing={2}
     >
       <Box>
         <Card sx={{ maxWidth: 345, backgroundColor: "primary.light" }}>
-          <Box padding="12px" bgcolor="white">
+          <Box padding="12px" bgcolor="white" borderRadius={1}>
             <CardMedia
               component="img"
               alt="green iguana"
               height="140"
-              image="https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg?t=st=1743484372~exp=1743487972~hmac=ebdaf94f961548443eaa01a75f238bce13e1a2d00767008fd702ec88337e6f7a&w=1380"
+              image={data?.profileImg}
             />
           </Box>
 
@@ -49,7 +44,7 @@ const ProfileDetails = () => {
                 }}
               >
                 <Typography fontSize="1.5vw" fontWeight="bold" lineHeight={1}>
-                  {data?.fullName.toUpperCase()}
+                  {data?.fullName?.toUpperCase()}
                 </Typography>
 
                 <Typography
@@ -72,7 +67,7 @@ const ProfileDetails = () => {
                   }}
                 >
                   <Typography
-                    fontSize="1.4vw"
+                    fontSize="1.2vw"
                     fontWeight="bold"
                     color="text.secondary"
                   >
@@ -114,7 +109,7 @@ const ProfileDetails = () => {
                       fontWeight="bold"
                       color="text.secondary"
                     >
-                      Edit <ArrowOutwardIcon />
+                      Edit <EditIcon fontSize="small" />
                     </Typography>
                   </Link>
                 </Card>

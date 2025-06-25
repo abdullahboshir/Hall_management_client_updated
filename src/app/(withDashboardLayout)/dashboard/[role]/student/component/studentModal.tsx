@@ -18,13 +18,12 @@ import {
   useGetSingleUserQuery,
 } from "@/redux/api/userApi";
 import { modifyPayload } from "@/utils/modifyPayload";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Divider, Grid2, Typography } from "@mui/material";
 
 import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
-import { studentRegisterValidationSchema } from "../../../validation/student.validation";
+
 import { studentRegisterDefaultValues } from "../../../constants/student.constant";
 import Spinner from "@/components/Shared/Spinner/Spinner";
 import Progress from "@/components/Shared/Spinner/Progress";
@@ -104,7 +103,7 @@ const StudentModal = ({ open, setOpen }: TProps) => {
     >
       <HmForm
         onSubmit={handleStudentRegistration}
-        resolver={zodResolver(studentRegisterValidationSchema)}
+        // resolver={zodResolver(studentRegisterValidationSchema)}
         defaultValues={studentRegisterDefaultValues()}
       >
         <Grid2 container spacing={3} paddingX={12} paddingY={2}>

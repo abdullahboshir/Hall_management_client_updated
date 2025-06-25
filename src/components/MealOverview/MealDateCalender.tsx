@@ -47,11 +47,13 @@ export default function MealDateCalendar({
     const mealHistory: Record<string, number> =
       mealData?.mealInfo?.[yearStr]?.[monthName]?.dailyMealHistory || {};
 
-    const activeDays = Object.entries(mealHistory)
-      .filter(([_, value]) => value === 1)
-      .map(([day]) => Number(day));
+const activeDays = Object.entries(mealHistory).reduce<number[]>((acc, [day, value]) => {
+  if (value === 1) acc.push(Number(day));
+  return acc;
+}, []);
 
-    setMealDays(activeDays);
+setMealDays(activeDays);
+
   }, [mealData, currentViewDate]);
 
   const handleMonthChange = (date: Dayjs) => {

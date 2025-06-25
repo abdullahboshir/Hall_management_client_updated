@@ -15,6 +15,8 @@ import MealLoader from "./MealLoader";
 import NotificationSlider from "./NotificationSlider";
 import MealScheduleDatePicker from "./MealScheduleDatePicker";
 import HmModal from "../Shared/HmModal/HmModal";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 
 const ScrollBox = styled(Box)(() => ({
@@ -35,7 +37,7 @@ export default function MiddleInformation({
   hallData,
   diningData,
 }: any) {
-  const [checked, setChecked] = React.useState(false);
+ 
   const [mealError, setMealError] = React.useState("");
   const [isScheduleMealOn, setIsScheduleMealOn] = React.useState("");
   const [open, setOpen] = React.useState(false);
@@ -53,11 +55,8 @@ export default function MiddleInformation({
     return () => clearInterval(intervalId);
   }, [mealData, refetch, diningData]);
 
-
   React.useEffect(() => {
-    if (mealData?.mealStatus) {
-      setChecked(mealData.mealStatus === "on");
-    }
+
 
     if (
       baseMealObj?.currentDeposit < diningData?.diningPolicies?.minimumDeposit
@@ -75,7 +74,7 @@ export default function MiddleInformation({
 
 
   const isMealOn = mealData?.mealStatus === "off" || !mealData?.mealStatus ? false : true;
-  console.log(isMealOn, mealData)
+
 
   return (
     <Stack bgcolor="primary.light" borderRadius={3} width="40%">
@@ -304,7 +303,7 @@ export default function MiddleInformation({
           </Grid2>
 
           <Grid2 size={8}>
-  <HmModal open={open} setOpen={setOpen} title={`Meal ${isScheduleMealOn.toUpperCase()} Schedule`}>
+  <HmModal open={open} setOpen={setOpen} title={`Meal ${isScheduleMealOn?.toUpperCase()} Schedule`}>
     <MealScheduleDatePicker isScheduleMealOn={isScheduleMealOn}/>
     </HmModal>
             <Box
@@ -358,11 +357,11 @@ export default function MiddleInformation({
           >
             {mealError ? (
               <Typography color="error.main" fontWeight="bold">
-                {mealError}
+               <CancelIcon fontSize="small"/> {mealError}
               </Typography>
             ) : (
               <Typography color="green" fontWeight="bold">
-                You have Healthy Deposit
+                <CheckCircleIcon fontSize="small"/> Your meal deposit is sufficient.
               </Typography>
             )}
           </Box>

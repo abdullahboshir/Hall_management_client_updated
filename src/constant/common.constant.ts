@@ -64,7 +64,6 @@ export const SentTo = [
   "SpecificUsers",
   "FilteredGroup",
   "ByRole",
-  "ByLocation",
   "ByHall",
   "ByDining",
   "ByTag",

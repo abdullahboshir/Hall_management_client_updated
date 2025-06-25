@@ -219,7 +219,7 @@ const Row = ({ row, refetch }: { row: IStudent; refetch:any }) => {
             </Typography>
 
             <Typography color="textSecondary" variant="caption">
-              {(row?.user?.role).toUpperCase()}
+              {(row?.user?.role)?.toUpperCase()}
             </Typography>
           </Box>
         </TableCell>

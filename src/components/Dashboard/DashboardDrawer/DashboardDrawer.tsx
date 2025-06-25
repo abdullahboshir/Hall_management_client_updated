@@ -6,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-
+import DiningIcon from "@mui/icons-material/Dining";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import SideBar from "../SideBar/SideBar";
@@ -44,8 +44,9 @@ export default function DashboardDrawer({
 
   const { data, isLoading, refetch } = useGetSingleUserQuery({});
 
-  React.useEffect(() => {refetch()}, [data, refetch]);
-  
+  React.useEffect(() => {
+    refetch();
+  }, [data, refetch]);
 
   if (isLoading) {
     return <Spinner />;
@@ -90,14 +91,28 @@ export default function DashboardDrawer({
               </Typography>
             </Box>
 
-            <Stack direction="row" gap={3}>
+            <Stack direction="row" gap={2}>
               <Badge color="secondary" overlap="circular" badgeContent={2}>
-                <Link href={`/dashboard/${data?.role}/notifications`}>
+                <Link href={`/dashboard/${data?.user?.role}/notifications`}>
                   <IconButton sx={{ background: "#ffffff" }}>
                     <CircleNotificationsIcon color="action" />
                   </IconButton>
                 </Link>
               </Badge>
+
+
+              
+
+              {!["moderator", "student"].includes(data?.user?.role) && (
+                <Typography
+                  component={Link}
+                  href="/dining"
+                  bgcolor="primary.light"
+                  borderRadius={1}
+                >
+                  <DiningIcon color="action" sx={{ fontSize: "45px" }} />
+                </Typography>
+              )}
 
               <Box
                 display="flex"

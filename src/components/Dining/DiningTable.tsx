@@ -31,6 +31,8 @@ import { toast } from "sonner";
 import DiningModal from "@/app/(withCommonLayout)/dining/components/DiningModal";
 import { calculateTotalmaintenanceFee } from "./calculateTotalmaintenanceFee";
 import Spinner from "../Shared/Spinner/Spinner";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const { currentYear, currentMonth } = currentDateBD();
 
@@ -84,7 +86,6 @@ const DiningTable = () => {
   const [updateMealStatus] = useUpdateMealStatusMutation();
   // const meta = data?.meta;
 
-  console.log("mealssssssssss", meals);
 
   const handleMealStatus = async (id: string, checked: boolean) => {
     const updatedMealStatus = checked ? "on" : "off";
@@ -108,6 +109,9 @@ const DiningTable = () => {
 
   console.log("search resulttttttttt", searchTerm);
 
+  const router = useRouter();
+  
+
   const columns: GridColDef[] = [
     {
       field: "mealStatus",
@@ -128,6 +132,7 @@ const DiningTable = () => {
             : baseMealObj?.currentDeposit >=
               mealCharge + (mealCharge / 100) * reservedSafetyDeposit;
         return (
+            <Link href={`/mealOverview/${row?._id}`}>
           <Box
             width="100%"
             height="100%"
@@ -160,6 +165,7 @@ const DiningTable = () => {
               </Typography>
             )}
           </Box>
+     </Link>
         );
       },
     },
@@ -170,6 +176,9 @@ const DiningTable = () => {
       sortable: false,
       width: 220,
       renderCell: ({ row }) => (
+         <Link href={`/mealOverview/${row?._id}`}>
+          
+   
         <Box
           display="flex"
           alignItems="center"
@@ -177,18 +186,36 @@ const DiningTable = () => {
           gap={1}
           sx={{ width: "100%", height: "100%" }}
         >
-          {row?.student?.profileImg !== "" ? (
-            <Box width={70} height={50} borderRadius="50%" overflow="hidden">
-              <Image
-                src={row?.student?.profileImg}
-                width={50}
-                height={50}
-                alt="img"
-              />
-            </Box>
-          ) : (
-            <Avatar src="/profile.png" />
-          )}
+          {row?.student?.profileImg ? (
+  <Box
+    sx={{
+      width: 50,
+      height: 50,
+      borderRadius: '50%',
+      overflow: 'hidden',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
+    <Image
+      src={row.student.profileImg}
+      alt="Profile"
+      width={50}
+      height={50}
+      objectFit="cover"
+      style={{
+        objectFit: 'cover',
+        width: '100%',
+        height: '100%',
+        borderRadius: '50%',
+      }}
+    />
+  </Box>
+) : (
+  <Avatar src="/profile.png" />
+)}
+
 
           <Box display="flex" flexDirection="column">
             <Typography variant="body2">
@@ -200,6 +227,7 @@ const DiningTable = () => {
             </Typography>
           </Box>
         </Box>
+              </Link>
       ),
     },
 
@@ -216,6 +244,7 @@ const DiningTable = () => {
          
 
         return (
+          <Link href={`/mealOverview/${row?._id}`}>
           <Tooltip
             title={Object.entries(monthsWithZeroMaintenance).map(
               ([year, months], index) => (
@@ -282,6 +311,7 @@ const DiningTable = () => {
               </Box>
             </Box>
           </Tooltip>
+            </Link>
         );
       },
     },
@@ -292,6 +322,7 @@ const DiningTable = () => {
       sortable: false,
       width: 150,
       renderCell: ({ row }) => (
+         <Link href={`/mealOverview/${row?._id}`}>
         <Box
           display="flex"
           alignItems="center"
@@ -333,6 +364,7 @@ const DiningTable = () => {
             </Typography>
           </Box>
         </Box>
+              </Link>
       ),
     },
     {
@@ -340,6 +372,7 @@ const DiningTable = () => {
       headerName: "Total Meals",
       width: 120,
       renderCell: ({ row }) => (
+        <Link href={`/mealOverview/${row?._id}`}>
         <Box
           display="flex"
           alignItems="center"
@@ -381,6 +414,7 @@ const DiningTable = () => {
             </Typography>
           </Box>
         </Box>
+              </Link>
       ),
     },
 
@@ -394,6 +428,7 @@ const DiningTable = () => {
           row.student.dining.diningPolicies.specialMealCharge;
 
         return (
+          <Link href={`/mealOverview/${row?._id}`}>
           <Box
             display="flex"
             alignItems="center"
@@ -441,6 +476,7 @@ const DiningTable = () => {
               </Typography>
             </Box>
           </Box>
+                </Link>
         );
       },
     },
@@ -456,6 +492,7 @@ const DiningTable = () => {
         //   row.student.dining.diningPolicies.specialMealCharge;
 
         return (
+          <Link href={`/mealOverview/${row?._id}`}>
           <Box
             display="flex"
             alignItems="center"
@@ -489,6 +526,7 @@ const DiningTable = () => {
               </Typography>
             </Box>
           </Box>
+                </Link>
         );
       },
     },
@@ -503,6 +541,7 @@ const DiningTable = () => {
           row.student.dining.diningPolicies.specialMealCharge;
 
         return (
+          <Link href={`/mealOverview/${row?._id}`}>
           <Box
             display="flex"
             alignItems="center"
@@ -546,6 +585,7 @@ const DiningTable = () => {
               </Typography>
             </Box>
           </Box>
+                </Link>
         );
       },
     },
@@ -600,7 +640,7 @@ const DiningTable = () => {
 
       {!isLoading ? (
         <Box>
-          <DataGrid rows={meals ?? []} columns={columns} rowHeight={70} />
+          <DataGrid rows={meals ?? []} columns={columns} rowHeight={70}  onRowClick={(params) => router.push(`/mealOverview/${params.row._id}`)} />
         </Box>
       ) : (
        <Spinner/>

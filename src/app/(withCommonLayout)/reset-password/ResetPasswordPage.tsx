@@ -11,20 +11,21 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
-import { useChangePasswordMutation, } from "@/redux/api/userApi";
+import { useResetPasswordMutation } from "@/redux/api/userApi";
 import { toast } from "sonner";
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { storeUserInfo } from "@/services/auth.services";
+import { FieldValues} from "react-hook-form";
 import { logoutUser } from "@/services/actions/logoutUser";
 
 
 
-const changePasswordSchema = z
+const resetPasswordSchema = z
   .object({
-    oldPassword: z.string(),
-      newPassword: z
+      password: z
     .string()
     .min(6, "Password must be at least 6 characters long") // Minimum length of 6 characters
     .max(20, "Password must be at most 20 characters long") // Maximum length of 20 characters
@@ -37,29 +38,44 @@ const changePasswordSchema = z
     ), 
     confirmPassword: z.string(),
   })
-  .refine((data) => data.newPassword === data.confirmPassword, {
+  .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
 
 
 
-const ChangePasswordPage = () => {
+const ResetPasswordPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [changePassword] = useChangePasswordMutation();
+  const [resetPassword] = useResetPasswordMutation();
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  const id = searchParams.get('id');
+  const token = searchParams.get('token');
+
+  useEffect(() => {
+    if(!token) return;
+      storeUserInfo(token);
+  }, [token])
+
 
   const handleToggleVisibility = () => setShowPassword((prev) => !prev);
 
-  const handleOnSubmit = async (data:any) => {
+  const handleOnSubmit = async (data: FieldValues) => {
+    const body = {
+      id,
+      newPassword: data.password,
+    };
 
     try {
-      const res = await changePassword({ body: data }).unwrap();
+      const res = await resetPassword({ body }).unwrap();
       if (res?.id) {
-        toast.success("Your Password Change has been Successfully!!");
+        toast.success("Your Password reset has been Successfully!!");
             logoutUser(router)
             router.push('/login')
-           
+               router.refresh();
       }
     } catch (error) {
       console.log("got errorrrrrrrrrrrrrrrrrr", error);
@@ -82,38 +98,21 @@ const ChangePasswordPage = () => {
         }}
       >
         <Typography variant="h5" fontWeight="bold" textAlign="center" mb={3}>
-          🔒 Change Your Password
+          🔒 Reset Your Password
         </Typography>
 
         <HmForm
           onSubmit={handleOnSubmit}
-          resolver={zodResolver(changePasswordSchema)}
+          resolver={zodResolver(resetPasswordSchema)}
           defaultValues={{ password: "", confirmPassword: "" }}
         >
           <HmInput
-            name="oldPassword"
-            label="Old Password"
-            type={showPassword ? "text" : "password"}
-            required
-              // @ts-expect-error no need to worry about this errora
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={handleToggleVisibility} edge="end">
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            />
-
-          <HmInput
-            name="newPassword"
+            name="password"
             label="New Password"
             type={showPassword ? "text" : "password"}
             required
-            sx={{ my: 2 }}
-              // @ts-expect-error no need to worry about this error
+            sx={{ mb: 2 }}
+           // @ts-expect-error no need to worry about this error
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -125,8 +124,7 @@ const ChangePasswordPage = () => {
             }}
           />
 
-
-                   <HmInput
+          <HmInput
             name="confirmPassword"
             label="Confirm Password"
             type={showPassword ? "text" : "password"}
@@ -159,7 +157,7 @@ const ChangePasswordPage = () => {
               },
             }}
           >
-            Change Password
+            Reset Password
           </Button>
         </HmForm>
       </Box>
@@ -167,4 +165,4 @@ const ChangePasswordPage = () => {
   );
 };
 
-export default ChangePasswordPage;
+export default ResetPasswordPage;

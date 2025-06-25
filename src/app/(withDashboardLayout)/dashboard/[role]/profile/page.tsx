@@ -8,6 +8,9 @@ const UserProfile = () => {
   const { data, isLoading } = useGetSingleUserQuery({});
 
 
+  if(isLoading) {return <Spinner />;}
+
+
   return <>{isLoading ?   <Spinner/> : <Profile data={data} />}</>;
 };
 

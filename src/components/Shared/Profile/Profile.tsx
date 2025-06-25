@@ -1,4 +1,4 @@
- 
+ 'use client';
 import { formattedDate } from "@/utils/currentDateBD";
 import { Box, Stack, Typography } from "@mui/material";
 import Image from "next/image";
@@ -6,7 +6,7 @@ import React from "react";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 
 const Profile = ({ data }:any) => {
-  console.log('datataaaaaaaaaaaaaaaaa', data)
+ 
   return (
     <Box>
       <Stack position="relative" width="100%" height="50vh">
@@ -38,23 +38,23 @@ const Profile = ({ data }:any) => {
               {data?.designation}
             </Typography>
             <Box mt={2}>
-              <Typography variant="h6">📌 Gender: {data?.gender}</Typography>
+              {data?.role !== 'superAdmin' && <Typography variant="h6">📌 Gender: {data?.gender}</Typography>}
               <Typography variant="h6">
                 📞 Phone: {data?.phoneNumber}
               </Typography>
               <Typography variant="h6">📧 Email: {data?.email}</Typography>
-              <Typography variant="h6">
+              {data?.role !== 'superAdmin' && <Typography variant="h6">
                 🚨 Emergency: {data?.emergencyContactNo}
-              </Typography>
-              <Typography variant="h6">
+              </Typography>}
+              {data?.role !== 'superAdmin' && <Typography variant="h6">
                 🎂 Date Of Birth: {formattedDate(data?.dateOfBirth)}
-              </Typography>
-              <Typography variant="h6">
+              </Typography>}
+            { data?.role !== 'superAdmin' && <Typography variant="h6">
                 🎂 Present Address: {typeof(data?.presentAddress) === 'string'? data?.presentAddress : `${data?.presentAddress?.village},  ${data?.presentAddress?.alliance},  ${data?.presentAddress?.subDistrict},  ${data?.presentAddress?.division}`}
-              </Typography>
-              <Typography variant="h6">
+              </Typography>}
+              {data?.role !== 'superAdmin' && <Typography variant="h6">
                 🎂 Present Address: {typeof(data?.permanentAddress) === 'string'? data?.permanentAddress : `${data?.permanentAddress?.village},  ${data?.permanentAddress?.alliance},  ${data?.permanentAddress?.subDistrict},  ${data?.permanentAddress?.division}`}
-              </Typography>
+              </Typography>}
             </Box>
           </Box>
         </Box>
@@ -69,7 +69,7 @@ const Profile = ({ data }:any) => {
         >
           <Box width="22vw" height="65vh" position="absolute" boxShadow={3}>
             <Image
-              src={`https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg?t=st=1743484372~exp=1743487972~hmac=ebdaf94f961548443eaa01a75f238bce13e1a2d00767008fd702ec88337e6f7a&w=1380`}
+             src={data?.profileImg}
               width={500}
               height={500}
               alt="avator"

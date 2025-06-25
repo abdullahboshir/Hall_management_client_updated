@@ -1,10 +1,10 @@
 import Badge from "@mui/material/Badge";
 import { PickersDay, PickersDayProps } from "@mui/x-date-pickers/PickersDay";
 import FlatwareIcon from "@mui/icons-material/Flatware";
-import { Dayjs } from "dayjs";
+
 
 export const MealDay = (
-  props: PickersDayProps<Dayjs> & {
+  props: PickersDayProps & {
     mealDays?: number[];
   }
 ) => {

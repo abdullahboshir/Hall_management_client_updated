@@ -6,7 +6,6 @@ export interface NoticeData {
   type: string;
   scheduleAt: string;
   expiryDate?: string;
-  location?: string;
   attachments?: File[];
   tags?: string[];
   relatedNotices?: string[];

@@ -22,11 +22,6 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
 
   const defaulltMenu = [
     {
-      title: "Notices",
-      path: `${role}/notice`,
-      icon: CampaignIcon,
-    },
-    {
       title: "Notifications",
       path: `${role}/notifications`,
       icon: CircleNotificationsIcon,
@@ -79,6 +74,11 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
       path: `${role}/dining`,
       icon: DiningIcon,
     },
+        {
+      title: "Notices",
+      path: `${role}/notice`,
+      icon: CampaignIcon,
+    },
   ];
 
   switch (role) {
@@ -108,11 +108,6 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
           title: "Dining",
           path: `${role}/dining`,
           icon: DiningIcon,
-        },
-        {
-          title: "Meals",
-          path: `${role}/meal`,
-          icon: WarehouseIcon,
         },
         {
           title: "Daily Reports",

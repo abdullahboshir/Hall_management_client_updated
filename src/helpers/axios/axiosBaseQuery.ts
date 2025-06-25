@@ -1,6 +1,6 @@
 import { TMeta } from "@/types";
 import type { BaseQueryFn } from "@reduxjs/toolkit/query";
-import type { AxiosRequestConfig, AxiosError } from "axios";
+import type { AxiosRequestConfig } from "axios";
 import { instance as axiosInstance } from "./axiosInstance";
 
 export const axiosBaseQuery =
@@ -37,7 +37,8 @@ export const axiosBaseQuery =
       // return { data: result?.data || {} };
       return result;
     } catch (axiosError) {
-      const err = axiosError as AxiosError;
+      const err = axiosError as any;
+      console.log('status codeeeeeeeeeeeeeeeee',  err?.statusCode)
       return {
         error: {
           status: err?.statusCode,

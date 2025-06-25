@@ -54,6 +54,15 @@ const mealApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.meal],
     }),
+
+        addMealShedule: build.mutation({
+      query: ({ body, id }) => ({
+        url: `/meal/addMealShedule/${id}`,
+        method: "PATCH",
+        data: body,
+      }),
+      invalidatesTags: [tagTypes.meal],
+    }),
   }),
 });
 
@@ -63,4 +72,5 @@ export const {
   useUpdateMealStatusMutation,
   useUpdateDueMaintenanceFeeMutation,
   useAddDepositMutation,
+  useAddMealSheduleMutation
 } = mealApi;
