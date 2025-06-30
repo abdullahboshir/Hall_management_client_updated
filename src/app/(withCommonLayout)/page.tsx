@@ -1,11 +1,12 @@
 'use client'
-import MealOverview from "@/components/MealOverview/MealOverview";
+import PostContainer from "@/components/Post/PostContainer";
 import React from "react";
 
 const HomePage = () => {
   return (
     <>
-      <MealOverview/>
+      {/* <MealOverview/> */}
+      <PostContainer/>
     </>
   );
 };

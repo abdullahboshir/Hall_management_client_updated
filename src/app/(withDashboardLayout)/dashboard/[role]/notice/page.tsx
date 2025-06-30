@@ -43,6 +43,7 @@ import {
 } from "@/constant/common.constant";
 import NoticeModal from "./components/NoticeModal";
 import Spinner from "@/components/Shared/Spinner/Spinner";
+import Image from "next/image";
 
 // Table Row Component
 const Row = ({
@@ -56,6 +57,8 @@ const Row = ({
 }) => {
   const [open, setOpen] = useState(isExpendDefault);
   const [updateUserStatus] = useUpdateUserStatusMutation();
+
+  console.log("rowwwwwwwwwwwww", row);
 
   const handleUserStatus = async (status: string, id: string) => {
     if (!id || !status) {
@@ -95,7 +98,7 @@ const Row = ({
             sx={{ width: "100%", height: "100%" }}
           >
             <Box display="flex" flexDirection="column">
-              <Typography variant="body2">{row?.title}</Typography>
+              <Typography variant="body2" fontWeight='bold'>{row?.title}</Typography>
             </Box>
           </Box>
         </TableCell>
@@ -165,14 +168,14 @@ const Row = ({
             <Typography
               color={`${"active" === "active" ? "textSecondary" : "error"}`}
             >
-              {row?.type}
+              {row?.noticeType}
               <Select
                 onClick={(e) => e.stopPropagation()}
                 onChange={(e) => {
                   e.stopPropagation();
                   handleUserStatus(e.target.value, row?.user?._id);
                 }}
-                value={row?.type}
+                value={row?.noticeType}
                 sx={{
                   "&.MuiOutlinedInput-root": {
                     "& fieldset": {
@@ -320,7 +323,7 @@ const Row = ({
               <Typography fontSize={15} gutterBottom>
                 {row?.description}
               </Typography>
-              <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+              <Typography variant="subtitle1" fontWeight="bold" gutterBottom mt={5}>
                 OTHERS INFORMATION
               </Typography>
               <Table size="small">
@@ -329,9 +332,8 @@ const Row = ({
                     {[
                       "CreatedBy",
                       "Schedule Type",
-                      "Sub District",
-                      "District",
-                      "Division",
+                      "Attachments",
+                  
                     ].map((key, index) => (
                       <TableCell key={index} sx={{ fontWeight: "bold" }}>
                         {key}
@@ -356,7 +358,7 @@ const Row = ({
                         <Typography>
                           Date: {new Date(row?.scheduleAt).getFullYear()} -{" "}
                           {new Date(row?.scheduleAt).getMonth()} -{" "}
-                          {new Date(row?.scheduleAt).getDate()}
+                          {new Date(row?.expiryDate).getDate()}
                         </Typography>
 
                         <Typography variant="caption">
@@ -365,9 +367,37 @@ const Row = ({
                         </Typography>
                       </Box>
                     </TableCell>
-                    <TableCell>{row?.permanentAddress?.subDistrict}</TableCell>
-                    <TableCell>{row?.permanentAddress?.district}</TableCell>
-                    <TableCell>{row?.permanentAddress?.division}</TableCell>
+<TableCell>
+  <Box
+    display="flex"
+    justifyContent='end'
+    gap={1}
+    flexWrap="wrap"
+    // maxWidth={300}
+  >
+    {row?.attachments?.length > 0 ? (
+      row.attachments.map((img: any, index: number) => (
+        <Box
+          key={index}
+          width={50}
+          height={50}
+          position="relative"
+          borderRadius={1}
+          overflow="hidden"
+        >
+          <Image
+            src={img}
+            alt={`img-${index}`}
+            fill
+            style={{ objectFit: 'cover' }}
+          />
+        </Box>
+      ))
+    ) : (
+      <Typography>No Attachments</Typography>
+    )}
+  </Box>
+</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

@@ -31,7 +31,7 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
   const { data: userData, isLoading: userIsLoading } = useGetSingleUserQuery(
     {}
   );
-  const { data: hallData, isLoading: hallIsLoading } = useGetAllHallsQuery({});
+  const { data: hallData, isLoading: hallIsLoading }: { data?: any; isLoading: boolean } = useGetAllHallsQuery({});
   const { data: diningData, isLoading: diningIsLoading } =
     useGetAllDiningsQuery({});
   const [createManager, { isLoading: isCreateManagerLoading }] =

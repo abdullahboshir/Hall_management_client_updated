@@ -1,6 +1,6 @@
  
 import HmDatePicker from "@/components/Form/HmDatePicker";
-import HmFileUploader from "@/components/Form/HmFileUploader";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import HmSelectField from "@/components/Form/HmSelectField";
@@ -17,7 +17,7 @@ import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
 import { useGetAllHallsQuery } from "@/redux/api/hallApi";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import { modifyPayload } from "@/utils/modifyPayload";
-import { Button, Grid2 } from "@mui/material";
+import { Box, Button, Grid2, IconButton, Tooltip, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
@@ -28,6 +28,8 @@ import { useCreateNoticeMutation } from "@/redux/api/noticeApi";
 import HmInputTypeChip from "@/components/Form/HmInputTypeChip";
 import HmInputSelectChip from "@/components/Form/HmInputSelectChip";
 import Spinner from "@/components/Shared/Spinner/Spinner";
+import Image from "next/image";
+import Progress from "@/components/Shared/Spinner/Progress";
 
 type TProps = {
   open: boolean;
@@ -38,7 +40,8 @@ type TProps = {
 const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
-
+  const [error, setError] = useState("");
+  const [images, setImages] = useState<File[]>([]);
   const { data: userData, isLoading: userIsLoading } = useGetSingleUserQuery(
     {}
   );
@@ -46,8 +49,8 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
   const { data: diningData, isLoading: diningIsLoading } =
     useGetAllDiningsQuery({});
 
-  const [createNotice] = useCreateNoticeMutation();
-
+  const [createNotice, {isLoading: createNoticeLoading}] = useCreateNoticeMutation();
+console.log('userData', userData)
   const handleFormSubmit = async (values: FieldValues) => {
     if (hallIsLoading || diningIsLoading || userIsLoading) {
         <Spinner/>
@@ -60,7 +63,10 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
 
     values.noticeData.hall = hallData?._id;
     values.noticeData.dining = diningData?._id;
-    values.noticeData.createdBy = userData?._id;
+    values.noticeData.createdBy = userData?.user?._id;
+     values.images = images;
+
+     console.log('helloooooooooooooooooooooo', values)
 
     const data = modifyPayload(values);
 
@@ -71,11 +77,22 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
         toast.success("Notice created has been Successfully!!");
         refetch();
         setOpen(false);
+        setError("");
       }
     } catch (error:any) {
       console.log("got errorrrrrrrrrrrrrrrrrr", error);
+      setError(error?.data || "Failed to create notice");
     }
   };
+
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files;
+      if (files) {
+        const selected = Array.from(files).slice(0, 6); // limit 6
+        setImages(selected);
+      }
+    };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && tagInput.trim() !== "") {
@@ -106,6 +123,10 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
           resolver={zodResolver(noticeValidationSchema)}
         >
           <Grid2 container spacing={2}>
+
+            <Typography variant="h6" color="error" textAlign="center" width="100%">
+              {error}
+            </Typography>
       
             <Grid2 size={3}>
               <HmSelectField
@@ -146,18 +167,9 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
               />
             </Grid2>
 
-           
-            <Grid2 size={3}>
-              <HmSelectField
-                items={ScheduleType}
-                name="noticeData.scheduleType"
-                label="Schedule Type"
-                fullWidth
-              />
-            </Grid2>
 
        
-            <Grid2 size={3}>
+            <Grid2 size={4}>
               <HmDatePicker
                 name="noticeData.scheduleAt"
                 label="Schedule Date"
@@ -165,18 +177,40 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
             </Grid2>
 
        
-            <Grid2 size={3}>
+            <Grid2 size={4}>
               <HmDatePicker name="noticeData.expiryDate" label="Expiry Date" />
             </Grid2>
 
-            {/* Attachments */}
-            <Grid2 size={3}>
-              <HmFileUploader
-                name="noticeData.attachments"
-                label="Attachments"
-                sx={{ width: "100%" }}
-                  // multiple
-              />
+           
+            <Grid2 size={4}>
+                <Tooltip title="Upload up to 5 images" arrow>
+              <label htmlFor="upload-images">
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                bgcolor="primary.main"
+                borderColor="secondary.light"
+                borderRadius={1}
+                sx={{cursor: 'pointer'}}
+              >
+                 <Box display="flex" alignItems="center" >
+                     <Typography color="white">File Attachment</Typography>
+                    <IconButton component="span" sx={{ color: "white" }}>
+                      <CloudUploadIcon fontSize="medium" />
+                    </IconButton>
+                 </Box>
+                    <input
+                      id="upload-images"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageChange}
+                      hidden
+                    />
+              </Box>
+                  </label>
+                </Tooltip>
             </Grid2>
 
             {/* Tags */}
@@ -201,15 +235,15 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
               />
             </Grid2>
 
-            {/* Related Notices */}
-            <Grid2 size={6}>
+         
+            {/* <Grid2 size={6}>
               <HmSelectField
                 items={[]}
                 name="noticeData.relatedNotices"
                 label="Related Notices"
                 fullWidth
               />
-            </Grid2>
+            </Grid2> */}
 
             {/* Title */}
             <Grid2 size={12}>
@@ -226,20 +260,55 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
               />
             </Grid2>
 
-            {/* Submit Button */}
+
+              {images.length > 0 && (
+  <Grid2 size={12}>
+    <Box display="flex" flexDirection="row" width="100%" gap={1}>
+      {images.map((file, i) => {
+        const widthPercent = `${100 / Math.min(images.length, 6)}%`; // Max 6 in a row
+        return (
+          <Box
+            key={i}
+            width={widthPercent}
+            position="relative"
+            height={100}
+            borderRadius={1}
+            overflow="hidden"
+            border="1px solid #ccc"
+            sx={{ aspectRatio: "1" }} // Maintains square ratio using sx
+          >
+            <Image
+              src={URL.createObjectURL(file)}
+              alt={`preview-${i}`}
+              fill
+              style={{ objectFit: "cover" }}
+            />
+          </Box>
+        );
+      })}
+    </Box>
+  </Grid2>
+)}
             <Grid2 size={12} display="flex" justifyContent="end">
-              <Button
-                type="submit"
-                disabled={hallIsLoading || diningIsLoading || userIsLoading}
-                sx={{
-                  padding: "5px 20px",
-                  marginTop: "10px",
-                }}
-              >
-                {hallIsLoading || diningIsLoading || userIsLoading
-                  ?   <Spinner/>
-                  : "Create"}
-              </Button>
+                   <Button
+                      type="submit"
+                      disabled={hallIsLoading || diningIsLoading || userIsLoading}
+                      sx={{
+                        padding: "7px 20px",
+                        marginTop: "10px",
+                      }}
+                    >
+                      {hallIsLoading ||
+                      diningIsLoading ||
+                      userIsLoading ||
+                       createNoticeLoading? (
+                        <Typography display="flex" gap={1} color="white">
+                          Processing <Progress />
+                        </Typography>
+                      ) : (
+                        "Create"
+                      )}
+                    </Button>
             </Grid2>
           </Grid2>
         </HmForm>

@@ -40,7 +40,7 @@ const baseURL: string =
 
            const redirection =
         decoded?.role === 'student'
-          ? '/'
+          ? `/mealOverview/${decoded?.userId}`
           : decoded?.role === 'manager'
           ? '/dining'
           : '/dashboard';
