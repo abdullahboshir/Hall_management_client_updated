@@ -4,6 +4,7 @@ import { baseApi } from "./baseApi";
 
 const userApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
+    
     createStudent: build.mutation({
       query: (data) => ({
         url: "/user/create-student",

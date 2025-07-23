@@ -146,6 +146,7 @@ const DiningTable = () => {
                   if (isAvaiableCurrentDeposite) {
                     handleMealStatus(row._id, e.target.checked);
                   }
+                   e.stopPropagation();
                 }}
                 checked={isAvaiableCurrentDeposite && row.mealStatus === "on"}
                 disabled={

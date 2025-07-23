@@ -66,10 +66,7 @@ const LoginPage = () => {
     } catch (error) {
       console.log("errorrrrrrrr", error);
     }
-
-
     setIsLoading(false);
-
   };
 
   return (

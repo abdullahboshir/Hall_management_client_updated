@@ -1,27 +1,29 @@
-'use client';
+"use client";
 
-import { Box, Grid2, Stack, Typography, Button } from '@mui/material';
-import CreatePost from './CreatePost';
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useGetSingleUserQuery } from '@/redux/api/userApi';
-import { useGetAllPostsQuery, useUpdateLikeMutation } from '@/redux/api/postApi';
-import Image from 'next/image';
+import { Box, Grid2, Stack, Typography, Button, Divider } from "@mui/material";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useGetSingleUserQuery } from "@/redux/api/userApi";
+import {
+  useGetAllPostsQuery,
+  useUpdateLikeMutation,
+} from "@/redux/api/postApi";
+import Image from "next/image";
+import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
+import { getTimeAgo } from "@/utils/getTimeAgo";
+import CreatePost from "./CreatePost";
+import Spinner from "../Shared/Spinner/Spinner";
 
 const PAGE_SIZE = 5;
 
 const MiddleSection = () => {
   const [open, setOpen] = useState(false);
   const { data: userData } = useGetSingleUserQuery({});
-  const { data: allPosts, refetch } = useGetAllPostsQuery({});
+  const { data: allPosts, refetch, isLoading } = useGetAllPostsQuery({});
   const [visiblePosts, setVisiblePosts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
 
-if(allPosts){
-      console.log('isssssssssssssssssssavtiveeeeeeeeee',  allPosts.map((post: any) => post.likes))
-}
-
   const lastPostRef = useRef<HTMLDivElement | null>(null);
-
+  
   // Load more posts when scroll reaches end
   const loadMorePosts = useCallback(() => {
     if (allPosts) {
@@ -40,44 +42,44 @@ if(allPosts){
     if (!lastPostRef.current) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && visiblePosts.length < allPosts?.length) {
+        if (
+          entries[0].isIntersecting &&
+          visiblePosts.length < allPosts?.length
+        ) {
           setPage((prev) => prev + 1);
         }
       },
       { threshold: 1 }
     );
     observer.observe(lastPostRef.current);
-
+    
     return () => observer.disconnect();
   }, [visiblePosts, allPosts]);
-
-
-
   
-
-    const [updateLike] = useUpdateLikeMutation();
-
+  const [updateLike] = useUpdateLikeMutation();
   
-const handlePostUpdate = async (id: string) => {
-  try {
-    const res = await updateLike({ id }).unwrap();
-    if (res?._id) {
-      console.log('like updated:', res.likes);
-      const refreshed = await refetch(); // fetch latest posts from backend
-
-      // Reset visiblePosts from fresh data
-      const all = refreshed?.data || [];
-      const start = 0;
-      const end = page * PAGE_SIZE;
-      setVisiblePosts(all.slice(start, end));
+  const handlePostUpdate = async (id: string) => {
+    try {
+      const res = await updateLike({ id }).unwrap();
+      if (res?._id) {
+        console.log("like updatedddddddddddddddddd:", res.likes);
+        const refreshed = await refetch(); // fetch latest posts from backend
+        
+        // Reset visiblePosts from fresh data
+        const all = refreshed?.data || [];
+        const start = 0;
+        const end = page * PAGE_SIZE;
+        setVisiblePosts(all.slice(start, end));
+      }
+    } catch (error: any) {
+      console.log(error?.message);
     }
-  } catch (error: any) {
-    console.log(error?.message);
+  };
+  
+  if(isLoading){
+    return <Spinner/>
   }
-};
-
-
-
+  console.log("user dataaaaaaaaaaaaaa", allPosts?.[0]?.allPosts?.createdBy?.fullName);
 
   return (
     <Box px={2} height="100%">
@@ -96,29 +98,28 @@ const handlePostUpdate = async (id: string) => {
                 p={2}
                 borderRadius={2}
               >
-                  <Box  bgcolor='white' px={7} py={2} borderRadius={1}>
-                <Box
-                  onClick={() => setOpen(true)}
-                  width="30vw"
-                  height="6vh"
-                  border={1}
-                  borderRadius={2}
-                  borderColor="secondary.light"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  sx={{ cursor: 'pointer' }}
-                >
-                     <Typography>Type your post here...</Typography>
-                 </Box>
+                <Box bgcolor="white" px={7} py={2} borderRadius={1}>
+                  <Box
+                    onClick={() => setOpen(true)}
+                    width="30vw"
+                    height="6vh"
+                    // border={1}
+                    borderRadius={2}
+
+                    borderColor="secondary.light"
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    sx={{ cursor: "pointer" }}
+                  >
+                    <Typography fontWeight='bold' fontSize='2vw' color="primary.main">Add a Post</Typography>
+                  </Box>
                 </Box>
               </Box>
             </Grid2>
 
             <Grid2 size={12}>
               <Box bgcolor="primary.light" p={2} borderRadius={2}>
-          
-
                 <Box mt={2} display="flex" flexDirection="column" gap={3}>
                   {visiblePosts.map((post: any, i: number) => {
                     const isLast = i === visiblePosts.length - 1;
@@ -131,49 +132,115 @@ const handlePostUpdate = async (id: string) => {
                         boxShadow={3}
                         bgcolor="background.paper"
                         sx={{
-                          transition: 'all 0.6s ease',
-                          transform: 'scale(1)',
+                          transition: "all 0.6s ease",
+                          transform: "scale(1)",
                           opacity: 1,
                         }}
                       >
                         {/* Header */}
-                        <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
-                          <Image
-                            width={50}
-                            height={50}
-                            alt="profile-picture"
-                            src={userData?.profileImg || '/default-avatar.png'}
-                            style={{ borderRadius: '50%', marginRight: '12px' }}
-                          />
-                          <Box>
-                            <Typography variant="subtitle1" fontWeight={600}>
-                              {userData?.fullName || 'User'}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                              {userData?.role || 'Role'}
-                            </Typography>
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          mb={2}
+                        >
+                          <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <Box
+                              position="relative"
+                              width={50}
+                              height={50}
+                              overflow="hidden"
+                              borderRadius={1}
+                              // border={1}
+                            >
+                              <Image
+                                src={
+                                  post?.createdBy?.profileImg || "/default-avatar.png"
+                                }
+                                alt="profile-picture"
+                                fill
+                                style={{
+                                  objectFit: "cover",
+                                  objectPosition: "top",
+                                }}
+                              />
+                            </Box>
+
+                            <Box ml={1.5} display="flex" flexDirection={"column"}>
+                              <Typography
+                                variant="subtitle1"
+                                fontWeight={600}
+                                lineHeight={1}
+                              >
+                                {post?.createdBy?.fullName}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                lineHeight={1.5}
+                                // mt={-0.3}
+                              >
+                                Posted by {post?.createdBy?.role}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                lineHeight={1}
+                                // mt={-0.3}
+                              >
+                              <AccessTimeFilledIcon sx={{fontSize: '13px'}}/>  {getTimeAgo(post?.createdAt)} ago
+                              </Typography>
+                            </Box>
                           </Box>
 
-                          <Box display="flex" flexDirection="column" alignItems="flex-start" ml="auto">
-                            <Typography variant="caption" color="text.secondary" fontSize={16}>
-                              {new Date(post.createdAt).toTimeString().split(' ')[0]}
+                          <Box
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="flex-start"
+                            ml="auto"
+                          >
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              fontSize={16}
+                            >
+                              {/* {
+                                new Date(post.createdAt)
+                                  .toTimeString()
+                                  .split(" ")[0]
+                              } */}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary" fontSize={16}>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              fontSize={16}
+                            >
                               {new Date(post.createdAt).getDate() +
-                                '/' +
+                                "/" +
                                 (new Date(post.createdAt).getMonth() + 1) +
-                                '/' +
+                                "/" +
                                 new Date(post.createdAt).getFullYear()}
                             </Typography>
                           </Box>
                         </Box>
 
+                        <Divider />
+
                         {/* Title & Description */}
-                        <Typography variant="h6" fontWeight={600} gutterBottom>
-                          {post.title}
+                        <Typography
+                          variant="h6"
+                          fontWeight={600}
+                          gutterBottom
+                          mt={2}
+                        >
+                          {post?.title}
                         </Typography>
                         <Typography variant="body1" color="text.secondary">
-                          {post.description}
+                          {post?.description}
                         </Typography>
 
                         {/* Images */}
@@ -186,31 +253,42 @@ const handlePostUpdate = async (id: string) => {
                             borderRadius={2}
                             overflow="hidden"
                           >
-                            {post.images.slice(0, 5).map((img: string, idx: number) => (
-                              <Box
-                                key={idx}
-                                position="relative"
-                                width="100%"
-                                pt="100%"
-                                borderRadius={2}
-                                overflow="hidden"
-                              >
-                                <Image
-                                  src={img}
-                                  alt={`post-img-${idx}`}
-                                  fill
-                                  style={{ objectFit: 'cover' }}
-                                />
-                              </Box>
-                            ))}
+                            {post.images
+                              .slice(0, 5)
+                              .map((img: string, idx: number) => (
+                                <Box
+                                  key={idx}
+                                  position="relative"
+                                  width="100%"
+                                  pt="100%"
+                                  borderRadius={2}
+                                  overflow="hidden"
+                                >
+                                  <Image
+                                    src={img}
+                                    alt={`post-img-${idx}`}
+                                    fill
+                                    style={{ objectFit: "cover" }}
+                                  />
+                                </Box>
+                              ))}
                           </Box>
                         )}
 
                         {/* Like + Comment Buttons */}
                         <Box mt={2} display="flex" gap={2}>
-                          <Button onClick={() => handlePostUpdate(post?._id)} size="small" variant={post.likes.includes(userData?._id)? "contained" :  "outlined"} sx={{ p: 2 }}>
-                              👍 Like 
+                          <Button
+                            onClick={() => handlePostUpdate(post?._id)}
+                            size="small"
+                            variant={
+                              post.likes.includes(userData?._id)
+                                ? "contained"
+                                : "outlined"
+                            }
+                          >
+                            👍 Like
                           </Button>
+
                           <Button size="small" variant="outlined">
                             💬 Comment
                           </Button>

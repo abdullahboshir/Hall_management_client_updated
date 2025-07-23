@@ -20,7 +20,7 @@ import PasswordIcon from "@mui/icons-material/Password";
 export const drawerItems = (role: TUserRole): DrawerItem[] => {
   const roleMenus: DrawerItem[] = [];
 
-  const defaulltMenu = [
+  const defaultMenu = [
     {
       title: "Notifications",
       path: `${role}/notifications`,
@@ -139,5 +139,5 @@ export const drawerItems = (role: TUserRole): DrawerItem[] => {
       break;
   }
 
-  return [...roleMenus, ...defaulltMenu];
+  return [...roleMenus, ...defaultMenu];
 };
