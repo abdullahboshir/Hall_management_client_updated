@@ -7,7 +7,7 @@ import { useState } from "react";
 
 const NotificationsPage = () => {
   const [filters, setFilters] = useState({
-    isAllNotication: true, 
+    isAllNotifications: true, 
     isPinned: false
   });
   const { data, isLoading, refetch } = useGetAllNoticesQuery(filters);

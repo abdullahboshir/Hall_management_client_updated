@@ -19,7 +19,7 @@ const slideLeft = keyframes`
 
 export default function NotificationSlider() {
   const [filters] = useState({
-    isAllNotication: true,
+    isAllNotifications: true,
     isPinned: false,
   });
 

@@ -22,6 +22,13 @@ const postApi = baseApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [tagTypes.notice],
     }),
+       updatePostBookmark: build.mutation({
+          query: (id) => ({
+            url: `/post/${id}`,
+            method: "PATCH",
+          }),
+          invalidatesTags: [tagTypes.post],
+        }),
 
     // deleteManager: build.mutation({
     //   query: (id) => ({
@@ -39,7 +46,7 @@ const postApi = baseApi.injectEndpoints({
     //   providesTags: [tagTypes.manager],
     // }),
     updateLike: build.mutation({
-      query: ({id}) => ({
+      query: (id) => ({
         url: `/post/like/${id}`,
         method: "PATCH",
       }),
@@ -51,6 +58,7 @@ const postApi = baseApi.injectEndpoints({
 export const {
   useCreatePostMutation,
   useGetAllPostsQuery,
+  useUpdatePostBookmarkMutation,
 //   useDeleteManagerMutation,
 //   useGetSingleManagerQuery,
   useUpdateLikeMutation,

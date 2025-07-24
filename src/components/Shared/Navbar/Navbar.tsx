@@ -30,7 +30,7 @@ const Navbar = () => {
       >
         <Typography
           component={Link}
-          href="/login"
+          href="/"
           variant="h5"
           fontWeight={600}
           bgcolor="primary.light"

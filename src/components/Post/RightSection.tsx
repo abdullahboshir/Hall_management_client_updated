@@ -18,7 +18,7 @@ const RightSection = () => {
   <Box borderRadius={1}>
 
 <Box fontWeight='bold' mb={2} fontSize={20} color='primary.main' bgcolor={'white'} p={1} borderRadius={1} textAlign='center'>
-  Recent Notices
+  Recent Posts
 </Box>
 
 {

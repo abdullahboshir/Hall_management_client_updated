@@ -88,14 +88,14 @@ export default function Notifications({ data, isLoading, refetch, setFilters}:an
               <Box sx={{ flexGrow: 1 }} />
 
               {/* <IconButton color="inherit">ME</IconButton> */}
-              <IconButton onClick={() => setFilters({isAllNotication: false, isPinned: false})} color="inherit">Personal</IconButton>
-              <IconButton onClick={() => setFilters({isAllNotication: true, isPinned: false})} color="inherit">All</IconButton>
+              <IconButton onClick={() => setFilters({isAllNotifications: false, isPinned: false})} color="inherit">Personal</IconButton>
+              <IconButton onClick={() => setFilters({isAllNotifications: true, isPinned: false})} color="inherit">All</IconButton>
 
               {/* <IconButton color="inherit">
                 <SearchIcon />
               </IconButton> */}
 
-              <IconButton onClick={() => setFilters({isAllNotication: false, isPinned: true})} color="inherit">Wishlist</IconButton>
+              <IconButton onClick={() => setFilters({isAllNotifications: false, isPinned: true})} color="inherit">Wishlist</IconButton>
               <IconButton color="inherit">
                 <MoreIcon />
               </IconButton>

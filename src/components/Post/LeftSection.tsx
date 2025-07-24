@@ -2,11 +2,9 @@ import { useGetAllNoticesQuery } from "@/redux/api/noticeApi";
 import { Box, Typography } from "@mui/material";
 import Spinner from "../Shared/Spinner/Spinner";
 
-const LeftSection = () => {
+const LeftSection = () => {  
 
-    
-
-  const { data, isLoading } = useGetAllNoticesQuery({});
+  const { data, isLoading } = useGetAllNoticesQuery({isAllNotifications: true});
 
 
   if (isLoading) {

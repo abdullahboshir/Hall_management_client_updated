@@ -22,6 +22,7 @@ import { modifyPayload } from "@/utils/modifyPayload";
 // import { useGetSingleUserQuery } from '@/redux/api/userApi';
 import { FieldValues } from "react-hook-form";
 import { useCreatePostMutation } from "@/redux/api/postApi";
+import Progress from "../Shared/Spinner/Progress";
 
 type TProps = {
   open: boolean;
@@ -32,7 +33,7 @@ const CreatePost = ({ open, setOpen }: TProps) => {
   const [error, setError] = useState("");
   const [images, setImages] = useState<File[]>([]);
 
-  const [createPost] = useCreatePostMutation();
+  const [createPost, {isLoading}] = useCreatePostMutation();
 
   const handleFormSubmit = async (values: FieldValues) => {
     values.images = images;
@@ -41,7 +42,7 @@ const CreatePost = ({ open, setOpen }: TProps) => {
 
     try {
       const res = await createPost(data as any).unwrap();
-      if (res[0]?.id) {
+      if (res?._id) {
         toast.success("Post created successfully!");
         setOpen(false);
         setError("");
@@ -152,11 +153,23 @@ const CreatePost = ({ open, setOpen }: TProps) => {
               <Typography color="error.main">{error}</Typography>
             </Grid2>
 
-            <Grid2 size={12} display="flex" justifyContent="flex-end">
-              <Button type="submit" sx={{ px: 3, py: 1 }}>
-                {"Create"}
-              </Button>
-            </Grid2>
+           <Grid2 size={12} display="flex" justifyContent="end" width="100%">
+                    <Button
+                      type="submit"
+                      sx={{
+                        padding: "7px 20px",
+                        marginTop: "10px",
+                      }}
+                    >
+                      {isLoading ? (
+                        <Typography display="flex" gap={1} color="white">
+                          Processing <Progress />
+                        </Typography>
+                      ) : (
+                        "Create"
+                      )}
+                    </Button>
+                  </Grid2>
           </Grid2>
         </Box>
       </HmForm>
