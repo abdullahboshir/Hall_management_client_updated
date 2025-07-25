@@ -33,7 +33,7 @@ const MealOverview = () => {
   }
 
   return (
-    <Box display="flex" gap='1vw' p='1vw' justifyContent="space-between">
+    <Box display="flex" gap='1vw' px='1vw' py='.5vw' justifyContent="space-between">
       <ProfileDetails data={studentData? studentData : userData} />
 
       <MiddleInformation

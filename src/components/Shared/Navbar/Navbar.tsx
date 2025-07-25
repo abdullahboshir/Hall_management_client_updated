@@ -1,128 +1,200 @@
 "use client";
 import AccountMenu from "@/components/Dashboard/AccountMenu/AccountMenu";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
-import {
-  Avatar,
-  Badge,
-  Box,
-  Container,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Container, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 import React from "react";
 // import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import DiningIcon from "@mui/icons-material/Dining";
-import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import HomeIcon from "@mui/icons-material/Home";
+import { USER_ROLE } from "@/constant/role";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 const Navbar = () => {
   const { data, isLoading, refetch } = useGetSingleUserQuery({});
-   React.useEffect(() => {refetch()}, [data, refetch]);
+  React.useEffect(() => {
+    refetch();
+  }, [data, refetch]);
   return (
     <Container>
       <Stack
-        py={2}
+        py={1}
         direction="row"
         justifyContent="space-between"
         alignItems="center"
       >
-        <Typography
-          component={Link}
-          href="/"
-          variant="h5"
-          fontWeight={600}
-          bgcolor="primary.light"
-          borderRadius={1}
-          padding={1}
-        >
-          <Box component="span" color="primary.main">
-            N
-          </Box>
-          azrul Hall
-        </Typography>
-
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          gap={2}
-        >
+        <Box width={"30%"}>
           <Typography
             component={Link}
-            href={data?.user?.role === "student" ? "/" : "/dining"}
+            href="/"
+            variant="h5"
+            height={35}
+            fontWeight={600}
             bgcolor="primary.light"
             borderRadius={1}
+            padding={1}
+            fontSize="1.5vw"
           >
-            <HomeIcon color="action" sx={{ fontSize: "45px" }} />
+            <Box component="span" color="primary.main">
+              N
+            </Box>
+            azrul Hall
           </Typography>
+        </Box>
 
-          {/* <Typography component={Link} href="/login">
-            Login
-          </Typography> */}
+<Box display={'flex'} alignItems={'center'} justifyContent={'end'} gap={2}>
+
+        <Stack
+          // width={"40%"}
+        >
+          <Box   
+          display={'flex'}     
+          alignItems="center"
+          gap={3}
+          >
+          <Typography
+            component={Link}
+            href={"/"}
+            borderRadius={1}
+            display={"flex"}
+            flexDirection={"column"}
+            alignItems={"center"}
+          >
+            <HomeIcon color="action" sx={{ fontSize: "2vw" }} />
+            <Typography component={"span"} fontSize={"1vw"} lineHeight={0.8}>
+              Home
+            </Typography>
+          </Typography>
 
           <Typography
             component={Link}
             href={`dashboard/${data?.user?.role}/notifications`}
-            bgcolor="primary.light"
-            borderRadius={1}
+            display={"flex"}
+            flexDirection={"column"}
+            alignItems={"center"}
+            lineHeight={0.8}
           >
-            <Badge color="secondary" badgeContent={2}>
-              {/* <CircleNotificationsIcon
-                color="action"
-                sx={{ fontSize: "45px" }}
-              /> */}
-              <MarkEmailUnreadIcon color="action" sx={{ fontSize: "45px" }} />
-            </Badge>
+            <NotificationsActiveIcon
+              color="action"
+              sx={{ fontSize: "2vw" }}
+            />
+
+            <Typography component={"span"} fontSize={"1vw"} lineHeight={0.8}>
+              Notifications
+            </Typography>
           </Typography>
 
-          {!['moderator', 'student'].includes(data?.user?.role) && <Typography
-            component={Link}
-            href="/dining"
-            bgcolor="primary.light"
-            borderRadius={1}
-          >
-            <DiningIcon color="action" sx={{ fontSize: "45px" }} />
-          </Typography>}
+          {data?.user?.role === USER_ROLE.student && (
+            <Typography
+              component={Link}
+              href={`/mealOverview/${data?.user?._id}`}
+              display={"flex"}
+              flexDirection={"column"}
+              alignItems={"center"}
+              lineHeight={0.8}
+            >
+              <AccountBalanceWalletIcon
+                color="action"
+                sx={{ fontSize: "2vw" }}
+              />
+              <Typography
+                component={"span"}
+                fontSize={"1vw"}
+                lineHeight={0.8}
+              >
+                Meal Overview
+              </Typography>
+            </Typography>
+          )}
+
+          {![USER_ROLE.moderator, USER_ROLE.student].includes(
+            data?.user?.role
+          ) && (
+            <Typography
+              component={Link}
+              href="/dining"
+              display={"flex"}
+              flexDirection={"column"}
+              alignItems={"center"}
+              lineHeight={0.8}
+            >
+              <DiningIcon color="action" sx={{ fontSize: "2vw" }} />
+
+              <Typography
+                component={"span"}
+                fontSize={"1vw"}
+                lineHeight={0.8}
+              >
+                Dining
+              </Typography>
+            </Typography>
+          )}
 
           <Typography
             component={Link}
-            href={!['moderator', 'student', 'manager'].includes(data?.user?.role || data?.role)? `/dashboard/${data?.user?.role || data?.role}/student` : data?.user?.role === 'manager'? `/dashboard/${data?.user?.role}/dining` : `/dashboard/${data?.user?.role || data?.role}/notifications`}
-            bgcolor="primary.light"
-            borderRadius={1}
+            href={
+              !["moderator", "student", "manager"].includes(
+                data?.user?.role || data?.role
+              )
+                ? `/dashboard/${data?.user?.role || data?.role}/student`
+                : data?.user?.role === "manager"
+                ? `/dashboard/${data?.user?.role}/dining`
+                : `/dashboard/${data?.user?.role || data?.role}/notifications`
+            }
+            display={"flex"}
+            flexDirection={"column"}
+            alignItems={"center"}
+            lineHeight={0.8}
           >
-            <DashboardIcon color="action" sx={{ fontSize: "45px" }} />
-          </Typography>
+            <DashboardIcon color="action" sx={{ fontSize: "2vw" }} />
 
-          {isLoading ? (
-            <Typography>Loading..</Typography>
-          ) : (
-            <Stack direction="row" gap={3}>
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                bgcolor="primary.light"
-                sx={{ paddingX: "4px", paddingY: "2px" }}
-                borderRadius={1}
-              >
-                <Avatar
-                  alt={data?.name}
-                   src={data?.profileImg}
-                  variant="rounded"
-                />
-                <Stack ml={1} display="flex" flexDirection="column" pr={1}>
-                  <Typography> {data?.fullName} </Typography>
-                  <Typography variant="caption" color="secondary.light">
-                    {data?.designation} {data?.user?.role}
-                  </Typography>
-                </Stack>
-                <AccountMenu />
-              </Box>
-            </Stack>
-          )}
+            <Typography component={"span"} fontSize={"1vw"} lineHeight={0.8}>
+              Dashboard
+            </Typography>
+          </Typography>
+          </Box>
         </Stack>
+
+        {isLoading ? (
+          <Typography>Loading..</Typography>
+        ) : (
+          <Stack display={'flex'} 
+              alignItems="end"
+              >
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              bgcolor="primary.light"
+          padding={.4}
+              borderRadius={1}
+            >
+                           <Avatar
+                            alt={data?.name}
+                            src={data?.profileImg}
+                            variant="rounded"
+                            sx={{
+                              width: 35,
+                              height: 35,
+                              '& img': {
+                                objectFit: 'cover',
+                                objectPosition: 'top',
+                              },
+                            }}
+                          />
+              <Stack mx={1}>
+                <Typography mt={-1}> {data?.fullName} </Typography>
+                <Typography variant="caption" color="secondary.light" lineHeight={'1vh'}>
+                  {data?.designation} {data?.user?.role}
+                </Typography>
+              </Stack>
+              <AccountMenu />
+            </Box>
+          </Stack>
+        )}
+        </Box>
       </Stack>
     </Container>
   );

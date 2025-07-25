@@ -61,7 +61,20 @@ const AdminPage = () => {
                 <Image src={row.profileImg} width={50} height={50} alt="img" />
               </Box>
             ) : (
-              <Avatar src="/profile.png" />
+                      <Avatar
+                alt={data?.name}
+                src={'/profile.png'}
+                variant="rounded"
+                sx={{
+                  width: 35,
+                  height: 35,
+                  '& img': {
+                    objectFit: 'cover',
+                    objectPosition: 'top',
+                  },
+                }}
+              />
+          
             )}
 
             <Box display="flex" flexDirection="column">

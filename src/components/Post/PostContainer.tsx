@@ -9,10 +9,10 @@ const PostContainer = () => {
       position="relative"
       overflow="hidden"
       width="98.8vw"
-      height="100vh"
+      height="91.4vh"
       display="flex"
       flexDirection="row"
-      p={1}
+      pt={1}
     >
 
   <Box width="27%" top={0} left={0}>

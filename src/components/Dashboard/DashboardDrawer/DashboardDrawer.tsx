@@ -11,11 +11,14 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import SideBar from "../SideBar/SideBar";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
-import { Avatar, Badge, Stack } from "@mui/material";
-import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
+import { Avatar, Stack } from "@mui/material";
 import AccountMenu from "../AccountMenu/AccountMenu";
 import Link from "next/link";
 import Spinner from "@/components/Shared/Spinner/Spinner";
+import HomeIcon from "@mui/icons-material/Home";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import { USER_ROLE } from "@/constant/role";
 
 const drawerWidth = 240;
 
@@ -81,6 +84,8 @@ export default function DashboardDrawer({
             alignItems="center"
             justifyContent="space-between"
             width="100%"
+            
+            
           >
             <Box>
               <Typography variant="body2" noWrap component="div" color="gray">
@@ -92,49 +97,131 @@ export default function DashboardDrawer({
             </Box>
 
             <Stack direction="row" gap={2}>
-              <Badge color="secondary" overlap="circular" badgeContent={2}>
-                <Link href={`/dashboard/${data?.user?.role}/notifications`}>
-                  <IconButton sx={{ background: "#ffffff" }}>
-                    <CircleNotificationsIcon color="action" />
-                  </IconButton>
-                </Link>
-              </Badge>
+            <Typography
+            component={Link}
+            href={`dashboard/${data?.user?.role}/notifications`}
+            display={"flex"}
+            flexDirection={"column"}
+            alignItems={"center"}
+            lineHeight={0.8}
+          >
+            <NotificationsActiveIcon
+              color="action"
+              sx={{ fontSize: "2vw" }}
+            />
+
+            <Typography component={"span"} fontSize={"1vw"} lineHeight={0.8}>
+              Notifications
+            </Typography>
+          </Typography>
+
+              {data?.user?.role === USER_ROLE.student && (
+                <Typography
+                  component={Link}
+                  href={`/mealOverview/${data?.user?._id}`}
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+                >
 
 
-              
+
+
+
+                  <AccountBalanceWalletIcon
+                    color="action" sx={{ fontSize: "2vw" }} 
+                  />
+                         <Typography
+                  component={"span"}
+                  fontSize={"1vw"}
+                  lineHeight={0.8}
+                >
+                  Meal Overview
+                </Typography>
+                </Typography>
+              )}
+
+              <Typography
+                component={Link}
+                href={data?.user?.role === "student" ? "/" : "/dining"}
+                borderRadius={1}
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+              >
+                <HomeIcon color="action" sx={{ fontSize: "2vw" }} />
+                <Typography
+                  component={"span"}
+                  fontSize={"1vw"}
+                  lineHeight={0.8}
+                >
+                  Home
+                </Typography>
+              </Typography>
 
               {!["moderator", "student"].includes(data?.user?.role) && (
                 <Typography
                   component={Link}
-                  href="/dining"
-                  bgcolor="primary.light"
-                  borderRadius={1}
+                  href={`/dining`}
+                  display={"flex"}
+                  flexDirection={"column"}
+                  alignItems={"center"}
+                  lineHeight={0.8}
                 >
-                  <DiningIcon color="action" sx={{ fontSize: "45px" }} />
+                  <DiningIcon color="action" sx={{ fontSize: "2vw" }} />
+
+                  <Typography
+                    component={"span"}
+                    fontSize={"1vw"}
+                    lineHeight={0.8}
+                  >
+                    Notifications
+                  </Typography>
                 </Typography>
               )}
 
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                bgcolor="primary.light"
-                sx={{ paddingX: "3px", paddingY: "2px" }}
-                borderRadius={1}
+       
+       
+        {isLoading ? (
+          <Typography>Loading..</Typography>
+        ) : (
+          <Stack display={'flex'} 
+              alignItems="end"
               >
-                <Avatar
-                  alt={data?.name}
-                  src={data?.profileImg}
-                  variant="rounded"
-                />
-                <Stack ml={1} display="flex" flexDirection="column" pr={1}>
-                  <Typography> {data?.fullName} </Typography>
-                  <Typography variant="caption" color="secondary.light">
-                    {data?.designation} {data?.user?.role} {data?.role}
-                  </Typography>
-                </Stack>
-                <AccountMenu />
-              </Box>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              bgcolor="primary.light"
+          padding={.4}
+              borderRadius={1}
+            >
+        <Avatar
+  alt={data?.name}
+  src={data?.profileImg}
+  variant="rounded"
+  sx={{
+    width: 35,
+    height: 35,
+    '& img': {
+      objectFit: 'cover',
+      objectPosition: 'top',
+    },
+  }}
+/>
+
+              <Stack mx={1}>
+                <Typography mt={-1}> {data?.fullName} </Typography>
+                <Typography variant="caption" color="secondary.light" lineHeight={'1vh'}>
+                  {data?.designation} {data?.user?.role}
+                </Typography>
+              </Stack>
+              <AccountMenu />
+            </Box>
+          </Stack>
+        )}
+
+
             </Stack>
           </Box>
         </Toolbar>

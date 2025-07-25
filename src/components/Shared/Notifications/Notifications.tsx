@@ -151,10 +151,21 @@ export default function Notifications({ data, isLoading, refetch, setFilters}:an
                             width={50}
                           >
                             <Avatar
-                              alt="Profile Picture"
+                              alt={"Profile img"}
                               src={item?.createdBy?.profileImg}
                               variant="rounded"
+                              sx={{
+                                width: 40,
+                                height: 40,
+                                "& img": {
+                                  objectFit: "cover",
+                                  objectPosition: "top",
+                                },
+                              }}
                             />
+
+
+                            
                             <Typography
                               variant="caption"
                               marginTop={0.5}

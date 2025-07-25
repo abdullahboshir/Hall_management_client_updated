@@ -78,13 +78,21 @@ const Row = ({ row, refetch }: { row: IStudent; refetch:any }) => {
             sx={{ width: "100%", height: "100%" }}
           >
             {row.profileImg !== "" ? (
-              <Box width={50} height={50} overflow="hidden" borderRadius="50%">
-                <Image
-                  src={row.profileImg as string}
-                  width={50}
-                  height={50}
-                  alt="img"
-                />
+              <Box width={50} height={50} overflow="hidden" mr={.5}>
+               <Image
+                    src={row?.profileImg as string}
+                    alt="Profile"
+                    width={50}
+                    height={50}
+                    objectFit="cover"
+                    style={{
+                      objectFit: 'cover',
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '5%',
+                       objectPosition: 'top'
+                    }}
+                  />
               </Box>
             ) : (
               <Avatar src="/profile.png" />

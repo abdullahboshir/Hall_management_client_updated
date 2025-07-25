@@ -9,25 +9,31 @@ import {
   useUpdatePostBookmarkMutation,
 } from "@/redux/api/postApi";
 import Image from "next/image";
-import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
+import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import SendIcon from '@mui/icons-material/Send';
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { getTimeAgo } from "@/utils/getTimeAgo";
 import CreatePost from "./CreatePost";
 import Spinner from "../Shared/Spinner/Spinner";
+import HmForm from "../Form/HmForm";
+import HmInput from "../Form/HmInput";
+import { FieldValues } from "react-hook-form";
 
 const PAGE_SIZE = 5;
 
 const MiddleSection = () => {
   const [open, setOpen] = useState(false);
+  const [isOpenCommendBox, setIsOpenCommendBox] = useState(false);
+  const [postId, setPostId] = useState('');
   const { data: userData } = useGetSingleUserQuery({});
   const { data: allPosts, refetch, isLoading } = useGetAllPostsQuery({});
   const [visiblePosts, setVisiblePosts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
 
   const lastPostRef = useRef<HTMLDivElement | null>(null);
-  
+
   // Load more posts when scroll reaches end
   const loadMorePosts = useCallback(() => {
     if (allPosts) {
@@ -56,19 +62,21 @@ const MiddleSection = () => {
       { threshold: 1 }
     );
     observer.observe(lastPostRef.current);
-    
+
     return () => observer.disconnect();
   }, [visiblePosts, allPosts]);
+
   
+
   const [updateLike] = useUpdateLikeMutation();
   const [updatePostBookmark] = useUpdatePostBookmarkMutation();
-  
+
   const handlePostUpdate = async (id: string) => {
     try {
       const res = await updateLike(id).unwrap();
       if (res?._id) {
         const refreshed = await refetch(); // fetch latest posts from backend
-        
+
         // Reset visiblePosts from fresh data
         const all = refreshed?.data || [];
         const start = 0;
@@ -80,14 +88,12 @@ const MiddleSection = () => {
     }
   };
 
-
-
-    const handleBookmarkUpdate = async (id: string) => {
+  const handleBookmarkUpdate = async (id: string) => {
     try {
       const res = await updatePostBookmark(id).unwrap();
       if (res?._id) {
         const refreshed = await refetch(); // fetch latest posts from backend
-        
+
         // Reset visiblePosts from fresh data
         const all = refreshed?.data || [];
         const start = 0;
@@ -98,11 +104,15 @@ const MiddleSection = () => {
       console.log(error?.message);
     }
   };
-  
-  if(isLoading){
-    return <Spinner/>
+
+
+  const handleOnSubmitComment = (values: FieldValues) => {
+console.log('heyyyyyyyyyyy', values, postId)
   }
 
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <Box px={2} height="100%">
@@ -128,14 +138,15 @@ const MiddleSection = () => {
                     height="6vh"
                     border={2}
                     borderRadius={2}
-
                     borderColor="secondary.light"
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
                     sx={{ cursor: "pointer" }}
                   >
-                    <Typography fontWeight='bold' fontSize='1vw'>Add a Post</Typography>
+                    <Typography fontWeight="bold" fontSize="1vw">
+                      Add a Post
+                    </Typography>
                   </Box>
                 </Box>
               </Box>
@@ -182,7 +193,8 @@ const MiddleSection = () => {
                             >
                               <Image
                                 src={
-                                  post?.createdBy?.profileImg || "/default-avatar.png"
+                                  post?.createdBy?.profileImg ||
+                                  "/default-avatar.png"
                                 }
                                 alt="profile-picture"
                                 fill
@@ -193,7 +205,11 @@ const MiddleSection = () => {
                               />
                             </Box>
 
-                            <Box ml={1.5} display="flex" flexDirection={"column"}>
+                            <Box
+                              ml={1.5}
+                              display="flex"
+                              flexDirection={"column"}
+                            >
                               <Typography
                                 variant="subtitle1"
                                 fontWeight={600}
@@ -215,7 +231,10 @@ const MiddleSection = () => {
                                 lineHeight={1}
                                 // mt={-0.3}
                               >
-                              <AccessTimeFilledIcon sx={{fontSize: '13px'}}/>  {getTimeAgo(post?.createdAt)} ago
+                                <AccessTimeFilledIcon
+                                  sx={{ fontSize: "13px" }}
+                                />{" "}
+                                {getTimeAgo(post?.createdAt)} ago
                               </Typography>
                             </Box>
                           </Box>
@@ -236,24 +255,25 @@ const MiddleSection = () => {
                                   .toTimeString()
                                   .split(" ")[0]
                               } */}
-                              <MoreHorizIcon/>
-                           
-                               
+                              <MoreHorizIcon />
                             </Typography>
                             <Typography
                               variant="caption"
                               color="text.secondary"
                               fontSize={16}
-                                onClick={() => handleBookmarkUpdate(post?._id)}
-                                sx={{cursor: 'pointer'}}
+                              onClick={() => handleBookmarkUpdate(post?._id)}
+                              sx={{ cursor: "pointer" }}
                             >
                               {/* {new Date(post.createdAt).getDate() +
                                 "/" +
                                 (new Date(post.createdAt).getMonth() + 1) +
                                 "/" +
                                 new Date(post.createdAt).getFullYear()} */}
-                                   {post?.bookmark.includes(userData?._id)? <BookmarkIcon/> : <BookmarkBorderIcon/>}
-                              
+                              {post?.bookmark.includes(userData?._id) ? (
+                                <BookmarkIcon />
+                              ) : (
+                                <BookmarkBorderIcon />
+                              )}
                             </Typography>
                           </Box>
                         </Box>
@@ -273,47 +293,57 @@ const MiddleSection = () => {
                           {post?.description}
                         </Typography>
 
-                   {post?.images?.length > 0 && (
-  <Box mt={2} display="flex" flexDirection="column" gap={1}>
-    {post.images
-      .slice(0, 6)
-      .reduce((rows: string[][], img: string, idx: number) => {
-        if (idx % 3 === 0) rows.push([img]);
-        else rows[rows.length - 1].push(img);
-        return rows;
-      }, [])
-      .map((row: any, rowIdx: any) => (
-        <Box
-          key={rowIdx}
-          display="flex"
-          gap={1}
-          width="100%"
-          height={150} // Adjust this if you want landscape or square
-        >
-          {row.map((img: string, idx: number) => (
-            <Box
-              key={idx}
-              flex={1}
-              position="relative"
-              // borderRadius={2}
-              overflow="hidden"
-            >
-              <Image
-                src={img}
-                alt={`post-img-${rowIdx}-${idx}`}
-                fill
-                style={{ objectFit: "cover" }}
-              />
-            </Box>
-          ))}
-        </Box>
-      ))}
-  </Box>
-)}
+                        {post?.images?.length > 0 && (
+                          <Box
+                            mt={2}
+                            display="flex"
+                            flexDirection="column"
+                            gap={1}
+                          >
+                            {post.images
+                              .slice(0, 6)
+                              .reduce(
+                                (
+                                  rows: string[][],
+                                  img: string,
+                                  idx: number
+                                ) => {
+                                  if (idx % 3 === 0) rows.push([img]);
+                                  else rows[rows.length - 1].push(img);
+                                  return rows;
+                                },
+                                []
+                              )
+                              .map((row: any, rowIdx: any) => (
+                                <Box
+                                  key={rowIdx}
+                                  display="flex"
+                                  gap={1}
+                                  width="100%"
+                                  height={150} // Adjust this if you want landscape or square
+                                >
+                                  {row.map((img: string, idx: number) => (
+                                    <Box
+                                      key={idx}
+                                      flex={1}
+                                      position="relative"
+                                      // borderRadius={2}
+                                      overflow="hidden"
+                                    >
+                                      <Image
+                                        src={img}
+                                        alt={`post-img-${rowIdx}-${idx}`}
+                                        fill
+                                        style={{ objectFit: "cover" }}
+                                      />
+                                    </Box>
+                                  ))}
+                                </Box>
+                              ))}
+                          </Box>
+                        )}
 
-
-                        {/* Like + Comment Buttons */}
-                        <Box mt={2} display="flex" gap={2}>
+                        <Box mt={2} display="flex" gap={2} mb={3}>
                           <Button
                             onClick={() => handlePostUpdate(post?._id)}
                             size="small"
@@ -323,13 +353,98 @@ const MiddleSection = () => {
                                 : "outlined"
                             }
                           >
-                            👍 Like
+                            👍 Like ({post?.likes.length})
                           </Button>
 
-                          <Button size="small" variant="outlined">
+                          <Button
+                            onClick={() => setIsOpenCommendBox(true)}
+                            size="small"
+                            variant="outlined"
+                          >
                             💬 Comment
                           </Button>
                         </Box>
+
+                  {isOpenCommendBox && (
+  <Box
+    mt={2}
+    p={2}
+    borderRadius={2}
+    bgcolor="background.paper"
+    maxWidth="100%"
+    sx={{ overflow: 'hidden' }}
+  >
+    <Divider />
+
+    <Stack spacing={2} mt={4}>
+
+      <Box display="flex" alignItems="center" justifyContent={'space-between'} flexDirection={{lg: 'row', xs: 'column', sm: 'row' }} gap={2}>
+
+        <Typography fontWeight={'bold'}>Comments</Typography>
+
+        {/* Close Button */}
+        <Typography
+          onClick={() => setIsOpenCommendBox(false)}
+          // bgcolor='error.light'
+          px={1}
+          borderRadius={1}
+          sx={{ minWidth: '32px', alignSelf: 'center', cursor: 'pointer' }}
+        >
+          ✕
+        </Typography>
+      </Box>
+
+
+    <Box flexGrow={1} width="100%">
+          <HmForm onSubmit={handleOnSubmitComment}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                // border: '1px solid #ccc',
+                // px: 2,
+                py: 1,
+                // bgcolor: '#f9f9f9',
+                width: '100%',
+              }}
+            >
+              <HmInput
+                name="comment"
+                label="Write a comment..."
+                // isMultiline={true}
+              />
+
+              <Button
+                type="submit"
+                variant="contained"
+                size="small"
+                onClick={() => setPostId(post?._id)}
+                sx={{
+                  textTransform: 'none',
+                  p: 0,
+                  minWidth: '32px',
+                  ml: '20px'
+                }}
+              >
+                <SendIcon/>
+              </Button>
+            </Box>
+          </HmForm>
+        </Box>
+
+
+
+      {/* Example Comment */}
+      <Box>
+        <Typography variant="body2" color="text.secondary">
+          Hellooooooooooo
+        </Typography>
+      </Box>
+    </Stack>
+  </Box>
+)}
+
                       </Box>
                     );
                   })}
