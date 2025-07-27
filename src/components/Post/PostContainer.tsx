@@ -20,7 +20,7 @@ const PostContainer = () => {
       </Box>
 
       
-      <Box width="46%" overflow="auto">
+      <Box width="46%">
         <MiddleSection />
       </Box>
 

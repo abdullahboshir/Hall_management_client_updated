@@ -9,7 +9,7 @@ import {
   Divider,
   Avatar,
 } from "@mui/material";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import {
   useCreateCommentMutation,
@@ -24,65 +24,59 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import SendIcon from "@mui/icons-material/Send";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
+import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
+import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import { getTimeAgo } from "@/utils/getTimeAgo";
 import CreatePost from "./CreatePost";
 import Spinner from "../Shared/Spinner/Spinner";
 import HmForm from "../Form/HmForm";
 import HmInput from "../Form/HmInput";
 import { FieldValues } from "react-hook-form";
-
-const PAGE_SIZE = 5;
+import Progress from "../Shared/Spinner/Progress";
 
 const MiddleSection = () => {
   const [open, setOpen] = useState(false);
-  const [isPostIdMatch, setIsPostIdMatch] = useState('');
+  const [isPostIdMatch, setIsPostIdMatch] = useState("");
   const [postId, setPostId] = useState("");
   const { data: userData } = useGetSingleUserQuery({});
-  const { data: allPosts, refetch, isLoading } = useGetAllPostsQuery({});
-  const [visiblePosts, setVisiblePosts] = useState<any[]>([]);
-  const [page, setPage] = useState(1);
+  const { data: postsData, refetch, isLoading } = useGetAllPostsQuery({});
+  const [visiblePosts, setVisiblePosts] = useState(5);
+  const [allPosts, setAllPosts] = useState<any[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const loadingRef = useRef(false);
 
-  const lastPostRef = useRef<HTMLDivElement | null>(null);
-
-  // Load more posts when scroll reaches end
-  const loadMorePosts = useCallback(() => {
-    if (allPosts) {
-      const start = (page - 1) * PAGE_SIZE;
-      const end = page * PAGE_SIZE;
-      setVisiblePosts((prev) => [...prev, ...allPosts.slice(start, end)]);
+  useEffect(() => {
+    if (postsData) {
+      setAllPosts(postsData);
     }
-  }, [allPosts, page]);
+  }, [postsData]);
 
+  // Scroll handler
   useEffect(() => {
-    loadMorePosts();
-  }, [page, loadMorePosts]);
+    const handleScroll = () => {
+      if (!containerRef.current || loadingRef.current) return;
 
+      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+      const isNearBottom = scrollHeight - (scrollTop + clientHeight) < 50;
 
+      if (isNearBottom && visiblePosts < allPosts.length) {
+        loadingRef.current = true;
+        setTimeout(() => {
+          setVisiblePosts((prev) => prev + 5);
+          loadingRef.current = false;
+        }, 500);
+      }
+    };
 
-  // IntersectionObserver to detect when to load more
-  useEffect(() => {
-    if (!lastPostRef.current) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (
-          entries[0].isIntersecting &&
-          visiblePosts.length < allPosts?.length
-        ) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { threshold: 1 }
-    );
-    observer.observe(lastPostRef.current);
+    const container = containerRef.current;
+    container?.addEventListener("scroll", handleScroll);
 
-    return () => observer.disconnect();
-  }, [visiblePosts, allPosts]);
-
-  
+    return () => {
+      container?.removeEventListener("scroll", handleScroll);
+    };
+  }, [visiblePosts, allPosts.length]);
 
   const [updateLike] = useUpdateLikeMutation();
   const [updateCommentReactions] = useUpdateCommentReactionsMutation();
@@ -92,13 +86,7 @@ const MiddleSection = () => {
     try {
       const res = await updateLike(id).unwrap();
       if (res?._id) {
-        const refreshed = await refetch(); // fetch latest posts from backend
-
-        // Reset visiblePosts from fresh data
-        const all = refreshed?.data || [];
-        const start = 0;
-        const end = page * PAGE_SIZE;
-        setVisiblePosts(all.slice(start, end));
+        await refetch();
       }
     } catch (error: any) {
       console.log(error?.message);
@@ -109,13 +97,7 @@ const MiddleSection = () => {
     try {
       const res = await updatePostBookmark(id).unwrap();
       if (res?._id) {
-        const refreshed = await refetch(); // fetch latest posts from backend
-
-        // Reset visiblePosts from fresh data
-        const all = refreshed?.data || [];
-        const start = 0;
-        const end = page * PAGE_SIZE;
-        setVisiblePosts(all.slice(start, end));
+        await refetch();
       }
     } catch (error: any) {
       console.log(error?.message);
@@ -127,48 +109,52 @@ const MiddleSection = () => {
   const handleOnSubmitComment = async (values: FieldValues) => {
     const res = await createPost({ postId, body: values });
     if (res?.data?.comments?.length) {
-    const refreshed = await refetch(); // fetch latest posts from backend
-
-        // Reset visiblePosts from fresh data
-        const all = refreshed?.data || [];
-        const start = 0;
-        const end = page * PAGE_SIZE;
-        setVisiblePosts(all.slice(start, end));
-      console.log("commentsssssssss", res?.data.comments);
+      await refetch();
     }
   };
 
   const handleComment = async (id: string) => {
-    setPostId(id)
+    setPostId(id);
   };
 
+  const handleCommentReactions = async (
+    id: string,
+    commentId: string,
+    action: string
+  ) => {
+    try {
+      console.log("ddddddddddddddddd", action);
 
-  const handleCommentReactions = async (id: string, commentId: string, action: string) => {
-      try {
-        console.log('ddddddddddddddddd', action)
-    
-      const res = await updateCommentReactions({id, body: {commentId, action}}).unwrap()
+      const res = await updateCommentReactions({
+        id,
+        body: { commentId, action },
+      }).unwrap();
       if (res?._id) {
-        const refreshed = await refetch(); // fetch latest posts from backend
-
-        // Reset visiblePosts from fresh data
-        const all = refreshed?.data || [];
-        const start = 0;
-        const end = page * PAGE_SIZE;
-        setVisiblePosts(all.slice(start, end));
+        await refetch();
       }
     } catch (error: any) {
       console.log(error?.message);
     }
   };
 
-
   if (isLoading) {
     return <Spinner />;
   }
 
   return (
-    <Box px={2} height="100%">
+    <Box
+      px={2}
+      height="100vh"
+      overflow="auto"
+      ref={containerRef}
+      sx={{
+        "&::-webkit-scrollbar": { width: "6px" },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "primary.main",
+          borderRadius: "3px",
+        },
+      }}
+    >
       {open && <CreatePost open={open} setOpen={setOpen} />}
 
       <Stack>
@@ -183,8 +169,9 @@ const MiddleSection = () => {
                 bgcolor="primary.light"
                 p={2}
                 borderRadius={2}
+                
               >
-                <Box bgcolor="white" px={7} py={2} borderRadius={1}>
+                <Box bgcolor="white" px={7} py={2} borderRadius={1} >
                   <Box
                     onClick={() => setOpen(true)}
                     width="30vw"
@@ -208,12 +195,12 @@ const MiddleSection = () => {
             <Grid2 size={12}>
               <Box bgcolor="primary.light" p={2} borderRadius={2}>
                 <Box mt={2} display="flex" flexDirection="column" gap={3}>
-                  {visiblePosts.map((post: any, i: number) => {
-                    const isLast = i === visiblePosts.length - 1;
+                  {allPosts.slice(0, visiblePosts).map((post: any) => {
+                    // const isLast = i === allPosts.length - 1;
                     return (
                       <Box
                         key={post._id}
-                        ref={isLast ? lastPostRef : null}
+                        // ref={isLast ? lastPostRef : null}
                         p={3}
                         borderRadius={3}
                         boxShadow={3}
@@ -400,7 +387,7 @@ const MiddleSection = () => {
                           <Button
                             onClick={() => handlePostUpdate(post?._id)}
                             size="small"
-                             sx={{px: 1}}
+                            sx={{ px: 1 }}
                             variant={
                               post.likes.includes(userData?._id)
                                 ? "contained"
@@ -414,7 +401,7 @@ const MiddleSection = () => {
                             onClick={() => setIsPostIdMatch(post?._id)}
                             size="small"
                             variant="outlined"
-                            sx={{px: 1}}
+                            sx={{ px: 1 }}
                           >
                             💬 Comment ({post?.comments?.length})
                           </Button>
@@ -449,7 +436,7 @@ const MiddleSection = () => {
 
                                 {/* Close Button */}
                                 <Typography
-                                  onClick={() => setIsPostIdMatch('')}
+                                  onClick={() => setIsPostIdMatch("")}
                                   // bgcolor='error.light'
                                   px={1}
                                   borderRadius={1}
@@ -534,39 +521,84 @@ const MiddleSection = () => {
                                         />
 
                                         <Box>
-                                          <Typography fontSize='1vw' fontWeight={600}>
+                                          <Typography
+                                            fontSize="1vw"
+                                            fontWeight={600}
+                                          >
                                             {comment?.user?.fullName}
                                           </Typography>
-                                          <Typography fontSize='1vw' lineHeight={.4}>
+                                          <Typography
+                                            fontSize="1vw"
+                                            lineHeight={0.4}
+                                          >
                                             {comment?.user?.role}
                                           </Typography>
                                         </Box>
                                       </Stack>
 
-                                      <Typography
-                                        
-                                        color="text.secondary"
-                                      >
+                                      <Typography color="text.secondary">
                                         {comment?.text}
                                       </Typography>
 
-
-                                     <Stack  flexDirection={'row'} mt={2} justifyContent={'space-between'} px={2}>
-                               
-                               <Stack display={'flex'} flexDirection={'row'} gap={2}>
-                                     <Box>
-                                         <Box onClick={() => handleCommentReactions(post?._id, comment?.id, 'like')}  sx={{cursor: 'pointer'}}>{comment?.likes.includes(userData?.user?._id) ?   <ThumbUpAltIcon/> : <ThumbUpOffAltIcon/> }{comment?.likes.length}</Box>
-                                         {/* <Typography variant="body2">{comment?.likes.length}</Typography> */}
-                                    </Box>
-                                    <Box>
-                                         <Box onClick={() => handleCommentReactions(post?._id, comment?.id, 'dislike')}  sx={{cursor: 'pointer'}}> {comment?.dislikes.includes(userData?.user?._id) ? <ThumbDownAltIcon/> : <ThumbDownOffAltIcon/>} {comment?.dislikes.length}</Box>
-                                         {/* <Typography variant="body2">{comment?.dislikes.length}</Typography> */}
-                                    </Box>
-                               </Stack>
-
-                               Reply
-                                     
-                                     </Stack>
+                                      <Stack
+                                        flexDirection={"row"}
+                                        mt={2}
+                                        justifyContent={"space-between"}
+                                        px={2}
+                                      >
+                                        <Stack
+                                          display={"flex"}
+                                          flexDirection={"row"}
+                                          gap={2}
+                                        >
+                                          <Box>
+                                            <Box
+                                              onClick={() =>
+                                                handleCommentReactions(
+                                                  post?._id,
+                                                  comment?.id,
+                                                  "like"
+                                                )
+                                              }
+                                              sx={{ cursor: "pointer" }}
+                                            >
+                                              {comment?.likes.includes(
+                                                userData?.user?._id
+                                              ) ? (
+                                                <ThumbUpAltIcon />
+                                              ) : (
+                                                <ThumbUpOffAltIcon />
+                                              )}
+                                              {comment?.likes.length}
+                                            </Box>
+                                            {/* <Typography variant="body2">{comment?.likes.length}</Typography> */}
+                                          </Box>
+                                          <Box>
+                                            <Box
+                                              onClick={() =>
+                                                handleCommentReactions(
+                                                  post?._id,
+                                                  comment?.id,
+                                                  "dislike"
+                                                )
+                                              }
+                                              sx={{ cursor: "pointer" }}
+                                            >
+                                              {" "}
+                                              {comment?.dislikes.includes(
+                                                userData?.user?._id
+                                              ) ? (
+                                                <ThumbDownAltIcon />
+                                              ) : (
+                                                <ThumbDownOffAltIcon />
+                                              )}{" "}
+                                              {comment?.dislikes.length}
+                                            </Box>
+                                            {/* <Typography variant="body2">{comment?.dislikes.length}</Typography> */}
+                                          </Box>
+                                        </Stack>
+                                        Reply
+                                      </Stack>
                                     </Box>
                                   )
                                 )}
@@ -578,6 +610,28 @@ const MiddleSection = () => {
                     );
                   })}
                 </Box>
+
+                {visiblePosts < allPosts.length && (
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems={"center"}
+                    py={4}
+                    textAlign={'center'}
+                  >
+                    <Progress />
+                  </Box>
+                )}
+
+                {visiblePosts >= allPosts.length && allPosts.length > 0 && (
+                  <Box textAlign="center" py={4}>
+                    <Typography color="text.secondary">
+                      You&apos;ve seen all posts
+                    </Typography>
+                  </Box>
+                )}
+
+
               </Box>
             </Grid2>
           </Grid2>

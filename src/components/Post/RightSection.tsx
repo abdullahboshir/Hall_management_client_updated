@@ -10,9 +10,6 @@ const RightSection = () => {
 
   const top3Likes = data && data.slice().sort((a: any, b: any) =>  b.likes.length - a.likes.length).slice(0, 3)
 
-    console.log('maxxxxxxxxxxx', top3Likes)
-    // console.log('check', data?.slice().sort((a, b) => ))
-
 
   if (isLoading) {
     return   <Spinner/>
