@@ -17,18 +17,18 @@ const postApi = baseApi.injectEndpoints({
       query: (arg?: Record<string, unknown>) => ({
         url: "/post/getAllPosts",
         method: "GET",
-        params: arg
+        params: arg,
       }),
       keepUnusedDataFor: 0,
       providesTags: [tagTypes.notice],
     }),
-       updatePostBookmark: build.mutation({
-          query: (id) => ({
-            url: `/post/${id}`,
-            method: "PATCH",
-          }),
-          invalidatesTags: [tagTypes.post],
-        }),
+    updatePostBookmark: build.mutation({
+      query: (id) => ({
+        url: `/post/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [tagTypes.post],
+    }),
 
     // deleteManager: build.mutation({
     //   query: (id) => ({
@@ -52,14 +52,30 @@ const postApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.post],
     }),
+    updateCommentReactions: build.mutation({
+      query: ({id, body}) => ({
+        url: `/post/comment/like/${id}`,
+        method: "PATCH",
+        data: body
+      }),
+      invalidatesTags: [tagTypes.post],
+    }),
+    createComment: build.mutation({
+      query: ({ postId, body }) => ({
+        url: `/post/comment/${postId}`,
+        method: "PATCH",
+        data: body,
+      }),
+      invalidatesTags: [tagTypes.post],
+    }),
   }),
 });
 
 export const {
   useCreatePostMutation,
+  useCreateCommentMutation,
   useGetAllPostsQuery,
   useUpdatePostBookmarkMutation,
-//   useDeleteManagerMutation,
-//   useGetSingleManagerQuery,
+  useUpdateCommentReactionsMutation,
   useUpdateLikeMutation,
 } = postApi;

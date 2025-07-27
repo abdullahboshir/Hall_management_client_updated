@@ -1,10 +1,20 @@
 "use client";
 
-import { Box, Grid2, Stack, Typography, Button, Divider } from "@mui/material";
+import {
+  Box,
+  Grid2,
+  Stack,
+  Typography,
+  Button,
+  Divider,
+  Avatar,
+} from "@mui/material";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import {
+  useCreateCommentMutation,
   useGetAllPostsQuery,
+  useUpdateCommentReactionsMutation,
   useUpdateLikeMutation,
   useUpdatePostBookmarkMutation,
 } from "@/redux/api/postApi";
@@ -12,8 +22,12 @@ import Image from "next/image";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import SendIcon from '@mui/icons-material/Send';
+import SendIcon from "@mui/icons-material/Send";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import { getTimeAgo } from "@/utils/getTimeAgo";
 import CreatePost from "./CreatePost";
 import Spinner from "../Shared/Spinner/Spinner";
@@ -25,8 +39,8 @@ const PAGE_SIZE = 5;
 
 const MiddleSection = () => {
   const [open, setOpen] = useState(false);
-  const [isOpenCommendBox, setIsOpenCommendBox] = useState(false);
-  const [postId, setPostId] = useState('');
+  const [isPostIdMatch, setIsPostIdMatch] = useState('');
+  const [postId, setPostId] = useState("");
   const { data: userData } = useGetSingleUserQuery({});
   const { data: allPosts, refetch, isLoading } = useGetAllPostsQuery({});
   const [visiblePosts, setVisiblePosts] = useState<any[]>([]);
@@ -46,6 +60,8 @@ const MiddleSection = () => {
   useEffect(() => {
     loadMorePosts();
   }, [page, loadMorePosts]);
+
+
 
   // IntersectionObserver to detect when to load more
   useEffect(() => {
@@ -69,6 +85,7 @@ const MiddleSection = () => {
   
 
   const [updateLike] = useUpdateLikeMutation();
+  const [updateCommentReactions] = useUpdateCommentReactionsMutation();
   const [updatePostBookmark] = useUpdatePostBookmarkMutation();
 
   const handlePostUpdate = async (id: string) => {
@@ -105,10 +122,46 @@ const MiddleSection = () => {
     }
   };
 
+  const [createPost] = useCreateCommentMutation();
 
-  const handleOnSubmitComment = (values: FieldValues) => {
-console.log('heyyyyyyyyyyy', values, postId)
-  }
+  const handleOnSubmitComment = async (values: FieldValues) => {
+    const res = await createPost({ postId, body: values });
+    if (res?.data?.comments?.length) {
+    const refreshed = await refetch(); // fetch latest posts from backend
+
+        // Reset visiblePosts from fresh data
+        const all = refreshed?.data || [];
+        const start = 0;
+        const end = page * PAGE_SIZE;
+        setVisiblePosts(all.slice(start, end));
+      console.log("commentsssssssss", res?.data.comments);
+    }
+  };
+
+  const handleComment = async (id: string) => {
+    setPostId(id)
+  };
+
+
+  const handleCommentReactions = async (id: string, commentId: string, action: string) => {
+      try {
+        console.log('ddddddddddddddddd', action)
+    
+      const res = await updateCommentReactions({id, body: {commentId, action}}).unwrap()
+      if (res?._id) {
+        const refreshed = await refetch(); // fetch latest posts from backend
+
+        // Reset visiblePosts from fresh data
+        const all = refreshed?.data || [];
+        const start = 0;
+        const end = page * PAGE_SIZE;
+        setVisiblePosts(all.slice(start, end));
+      }
+    } catch (error: any) {
+      console.log(error?.message);
+    }
+  };
+
 
   if (isLoading) {
     return <Spinner />;
@@ -343,10 +396,11 @@ console.log('heyyyyyyyyyyy', values, postId)
                           </Box>
                         )}
 
-                        <Box mt={2} display="flex" gap={2} mb={3}>
+                        <Box my={2} display="flex" gap={2}>
                           <Button
                             onClick={() => handlePostUpdate(post?._id)}
                             size="small"
+                             sx={{px: 1}}
                             variant={
                               post.likes.includes(userData?._id)
                                 ? "contained"
@@ -357,94 +411,169 @@ console.log('heyyyyyyyyyyy', values, postId)
                           </Button>
 
                           <Button
-                            onClick={() => setIsOpenCommendBox(true)}
+                            onClick={() => setIsPostIdMatch(post?._id)}
                             size="small"
                             variant="outlined"
+                            sx={{px: 1}}
                           >
-                            💬 Comment
+                            💬 Comment ({post?.comments?.length})
                           </Button>
                         </Box>
 
-                  {isOpenCommendBox && (
-  <Box
-    mt={2}
-    p={2}
-    borderRadius={2}
-    bgcolor="background.paper"
-    maxWidth="100%"
-    sx={{ overflow: 'hidden' }}
-  >
-    <Divider />
+                        {isPostIdMatch === post?._id && (
+                          <Box
+                            mt={2}
+                            p={2}
+                            borderRadius={2}
+                            bgcolor="background.paper"
+                            maxWidth="100%"
+                            sx={{ overflow: "hidden" }}
+                          >
+                            <Divider />
 
-    <Stack spacing={2} mt={4}>
+                            <Stack spacing={2} mt={2}>
+                              <Box
+                                display="flex"
+                                alignItems="center"
+                                justifyContent={"space-between"}
+                                flexDirection={{
+                                  lg: "row",
+                                  xs: "column",
+                                  sm: "row",
+                                }}
+                                gap={2}
+                              >
+                                <Typography fontWeight={"bold"}>
+                                  Comments
+                                </Typography>
 
-      <Box display="flex" alignItems="center" justifyContent={'space-between'} flexDirection={{lg: 'row', xs: 'column', sm: 'row' }} gap={2}>
+                                {/* Close Button */}
+                                <Typography
+                                  onClick={() => setIsPostIdMatch('')}
+                                  // bgcolor='error.light'
+                                  px={1}
+                                  borderRadius={1}
+                                  sx={{
+                                    minWidth: "32px",
+                                    alignSelf: "center",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  ✕
+                                </Typography>
+                              </Box>
 
-        <Typography fontWeight={'bold'}>Comments</Typography>
+                              <Box flexGrow={1} width="100%">
+                                <HmForm onSubmit={handleOnSubmitComment}>
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      // border: '1px solid #ccc',
+                                      // px: 2,
+                                      py: 1,
+                                      // bgcolor: '#f9f9f9',
+                                      width: "100%",
+                                    }}
+                                  >
+                                    <HmInput
+                                      name="text"
+                                      label="Write a comment..."
+                                      // isMultiline={true}
+                                    />
 
-        {/* Close Button */}
-        <Typography
-          onClick={() => setIsOpenCommendBox(false)}
-          // bgcolor='error.light'
-          px={1}
-          borderRadius={1}
-          sx={{ minWidth: '32px', alignSelf: 'center', cursor: 'pointer' }}
-        >
-          ✕
-        </Typography>
-      </Box>
+                                    <Button
+                                      type="submit"
+                                      variant="contained"
+                                      size="small"
+                                      onClick={() => handleComment(post?._id)}
+                                      sx={{
+                                        textTransform: "none",
+                                        p: 0,
+                                        minWidth: "32px",
+                                        ml: "20px",
+                                      }}
+                                    >
+                                      <SendIcon />
+                                    </Button>
+                                  </Box>
+                                </HmForm>
+                              </Box>
+
+                              {/* Example Comment */}
+                              <Box>
+                                {post.comments?.map(
+                                  (comment: any, index: number) => (
+                                    <Box
+                                      key={index}
+                                      bgcolor={"gray.light"}
+                                      borderRadius={2}
+                                      display={"flex"}
+                                      flexDirection={"column"}
+                                      my={1}
+                                      gap={1}
+                                      p={1}
+                                    >
+                                      <Stack
+                                        display={"flex"}
+                                        flexDirection={"row"}
+                                        gap={1}
+                                      >
+                                        <Avatar
+                                          alt={"user"}
+                                          src={comment?.user?.profileImg}
+                                          sx={{
+                                            width: 30,
+                                            height: 30,
+                                            "& img": {
+                                              objectFit: "cover",
+                                              objectPosition: "top",
+                                            },
+                                          }}
+                                        />
+
+                                        <Box>
+                                          <Typography fontSize='1vw' fontWeight={600}>
+                                            {comment?.user?.fullName}
+                                          </Typography>
+                                          <Typography fontSize='1vw' lineHeight={.4}>
+                                            {comment?.user?.role}
+                                          </Typography>
+                                        </Box>
+                                      </Stack>
+
+                                      <Typography
+                                        
+                                        color="text.secondary"
+                                      >
+                                        {comment?.text}
+                                      </Typography>
 
 
-    <Box flexGrow={1} width="100%">
-          <HmForm onSubmit={handleOnSubmitComment}>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                // border: '1px solid #ccc',
-                // px: 2,
-                py: 1,
-                // bgcolor: '#f9f9f9',
-                width: '100%',
-              }}
-            >
-              <HmInput
-                name="comment"
-                label="Write a comment..."
-                // isMultiline={true}
-              />
+                                     <Stack  flexDirection={'row'} mt={2} justifyContent={'space-between'} px={2}>
+                               
+                               <Stack display={'flex'} flexDirection={'row'} gap={2}>
+                                     <Box>
+                                         <Box onClick={() => handleCommentReactions(post?._id, comment?.id, 'like')}  sx={{cursor: 'pointer'}}>{comment?.likes.includes(userData?.user?._id) ?   <ThumbUpAltIcon/> : <ThumbUpOffAltIcon/> }{comment?.likes.length}</Box>
+                                         {/* <Typography variant="body2">{comment?.likes.length}</Typography> */}
+                                    </Box>
+                                    <Box>
+                                         <Box onClick={() => handleCommentReactions(post?._id, comment?.id, 'dislike')}  sx={{cursor: 'pointer'}}> {comment?.dislikes.includes(userData?.user?._id) ? <ThumbDownAltIcon/> : <ThumbDownOffAltIcon/>} {comment?.dislikes.length}</Box>
+                                         {/* <Typography variant="body2">{comment?.dislikes.length}</Typography> */}
+                                    </Box>
+                               </Stack>
 
-              <Button
-                type="submit"
-                variant="contained"
-                size="small"
-                onClick={() => setPostId(post?._id)}
-                sx={{
-                  textTransform: 'none',
-                  p: 0,
-                  minWidth: '32px',
-                  ml: '20px'
-                }}
-              >
-                <SendIcon/>
-              </Button>
-            </Box>
-          </HmForm>
-        </Box>
-
-
-
-      {/* Example Comment */}
-      <Box>
-        <Typography variant="body2" color="text.secondary">
-          Hellooooooooooo
-        </Typography>
-      </Box>
-    </Stack>
-  </Box>
-)}
-
+                               Reply
+                                     
+                                     </Stack>
+                                    </Box>
+                                  )
+                                )}
+                              </Box>
+                            </Stack>
+                          </Box>
+                        )}
                       </Box>
                     );
                   })}

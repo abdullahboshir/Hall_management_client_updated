@@ -1,5 +1,21 @@
 import { createTheme } from "@mui/material/styles";
 
+
+declare module '@mui/material/styles' {
+  interface Palette {
+    gray: Palette['primary'];
+  }
+  interface PaletteOptions {
+    gray?: PaletteOptions['primary'];
+  }
+}
+
+declare module '@mui/material/Button' {
+  interface ButtonPropsColorOverrides {
+    gray: true;
+  }
+}
+
 export const theme = createTheme({
   palette: {
     primary: {
@@ -11,6 +27,12 @@ export const theme = createTheme({
     secondary: {
       main: "#03DAC6",
       light: "rgb(119, 128, 146)",
+    },
+gray: {
+      main: "#9e9e9e",
+      light: "#eeececff",
+      dark: "#616161",
+      contrastText: "#000",
     },
     error: {
       main: "#f44336",
