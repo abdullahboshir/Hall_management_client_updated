@@ -309,7 +309,7 @@ const MiddleSection = () => {
                                 (new Date(post.createdAt).getMonth() + 1) +
                                 "/" +
                                 new Date(post.createdAt).getFullYear()} */}
-                              {post?.bookmark.includes(userData?._id) ? (
+                              {post?.bookmarks.includes(userData?.user?._id) ? (
                                 <BookmarkIcon />
                               ) : (
                                 <BookmarkBorderIcon />
@@ -389,7 +389,7 @@ const MiddleSection = () => {
                             size="small"
                             sx={{ px: 1 }}
                             variant={
-                              post.likes.includes(userData?._id)
+                              post.likes.includes(userData?.user?._id)
                                 ? "contained"
                                 : "outlined"
                             }
@@ -450,7 +450,7 @@ const MiddleSection = () => {
                                 </Typography>
                               </Box>
 
-                              <Box flexGrow={1} width="100%">
+                              <Box flexGrow={1}>
                                 <HmForm onSubmit={handleOnSubmitComment}>
                                   <Box
                                     sx={{
