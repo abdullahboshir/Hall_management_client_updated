@@ -3,7 +3,7 @@ import ChangePasswordPage from "../../(withDashboardLayout)/dashboard/[role]/cha
 const initialPasswordChangePage = () => {
 
     return (
-        <ChangePasswordPage/>
+        <ChangePasswordPage/> 
     )
 }
 
