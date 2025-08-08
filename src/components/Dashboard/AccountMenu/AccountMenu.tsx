@@ -46,13 +46,26 @@ function AccountMenu() {
     <React.Fragment>
       <Box display="flex" alignItems="center" textAlign="center">
         <Tooltip title="Open settings">
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+          <IconButton 
+            onClick={handleOpenUserMenu} 
+            sx={{ 
+              p: 0,
+              "& svg": {
+                fontSize: { xs: "16px", sm: "20px" }
+              }
+            }}
+          >
             {/* <Avatar alt={data?.name} src={data?.profileImg} /> */}
             <KeyboardArrowDownIcon />
           </IconButton>
         </Tooltip>
         <Menu
-          sx={{ mt: "45px" }}
+          sx={{ 
+            mt: "45px",
+            "& .MuiPaper-root": {
+              minWidth: { xs: "120px", sm: "150px" }
+            }
+          }}
           id="menu-appbar"
           anchorEl={anchorElUser}
           anchorOrigin={{
@@ -68,8 +81,22 @@ function AccountMenu() {
           onClose={handleCloseUserMenu}
         >
           {settings.map((setting, index) => (
-            <MenuItem key={index} onClick={handleCloseUserMenu}>
-              <Typography sx={{ textAlign: "center" }}>{setting}</Typography>
+            <MenuItem 
+              key={index} 
+              onClick={handleCloseUserMenu}
+              sx={{
+                py: { xs: 1, sm: 1.5 },
+                px: { xs: 1, sm: 2 }
+              }}
+            >
+              <Typography 
+                sx={{ 
+                  textAlign: "center",
+                  fontSize: { xs: "12px", sm: "14px" }
+                }}
+              >
+                {setting}
+              </Typography>
             </MenuItem>
           ))}
         </Menu>

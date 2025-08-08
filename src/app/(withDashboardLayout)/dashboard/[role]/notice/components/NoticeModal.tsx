@@ -13,7 +13,7 @@ import {
   ScheduleType,
 } from "@/constant/common.constant";
 
-import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
+import { useGetAllDiningQuery } from "@/redux/api/diningApi";
 import { useGetAllHallsQuery } from "@/redux/api/hallApi";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import { modifyPayload } from "@/utils/modifyPayload";
@@ -47,7 +47,7 @@ const NoticeModal = ({ open, setOpen, refetch }: TProps) => {
   );
   const { data: hallData, isLoading: hallIsLoading } = useGetAllHallsQuery({});
   const { data: diningData, isLoading: diningIsLoading } =
-    useGetAllDiningsQuery({});
+    useGetAllDiningQuery({});
 
   const [createNotice, {isLoading: createNoticeLoading}] = useCreateNoticeMutation();
 console.log('userData', userData)

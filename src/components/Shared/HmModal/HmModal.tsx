@@ -14,6 +14,11 @@ export const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
   },
+  "& .MuiDialog-paper": {
+    margin: { xs: theme.spacing(1), sm: theme.spacing(2) },
+    maxWidth: { xs: "95vw", sm: "90vw", md: "80vw", lg: "70vw" },
+    width: { xs: "95vw", sm: "90vw", md: "80vw", lg: "70vw" },
+  },
 }));
 
 type TModalProps = {
@@ -46,7 +51,14 @@ export default function HmModal({
         open={open}
         sx={{ ...sx }}
       >
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+        <DialogTitle 
+          sx={{ 
+            m: 0, 
+            p: { xs: 1, sm: 2 },
+            fontSize: { xs: "16px", sm: "18px", md: "20px" }
+          }} 
+          id="customized-dialog-title"
+        >
           {title}
         </DialogTitle>
 
@@ -55,14 +67,24 @@ export default function HmModal({
           onClick={handleClose}
           sx={(theme) => ({
             position: "absolute",
-            right: 8,
-            top: 8,
+            right: { xs: 4, sm: 8 },
+            top: { xs: 4, sm: 8 },
             color: theme.palette.grey[500],
+            "& svg": {
+              fontSize: { xs: "20px", sm: "24px" }
+            }
           })}
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent dividers>{children}</DialogContent>
+        <DialogContent 
+          dividers
+          sx={{
+            p: { xs: 1, sm: 2 }
+          }}
+        >
+          {children}
+        </DialogContent>
       </BootstrapDialog>
     </React.Fragment>
   );

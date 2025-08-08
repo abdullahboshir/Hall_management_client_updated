@@ -20,7 +20,7 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import { USER_ROLE } from "@/constant/role";
 
-const drawerWidth = 240;
+const drawerWidth = { xs: 280, sm: 240 };
 
 export default function DashboardDrawer({
   children,
@@ -61,14 +61,14 @@ export default function DashboardDrawer({
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: { sm: `calc(100% - ${drawerWidth.sm}px)` },
+          ml: { sm: `${drawerWidth.sm}px` },
           background: "#F4F7FE",
           boxShadow: 0,
           borderBottom: "1px solid lightgray",
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ px: { xs: 1, sm: 2 } }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -84,60 +84,78 @@ export default function DashboardDrawer({
             alignItems="center"
             justifyContent="space-between"
             width="100%"
-            
-            
+            flexDirection={{ xs: "column", sm: "row" }}
+            gap={{ xs: 1, sm: 0 }}
           >
-            <Box>
-              <Typography variant="body2" noWrap component="div" color="gray">
+            <Box textAlign={{ xs: "center", sm: "left" }}>
+              <Typography 
+                variant="body2" 
+                noWrap 
+                component="div" 
+                color="gray"
+                fontSize={{ xs: "12px", sm: "14px" }}
+              >
                 Hey, {isLoading ? "Loading..." : data?.fullName}
               </Typography>
-              <Typography variant="body2" noWrap component="div" color="black">
+              <Typography 
+                variant="body2" 
+                noWrap 
+                component="div" 
+                color="black"
+                fontSize={{ xs: "12px", sm: "14px" }}
+              >
                 Welcome to Nazrul hall
               </Typography>
             </Box>
 
-            <Stack direction="row" gap={2}>
-            <Typography
-            component={Link}
-            href={`dashboard/${data?.user?.role}/notifications`}
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={"center"}
-            lineHeight={0.8}
-          >
-            <NotificationsActiveIcon
-              color="action"
-              sx={{ fontSize: "2vw" }}
-            />
-
-            <Typography component={"span"} fontSize={"1vw"} lineHeight={0.8}>
-              Notifications
-            </Typography>
-          </Typography>
+            <Stack 
+              direction={{ xs: "row", sm: "row" }} 
+              gap={{ xs: 1, sm: 2 }}
+              flexWrap="wrap"
+              justifyContent="center"
+            >
+              <Typography
+                component={Link}
+                href={`/dashboard/${data?.user?.role}/notifications`}
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+                lineHeight={0.8}
+                sx={{ minWidth: { xs: "60px", sm: "auto" } }}
+              >
+                <NotificationsActiveIcon
+                  color="action"
+                  sx={{ fontSize: { xs: "20px", sm: "24px", md: "2vw" } }}
+                />
+                <Typography 
+                  component={"span"} 
+                  fontSize={{ xs: "10px", sm: "12px", md: "1vw" }} 
+                  lineHeight={0.8}
+                >
+                  Notifications
+                </Typography>
+              </Typography>
 
               {data?.user?.role === USER_ROLE.student && (
                 <Typography
                   component={Link}
                   href={`/mealOverview/${data?.user?._id}`}
-                display={"flex"}
-                flexDirection={"column"}
-                alignItems={"center"}
+                  display={"flex"}
+                  flexDirection={"column"}
+                  alignItems={"center"}
+                  sx={{ minWidth: { xs: "60px", sm: "auto" } }}
                 >
-
-
-
-
-
                   <AccountBalanceWalletIcon
-                    color="action" sx={{ fontSize: "2vw" }} 
+                    color="action" 
+                    sx={{ fontSize: { xs: "20px", sm: "24px", md: "2vw" } }} 
                   />
-                         <Typography
-                  component={"span"}
-                  fontSize={"1vw"}
-                  lineHeight={0.8}
-                >
-                  Meal Overview
-                </Typography>
+                  <Typography
+                    component={"span"}
+                    fontSize={{ xs: "10px", sm: "12px", md: "1vw" }}
+                    lineHeight={0.8}
+                  >
+                    Meal Overview
+                  </Typography>
                 </Typography>
               )}
 
@@ -148,11 +166,15 @@ export default function DashboardDrawer({
                 display={"flex"}
                 flexDirection={"column"}
                 alignItems={"center"}
+                sx={{ minWidth: { xs: "60px", sm: "auto" } }}
               >
-                <HomeIcon color="action" sx={{ fontSize: "2vw" }} />
+                <HomeIcon 
+                  color="action" 
+                  sx={{ fontSize: { xs: "20px", sm: "24px", md: "2vw" } }} 
+                />
                 <Typography
                   component={"span"}
-                  fontSize={"1vw"}
+                  fontSize={{ xs: "10px", sm: "12px", md: "1vw" }}
                   lineHeight={0.8}
                 >
                   Home
@@ -167,68 +189,81 @@ export default function DashboardDrawer({
                   flexDirection={"column"}
                   alignItems={"center"}
                   lineHeight={0.8}
+                  sx={{ minWidth: { xs: "60px", sm: "auto" } }}
                 >
-                  <DiningIcon color="action" sx={{ fontSize: "2vw" }} />
-
+                  <DiningIcon 
+                    color="action" 
+                    sx={{ fontSize: { xs: "20px", sm: "24px", md: "2vw" } }} 
+                  />
                   <Typography
                     component={"span"}
-                    fontSize={"1vw"}
+                    fontSize={{ xs: "10px", sm: "12px", md: "1vw" }}
                     lineHeight={0.8}
                   >
-                    Notifications
+                    Dining
                   </Typography>
                 </Typography>
               )}
 
-       
-       
-        {isLoading ? (
-          <Typography>Loading..</Typography>
-        ) : (
-          <Stack display={'flex'} 
-              alignItems="end"
-              >
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              bgcolor="primary.light"
-          padding={.4}
-              borderRadius={1}
-            >
-        <Avatar
-  alt={data?.name}
-  src={data?.profileImg}
-  variant="rounded"
-  sx={{
-    width: 35,
-    height: 35,
-    '& img': {
-      objectFit: 'cover',
-      objectPosition: 'top',
-    },
-  }}
-/>
+              {isLoading ? (
+                <Typography>Loading..</Typography>
+              ) : (
+                <Stack 
+                  display={'flex'} 
+                  alignItems="end"
+                  sx={{ minWidth: { xs: "120px", sm: "auto" } }}
+                >
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    bgcolor="primary.light"
+                    padding={{ xs: 0.2, sm: 0.4 }}
+                    borderRadius={1}
+                    flexDirection={{ xs: "column", sm: "row" }}
+                    gap={{ xs: 0.5, sm: 0 }}
+                  >
+                    <Avatar
+                      alt={data?.name}
+                      src={data?.profileImg}
+                      variant="rounded"
+                      sx={{
+                        width: { xs: 25, sm: 35 },
+                        height: { xs: 25, sm: 35 },
+                        '& img': {
+                          objectFit: 'cover',
+                          objectPosition: 'top',
+                        },
+                      }}
+                    />
 
-              <Stack mx={1}>
-                <Typography mt={-1}> {data?.fullName} </Typography>
-                <Typography variant="caption" color="secondary.light" lineHeight={'1vh'}>
-                  {data?.designation} {data?.user?.role}
-                </Typography>
-              </Stack>
-              <AccountMenu />
-            </Box>
-          </Stack>
-        )}
-
-
+                    <Stack mx={{ xs: 0, sm: 1 }} textAlign={{ xs: "center", sm: "left" }}>
+                      <Typography 
+                        mt={{ xs: 0, sm: -1 }}
+                        fontSize={{ xs: "10px", sm: "12px" }}
+                      > 
+                        {data?.fullName} 
+                      </Typography>
+                      <Typography 
+                        variant="caption" 
+                        color="secondary.light" 
+                        lineHeight={'1vh'}
+                        fontSize={{ xs: "8px", sm: "10px" }}
+                      >
+                        {data?.designation} {data?.user?.role}
+                      </Typography>
+                    </Stack>
+                    <AccountMenu />
+                  </Box>
+                </Stack>
+              )}
             </Stack>
           </Box>
         </Toolbar>
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{ width: { sm: drawerWidth.sm }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -241,7 +276,7 @@ export default function DashboardDrawer({
             display: { xs: "block", sm: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: drawerWidth,
+              width: drawerWidth.xs,
             },
           }}
           slotProps={{
@@ -258,7 +293,7 @@ export default function DashboardDrawer({
             display: { xs: "none", sm: "block" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: drawerWidth,
+              width: drawerWidth.sm,
             },
           }}
           open
@@ -266,12 +301,14 @@ export default function DashboardDrawer({
           <SideBar />
         </Drawer>
       </Box>
+      
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          p: 2,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          p:  1 ,
+          // pt: 3,
+          width: { sm: `calc(100% - ${drawerWidth.sm}px)` },
         }}
       >
         <Toolbar />

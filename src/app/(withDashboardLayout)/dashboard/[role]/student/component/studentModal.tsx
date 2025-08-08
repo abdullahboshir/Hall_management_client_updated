@@ -11,7 +11,7 @@ import {
   Faculty,
   Gender,
 } from "@/constant/common.constant";
-import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
+import { useGetAllDiningQuery } from "@/redux/api/diningApi";
 import { useGetAllHallsQuery } from "@/redux/api/hallApi";
 import {
   useCreateStudentMutation,
@@ -53,7 +53,7 @@ const StudentModal = ({ open, setOpen }: TProps) => {
   );
   const { data: hallData, isLoading: hallIsLoading } = useGetAllHallsQuery({});
   const { data: diningData, isLoading: diningIsLoading } =
-    useGetAllDiningsQuery({});
+    useGetAllDiningQuery({});
 
   const [createStudent, { isLoading: isCreateStudentLoading }] =
     useCreateStudentMutation();

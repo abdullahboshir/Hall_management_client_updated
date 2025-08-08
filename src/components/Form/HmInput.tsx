@@ -45,7 +45,18 @@ const HmInput = ({
           multiline={isMultiline}
           required={required}
           defaultValue={defaultValue}
-          sx={{ ...sx }}
+          sx={{ 
+            ...sx,
+            "& .MuiInputLabel-root": {
+              fontSize: { xs: "12px", sm: "14px" }
+            },
+            "& .MuiInputBase-input": {
+              fontSize: { xs: "12px", sm: "14px" }
+            },
+            "& .MuiFormHelperText-root": {
+              fontSize: { xs: "10px", sm: "12px" }
+            }
+          }}
           error={!!error?.message}
           helperText={error?.message}
         />

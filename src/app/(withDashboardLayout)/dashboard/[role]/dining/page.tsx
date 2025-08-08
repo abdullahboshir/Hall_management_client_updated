@@ -17,7 +17,7 @@ import DinnerDiningIcon from "@mui/icons-material/DinnerDining";
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import {
-  useGetAllDiningsQuery,
+  useGetAllDiningQuery,
   useUpdateDiningMutation,
 } from "@/redux/api/diningApi";
 import { toast } from "sonner";
@@ -25,7 +25,7 @@ import Spinner from "@/components/Shared/Spinner/Spinner";
 
 const DiningPage = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const { data, isLoading } = useGetAllDiningsQuery({});
+  const { data, isLoading } = useGetAllDiningQuery({});
   const [diningData, setDiningData] = useState(null) as any;
   const [updateDining] = useUpdateDiningMutation();
 

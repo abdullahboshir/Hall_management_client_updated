@@ -28,11 +28,11 @@ export const MealToggleSwitch = styled(Switch)(({ theme }) => ({
     "&::after": {
       content: '"OFF"',
       right: 10,
-      opacity: 1,
+      opacity: 1
     },
   },
   "& .Mui-checked + .MuiSwitch-track": {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.secondary.main,
     "&::before": {
       opacity: 1,
     },

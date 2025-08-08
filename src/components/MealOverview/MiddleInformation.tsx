@@ -10,13 +10,14 @@ import {
   Typography,
 } from "@mui/material";
 import { currentDateBD } from "@/utils/currentDateBD";
-import { calculateTotalmaintenanceFee } from "../Dining/calculateTotalmaintenanceFee";
+
 import MealLoader from "./MealLoader";
 import NotificationSlider from "./NotificationSlider";
 import MealScheduleDatePicker from "./MealScheduleDatePicker";
 import HmModal from "../Shared/HmModal/HmModal";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { calculateTotalMaintenanceFee } from "../Dining/calculateTotalMaintenanceFee";
 
 
 const ScrollBox = styled(Box)(() => ({
@@ -42,9 +43,19 @@ export default function MiddleInformation({
   const [isScheduleMealOn, setIsScheduleMealOn] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const { currentMonth, currentYear } = currentDateBD();
+  
   const baseMealObj = mealData?.mealInfo?.[currentYear]?.[currentMonth];
   const { monthsWithZeroMaintenance } =
-    calculateTotalmaintenanceFee(mealData);
+    calculateTotalMaintenanceFee(mealData);
+
+
+            const mealCharge = diningData?.diningPolicies?.mealCharge;
+
+        const reservedSafetyDeposit =
+          diningData?.diningPolicies?.reservedSafetyDeposit;
+
+        const isAvailableCurrentDeposit = baseMealObj?.currentDeposit >=
+              mealCharge + (mealCharge / 100) * reservedSafetyDeposit;
 
 
   React.useEffect(() => {
@@ -77,7 +88,7 @@ export default function MiddleInformation({
 
 
   return (
-    <Stack bgcolor="primary.light" borderRadius={3} width="40%">
+    <Stack bgcolor="primary.light" borderRadius={3} width="40%" >
       <Grid2 container spacing={1} p='1vw'>
         {/* Current Deposit */}
         <Grid2
@@ -88,11 +99,12 @@ export default function MiddleInformation({
           display="flex"
           flexDirection="column"
           alignItems="center"
+            boxShadow={baseMealObj?.totalDeposit > 0 ? 'inset 0 0 3px .5px #1b5e20' :  'inset 0 0 3px .5px #d32f2f'}
         >
           <Typography fontSize="1em" fontWeight="bold">
-            Your Current Deposit is
+            Current Deposit is
           </Typography>
-          <Typography fontSize="2vw" fontWeight="bold">
+          <Typography fontSize="2vw" fontWeight="bold" color={isAvailableCurrentDeposit? 'success.main' : 'error.main'}>
             {baseMealObj?.currentDeposit}TK
           </Typography>
         </Grid2>
@@ -106,11 +118,12 @@ export default function MiddleInformation({
           display="flex"
           flexDirection="column"
           alignItems="center"
+          boxShadow={baseMealObj?.totalDeposit > 0 ? 'inset 0 0 3px .5px #1b5e20' :  'inset 0 0 3px .5px #d32f2f'}
         >
           <Typography fontSize="1em" fontWeight="bold">
             Total Deposit is
           </Typography>
-          <Typography fontSize="2vw" fontWeight="bold">
+          <Typography fontSize="2vw" fontWeight="bold" color={baseMealObj?.totalDeposit > 0? 'success.main' : 'error.main'}>
             {baseMealObj?.totalDeposit} TK
           </Typography>
         </Grid2>
@@ -212,6 +225,7 @@ export default function MiddleInformation({
                 flexDirection="column"
                 alignItems="center"
                 width="100%"
+                  boxShadow={baseMealObj?.totalMeals > 0 ? 'inset 0 0 3px .5px #1b5e20' :  'inset 0 0 3px .5px #d32f2f'}
               >
                 <Typography fontSize="1em" fontWeight="bold">
                   Regular Meals
@@ -229,6 +243,7 @@ export default function MiddleInformation({
                 flexDirection="column"
                 alignItems="center"
                 width="100%"
+                  boxShadow={baseMealObj?.totalCost > 0 ? 'inset 0 0 3px .5px #1b5e20' :  'inset 0 0 3px .5px #d32f2f'}
               >
                 <Typography fontSize="1em" fontWeight="bold">
                   Total Cost
@@ -255,6 +270,7 @@ export default function MiddleInformation({
                 flexDirection="column"
                 alignItems="center"
                 width="100%"
+                  boxShadow={baseMealObj?.totalSpecialMeals > 0 ? 'inset 0 0 3px .5px #1b5e20' :  'inset 0 0 3px .5px #d32f2f'}
               >
                 <Typography fontSize="1em" fontWeight="bold">
                   Special Meals
@@ -272,6 +288,7 @@ export default function MiddleInformation({
                 flexDirection="column"
                 alignItems="center"
                 width="100%"
+                  boxShadow={baseMealObj?.totalDeposit > 0 ? 'inset 0 0 3px .5px #1b5e20' :  'inset 0 0 3px .5px #d32f2f'}
               >
                 <Typography fontSize="1em" fontWeight="bold">
                   Refunded
@@ -295,6 +312,7 @@ export default function MiddleInformation({
               bgcolor="white"
               p={2}
               borderRadius={2}
+                boxShadow={ isMealOn ? 'inset 0 0 3px .5px #1b5e20' :  'inset 0 0 3px .5px #d32f2f'}
             >
               <Box>
                 <MealLoader isOn={isMealOn} />

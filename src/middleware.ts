@@ -1,5 +1,4 @@
 import { jwtDecode } from 'jwt-decode';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
@@ -24,8 +23,7 @@ const roleBasedPrefixes = {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const cookiesStore = await cookies();
-  const accessToken = cookiesStore.get('accessToken')?.value;
+  const accessToken = request.cookies.get('accessToken')?.value;
 
   const isPublic = publicRoutes.includes(pathname);
   const isProtectedRoute =

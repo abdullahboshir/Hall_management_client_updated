@@ -82,8 +82,11 @@ const CreatePost = ({ open, setOpen }: TProps) => {
       title="Create Post"
     >
       <HmForm onSubmit={handleFormSubmit} defaultValues={managerDefaultValues}>
-        <Box width={"35vw"} p={2}>
-          <Grid2 container spacing={3}>
+        <Box 
+          width={{ xs: "90vw", sm: "70vw", md: "50vw", lg: "35vw" }} 
+          p={{ xs: 1, sm: 2 }}
+        >
+          <Grid2 container spacing={{ xs: 2, sm: 3 }}>
             <Grid2 size={12}>
               <HmInput name="postData.title" label="Title of Post" />
             </Grid2>
@@ -99,12 +102,18 @@ const CreatePost = ({ open, setOpen }: TProps) => {
 
             {images.length > 0 && (
               <Grid2 size={12}>
-                <Box display="flex" flexDirection="row" width="100%" gap={1}>
+                <Box 
+                  display="flex" 
+                  flexDirection="row" 
+                  width="100%" 
+                  gap={1}
+                  flexWrap="wrap"
+                >
                   {images.map((file, i) => (
                     <Box
                       key={i}
-                      width="6vw"
-                      height="6vw"
+                      width={{ xs: "80px", sm: "100px", md: "6vw" }}
+                      height={{ xs: "80px", sm: "100px", md: "6vw" }}
                       position="relative"
                       borderRadius={1}
                       overflow="hidden"
@@ -113,8 +122,8 @@ const CreatePost = ({ open, setOpen }: TProps) => {
                       <Image
                         src={URL.createObjectURL(file)}
                         alt={`preview-${i}`}
-                        layout="fill"
-                        objectFit="cover"
+                        fill
+                        style={{ objectFit: "cover" }}
                       />
                     </Box>
                   ))}
@@ -130,11 +139,20 @@ const CreatePost = ({ open, setOpen }: TProps) => {
                 border={1}
                 borderColor="secondary.light"
                 borderRadius={2}
+                py={{ xs: 1, sm: 2 }}
               >
                 <Tooltip title="Upload up to 5 images" arrow>
                   <label htmlFor="upload-images">
-                    <IconButton component="span" sx={{ color: "#1976d2" }}>
-                      <AddPhotoAlternateIcon fontSize="large" />
+                    <IconButton 
+                      component="span" 
+                      sx={{ 
+                        color: "#1976d2",
+                        "& svg": {
+                          fontSize: { xs: "24px", sm: "32px" }
+                        }
+                      }}
+                    >
+                      <AddPhotoAlternateIcon />
                     </IconButton>
                     <input
                       id="upload-images"
@@ -150,19 +168,30 @@ const CreatePost = ({ open, setOpen }: TProps) => {
             </Grid2>
 
             <Grid2 size={12}>
-              <Typography color="error.main">{error}</Typography>
+              <Typography 
+                color="error.main"
+                fontSize={{ xs: "12px", sm: "14px" }}
+              >
+                {error}
+              </Typography>
             </Grid2>
 
            <Grid2 size={12} display="flex" justifyContent="end" width="100%">
                     <Button
                       type="submit"
                       sx={{
-                        padding: "7px 20px",
+                        padding: { xs: "5px 15px", sm: "7px 20px" },
                         marginTop: "10px",
+                        fontSize: { xs: "12px", sm: "14px" }
                       }}
                     >
                       {isLoading ? (
-                        <Typography display="flex" gap={1} color="white">
+                        <Typography 
+                          display="flex" 
+                          gap={1} 
+                          color="white"
+                          fontSize={{ xs: "12px", sm: "14px" }}
+                        >
                           Processing <Progress />
                         </Typography>
                       ) : (

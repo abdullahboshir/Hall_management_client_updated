@@ -2,6 +2,7 @@
 import HmForm from "@/components/Form/HmForm";
 import HmInput from "@/components/Form/HmInput";
 import HmModal from "@/components/Shared/HmModal/HmModal";
+import { useGetAllDiningQuery } from "@/redux/api/diningApi";
 import {
   useAddDepositMutation,
   useGetSingleMealQuery,
@@ -25,13 +26,28 @@ const DiningModal = ({ mealId, open, setOpen }: TProps) => {
   const [addDeposit] = useAddDepositMutation();
   const [updateDueMaintenanceFee] = useUpdateDueMaintenanceFeeMutation();
   const { data, isLoading, refetch } = useGetSingleMealQuery<any>(mealId);
+    const { data: diningData, isLoading: isDiningLoading } =
+      useGetAllDiningQuery({});
+
+  console.log('cureeeeeeeeeeeeeee', data)
+    const baseMealObj = data?.mealInfo?.[currentYear]?.[currentMonth] || {};
+        const mealCharge = diningData?.diningPolicies?.mealCharge;
+
+        const reservedSafetyDeposit =
+          diningData?.diningPolicies?.reservedSafetyDeposit;
+
+        const isAvailableCurrentDeposit =
+          isLoading || isDiningLoading 
+            ? "...Loading"
+            : baseMealObj?.currentDeposit >=
+              mealCharge + (mealCharge / 100) * reservedSafetyDeposit;
 
   const handleFormSubmit = async (values: FieldValues) => {
     refetch();
-    const inputDepost = { id: mealId, body: values };
+    const inputDeposit = { id: mealId, body: values };
 
     try {
-      const res = await addDeposit(inputDepost).unwrap();
+      const res = await addDeposit(inputDeposit).unwrap();
 
       if (res?.id) {
         toast.success("Deposit has been added successfully!");
@@ -87,7 +103,7 @@ const DiningModal = ({ mealId, open, setOpen }: TProps) => {
   }
 
   return (
-    <HmModal open={open} setOpen={setOpen} title="Current Deposit">
+    <HmModal open={open} setOpen={setOpen} title="Add Deposit">
       <Box>
         <Stack>
           <Box
@@ -102,8 +118,8 @@ const DiningModal = ({ mealId, open, setOpen }: TProps) => {
             maxWidth="xs"
             bgcolor="grey.100"
           >
-            <Typography component="legend" sx={{ px: 1, fontSize: "0.9rem" }}>
-              Add Deposit
+            <Typography component="legend" color={isAvailableCurrentDeposit? "success.main" : 'error.main'} sx={{ px: 1, fontSize: "0.9rem" }}>
+              Current Deposit - {baseMealObj.currentDeposit}
             </Typography>
             <Box sx={{ display: "flex", gap: 1 }}>
               <HmForm
@@ -196,7 +212,7 @@ const DiningModal = ({ mealId, open, setOpen }: TProps) => {
                                 p: 0,
                                 minWidth: 1,
                                 mt: 0.5,
-                                bgcolor: "prmary.main",
+                                bgcolor: "primary.main",
                               }}
                             >
                               Paid

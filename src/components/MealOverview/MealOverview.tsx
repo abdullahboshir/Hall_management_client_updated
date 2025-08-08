@@ -3,7 +3,7 @@ import React from "react";
 import MealDateCalender from "./MealDateCalender";
 import ProfileDetails from "./ProfileDetails";
 import { Box } from "@mui/material";
-import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
+import { useGetAllDiningQuery } from "@/redux/api/diningApi";
 import { useGetAllHallsQuery } from "@/redux/api/hallApi";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import { useGetSingleMealQuery } from "@/redux/api/mealApi";
@@ -16,7 +16,7 @@ const MealOverview = () => {
   const { id } = useParams();
   const { data: hallData, isLoading: isHallLoading } = useGetAllHallsQuery({});
   const { data: diningData, isLoading: isDiningLoading } =
-    useGetAllDiningsQuery({});
+    useGetAllDiningQuery({});
 
   const { data: userData, isLoading: userIsLoading } = useGetSingleUserQuery({});
   
@@ -33,7 +33,13 @@ const MealOverview = () => {
   }
 
   return (
-    <Box display="flex" gap='1vw' px='1vw' py='.5vw' justifyContent="space-between">
+    <Box
+      display="flex"
+      py={{ xs: 1, md: '.5vw' }}
+      gap={{ xs: 2, md: 0 }}
+      flexDirection={{ xs: 'column', md: 'row' }}
+      justifyContent={{ xs: 'center', md: 'space-between' }}
+    >
       <ProfileDetails data={studentData? studentData : userData} />
 
       <MiddleInformation

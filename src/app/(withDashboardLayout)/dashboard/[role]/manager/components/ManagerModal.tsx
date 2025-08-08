@@ -6,7 +6,7 @@ import HmInput from "@/components/Form/HmInput";
 import HmSelectField from "@/components/Form/HmSelectField";
 import HmModal from "@/components/Shared/HmModal/HmModal";
 import { BloodGroup, Gender } from "@/constant/common.constant";
-import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
+import { useGetAllDiningQuery } from "@/redux/api/diningApi";
 import { useGetAllHallsQuery } from "@/redux/api/hallApi";
 import { useCreateManagerMutation } from "@/redux/api/managerApi";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
@@ -33,7 +33,7 @@ const ManagerModal = ({ open, setOpen }: TProps) => {
   );
   const { data: hallData, isLoading: hallIsLoading }: { data?: any; isLoading: boolean } = useGetAllHallsQuery({});
   const { data: diningData, isLoading: diningIsLoading } =
-    useGetAllDiningsQuery({});
+    useGetAllDiningQuery({});
   const [createManager, { isLoading: isCreateManagerLoading }] =
     useCreateManagerMutation();
 

@@ -9,7 +9,7 @@ import Progress from "@/components/Shared/Spinner/Progress";
 import Spinner from "@/components/Shared/Spinner/Spinner";
 import { BloodGroup, Designation, Gender } from "@/constant/common.constant";
 import { useCreateAdminMutation } from "@/redux/api/adminApi";
-import { useGetAllDiningsQuery } from "@/redux/api/diningApi";
+import { useGetAllDiningQuery } from "@/redux/api/diningApi";
 import { useGetAllHallsQuery } from "@/redux/api/hallApi";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import { modifyPayload } from "@/utils/modifyPayload";
@@ -32,7 +32,7 @@ const AdminModal = ({ open, setOpen }: TProps) => {
 
   const { data: hallData, isLoading: hallIsLoading } = useGetAllHallsQuery({});
   const { data: diningData, isLoading: diningIsLoading } =
-    useGetAllDiningsQuery({});
+    useGetAllDiningQuery({});
   const [createAdmin, { isLoading: isCreateAdminLoading }] =
     useCreateAdminMutation();
 

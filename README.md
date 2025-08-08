@@ -1,278 +1,270 @@
-# Hall Management System
-
-A comprehensive web application for managing university hall dining operations, built with Next.js, TypeScript, and Material-UI.
-
-## 🚀 Features
-
-- **Multi-role Authentication**: Student, Manager, Moderator, Admin, and Super Admin roles
-- **Dashboard Management**: Role-based dashboards with different functionalities
-- **Dining Management**: Complete dining hall operations management
-- **Meal Overview**: Student meal tracking and management
-- **Real-time Notifications**: Toast notifications using Sonner
-- **Form Management**: Advanced form handling with React Hook Form and Zod validation
-- **State Management**: Redux Toolkit for global state management
-- **PDF Generation**: Export functionality using jsPDF and html2canvas
-- **Responsive Design**: Modern UI with Material-UI components
-
-## 🛠️ Tech Stack
-
-- **Framework**: Next.js 15.3.2 with App Router
-- **Language**: TypeScript
-- **UI Library**: Material-UI (MUI) v6
-- **Styling**: Tailwind CSS
-- **State Management**: Redux Toolkit + React Redux
-- **Form Handling**: React Hook Form + Zod validation
-- **HTTP Client**: Axios
-- **Authentication**: JWT with jwt-decode
-- **Notifications**: Sonner
-- **Date Handling**: date-fns, dayjs
-- **PDF Generation**: jsPDF, html2canvas
-- **Icons**: React Icons
-
-## 📁 Project Structure
-
-```
-src/
-├── app/                    # Next.js App Router
-│   ├── (withDashboardLayout)/  # Dashboard layout wrapper
-│   ├── (withCommonLayout)/     # Common layout wrapper
-│   ├── dashboard/              # Dashboard pages
-│   │   ├── manager/           # Manager-specific pages
-│   │   ├── moderator/         # Moderator-specific pages
-│   │   ├── student/           # Student-specific pages
-│   │   ├── admin/             # Admin-specific pages
-│   │   ├── superAdmin/        # Super Admin-specific pages
-│   │   └── validation/        # Validation pages
-│   ├── login/                 # Authentication pages
-│   ├── register/              # Registration pages
-│   └── [role]/                # Dynamic role-based routing
-├── components/               # Reusable components
-│   ├── Dashboard/            # Dashboard-specific components
-│   ├── Dining/               # Dining management components
-│   ├── Form/                 # Form components
-│   ├── MealOverview/         # Meal tracking components
-│   ├── Post/                 # Post-related components
-│   ├── Shared/               # Shared/common components
-│   └── UI/                   # UI components
-├── redux/                    # Redux store and slices
-├── services/                 # API services and actions
-├── types/                    # TypeScript type definitions
-├── utils/                    # Utility functions
-├── helpers/                  # Helper functions
-├── lib/                      # Library configurations
-├── constant/                 # Constants and configurations
-└── assets/                   # Static assets
-```
-
-## 🔧 Environment Variables
-
-Create a `.env.local` file in the root directory with the following variables:
-
-```env
-# Development Environment
-NEXT_PUBLIC_BACKEND_BASE_API_URL=http://localhost:5000/api/v1
-
-# Production Environment
-NEXT_PUBLIC_API_BASE_URL_LIVE=https://your-production-api.com/api/v1
-
-# Node Environment
-NODE_ENV=development
-```
-
-### Environment Variables Explanation
-
-- `NEXT_PUBLIC_BACKEND_BASE_API_URL`: Backend API URL for development
-- `NEXT_PUBLIC_API_BASE_URL_LIVE`: Backend API URL for production
-- `NODE_ENV`: Environment mode (development/production)
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18+ 
-- npm, yarn, pnpm, or bun
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <your-repository-url>
-   cd hall_management_client
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   # or
-   yarn install
-   # or
-   pnpm install
-   # or
-   bun install
-   ```
-
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your configuration
-   ```
-
-4. **Run the development server**
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   # or
-   pnpm dev
-   # or
-   bun dev
-   ```
-
-5. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
-
-## 📜 Available Scripts
-
-- `npm run dev` - Start development server with Turbopack
-- `npm run build` - Build the application for production
-- `npm run start` - Start the production server
-- `npm run lint` - Run ESLint for code quality
-
-## 🔐 Authentication & Roles
-
-The application supports five user roles:
-
-- **Super Admin**: Full system access and administrative control
-- **Admin**: Administrative access for system management
-- **Manager**: Full access to dining hall management and operations
-- **Moderator**: Limited administrative access for oversight
-- **Student**: Access to meal overview and personal dining information
-
-## 🔑 Login Credentials
-
-### Demo Accounts
-
-For testing purposes, you can use the following demo accounts:
-
-#### 👨‍🎓 Student Account
-```
-Email: [To be added]
-Password: [To be added]
-```
-
-#### 👨‍💼 Manager Account
-```
-Email: [To be added]
-Password: [To be added]
-```
-
-#### 👨‍⚖️ Moderator Account
-```
-Email: [To be added]
-Password: [To be added]
-```
-
-#### 👨‍💻 Admin Account
-```
-Email: [To be added]
-Password: [To be added]
-```
-
-#### 🔧 Super Admin Account
-```
-Email: [To be added]
-Password: [To be added]
-```
-
-### ⚠️ Important Notes
-
-- **Development Environment**: These credentials work with the development backend
-- **Production**: Use real credentials provided by your system administrator
-- **Password Security**: Change default passwords in production environments
-- **Role-based Access**: Each role has different permissions and dashboard access
-
-### 🔄 Password Change
-
-If you're required to change your password on first login:
-1. Login with your credentials
-2. You'll be redirected to the password change page
-3. Set a new secure password
-4. Continue to your dashboard
-
-## 🎨 UI Components
-
-The application uses Material-UI (MUI) components with custom styling:
-
-- **Data Grid**: For tabular data display
-- **Date Pickers**: For date and time selection
-- **Form Components**: Integrated with React Hook Form
-- **Icons**: Material-UI icons and React Icons
-- **Notifications**: Toast notifications with Sonner
-
-## 📊 State Management
-
-- **Redux Toolkit**: For global state management
-- **RTK Query**: For API state management and caching
-- **React Hook Form**: For form state management
-
-## 🔧 Development
-
-### Code Quality
-
-- **ESLint**: Code linting and formatting
-- **TypeScript**: Type safety and IntelliSense
-- **Prettier**: Code formatting (if configured)
-
-### File Naming Conventions
-
-- Components: PascalCase (e.g., `UserProfile.tsx`)
-- Pages: kebab-case (e.g., `meal-overview.tsx`)
-- Utilities: camelCase (e.g., `formatDate.ts`)
-- Constants: UPPER_SNAKE_CASE (e.g., `API_ENDPOINTS.ts`)
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Set environment variables in Vercel dashboard
-4. Deploy automatically on push
-
-### Other Platforms
-
-The application can be deployed to any platform that supports Next.js:
-
-- Netlify
-- Railway
-- DigitalOcean App Platform
-- AWS Amplify
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-For support and questions:
-
-- Create an issue in the repository
-- Contact the development team
-- Check the documentation
-
-## 🔄 Version History
-
-- **v0.1.0** - Initial release with basic functionality
-- More versions to be added as the project evolves
+<div align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=500&size=28&pause=1000&color=6366F1&center=true&vCenter=true&width=435&lines=Hello%2C+I'm+Abdullah+Boshir;Fullstack+Developer;Building+Digital+Experiences" alt="Typing SVG" />
+</div>
+
+<div align="center">
+  <img src="https://komarev.com/ghpvc/?username=abdullahboshir&style=flat-square&color=6366F1" alt="Profile Views" />
+</div>
 
 ---
 
-**Built with ❤️ using Next.js, TypeScript, and Material-UI**
+## 🚀 About Me
+
+```javascript
+const abdullahBoshir = {
+  name: "Abdullah Boshir",
+  role: "Fullstack Developer",
+  location: "Cumilla, Chauttagram, Bangladesh",
+  education: {
+    mba: "MBA in Marketing (2023-2025)",
+    bba: "BBA in Marketing (2017-2022)",
+    institution: "Cumilla Victoria Govt. College (NU)"
+  },
+  courses: [
+    "Next Level Web Development - Programming Hero (2024)",
+    "Complete Web Development Course with Jhankar Mahbub - Programming Hero (2022)"
+  ],
+  passion: "Building scalable web applications with modern technologies",
+  currentlyLearning: "Advanced React Patterns & Microservices",
+  funFact: "I turn coffee into code ☕",
+  philosophy: "I don't believe in declarations; I believe in delivering results that satisfy clients"
+};
+```
+
+## 🛠️ Technical Skills
+
+### Frontend Development
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Material-UI](https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=material-ui&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
+![DaisyUI](https://img.shields.io/badge/DaisyUI-5A0EF8?style=for-the-badge&logo=daisyui&logoColor=white)
+![Redux](https://img.shields.io/badge/Redux-593D88?style=for-the-badge&logo=redux&logoColor=white)
+![React Hook Form](https://img.shields.io/badge/React_Hook_Form-EC5990?style=for-the-badge&logo=react-hook-form&logoColor=white)
+
+### Backend Development
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=for-the-badge&logo=mongoose&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
+
+### Design & Tools
+![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
+![Adobe Photoshop](https://img.shields.io/badge/Adobe_Photoshop-31A8FF?style=for-the-badge&logo=adobe-photoshop&logoColor=white)
+![Adobe Illustrator](https://img.shields.io/badge/Adobe_Illustrator-FF9A00?style=for-the-badge&logo=adobe-illustrator&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)
+![VS Code](https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+
+## 📊 GitHub Stats
+
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=abdullahboshir&show_icons=true&theme=radical&hide_border=true&bg_color=0D1117&title_color=6366F1&text_color=FFFFFF&icon_color=6366F1" alt="GitHub Stats" />
+  
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=abdullahboshir&theme=radical&hide_border=true&background=0D1117&stroke=6366F1&ring=6366F1&fire=6366F1&currStreakNum=FFFFFF&currStreakLabel=6366F1&sideNums=FFFFFF&sideLabels=FFFFFF&dates=FFFFFF" alt="GitHub Streak" />
+</div>
+
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=abdullahboshir&layout=compact&theme=radical&hide_border=true&bg_color=0D1117&title_color=6366F1&text_color=FFFFFF" alt="Top Languages" />
+</div>
+
+## 🏆 Featured Projects
+
+### 🌍 Travel Buddy
+A comprehensive tour services website with interactive features and modern UI.
+
+![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=flat-square&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-404D59?style=flat-square&logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=flat-square&logo=prisma&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=json-web-tokens&logoColor=white)
+
+**Key Features:**
+- Interactive tour booking system
+- Modern responsive UI with Tailwind CSS
+- PostgreSQL database with Prisma ORM
+- RESTful API with Node.js and Express.js
+- JWT authentication and authorization
+- Smooth user experience with performance optimization
+
+**🔗 Links:**
+- [Live Demo](https://travel-buddy-client-eight.vercel.app/)
+- [Client Repository](https://github.com/abdullahboshir/Travel_buddy_client)
+- [Server Repository](https://github.com/abdullahboshir/Travel_buddy_server)
+
+---
+
+### 🏠 Hall Management System
+A full-featured web application for managing hall operations, users, and meal data with advanced admin control.
+
+![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)
+![Material-UI](https://img.shields.io/badge/Material--UI-0081CB?style=flat-square&logo=material-ui&logoColor=white)
+![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-593D88?style=flat-square&logo=redux&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=flat-square&logo=mongodb&logoColor=white)
+![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=flat-square&logo=mongoose&logoColor=white)
+![Zod](https://img.shields.io/badge/Zod-3B82F6?style=flat-square&logo=zod&logoColor=white)
+
+**Key Features:**
+- Multi-role authentication (Student, Manager, Moderator, Admin, Super Admin)
+- Role-based dashboards with different functionalities
+- Real-time notifications and form management with Zod validation
+- MUI DataGrid & DatePickers for enhanced user experience
+- MongoDB with Mongoose for scalable data handling
+- JWT-based authentication and role-based access control
+- PDF generation and export functionality
+
+**🔗 Links:**
+- [Live Demo](https://hall-management-client.vercel.app/login)
+- [Client Repository](https://github.com/abdullahboshir/Hall_management_client_updated)
+- [Server Repository](https://github.com/abdullahboshir/Dining_management_server_updated)
+
+---
+
+### 🔧 Parts Zone
+A clean and responsive car parts website designed for simple user experience.
+
+![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=flat-square&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-404D59?style=flat-square&logo=express&logoColor=white)
+![React Hook Form](https://img.shields.io/badge/React_Hook_Form-EC5990?style=flat-square&logo=react-hook-form&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?style=flat-square&logo=react-router&logoColor=white)
+
+**Key Features:**
+- Clean and responsive design with Tailwind CSS
+- Custom CSS for enhanced styling
+- React Hook Form for form management
+- React Router for navigation
+- Minimal design while maintaining real-world structure
+- Performance optimized backend with Node.js and Express.js
+
+**🔗 Links:**
+- [Live Demo](https://parts-zone.web.app/)
+- [Client Repository](https://github.com/abdullahboshir/parts_zone_client)
+- [Server Repository](https://github.com/abdullahboshir/parts_zone_server)
+
+## 🎯 What I Do
+
+- 🔧 **Fullstack Development**: Building complete web applications from frontend to backend
+- 🎨 **UI/UX Design**: Creating intuitive and responsive user interfaces with modern design principles
+- 🗄️ **Database Design**: Designing efficient database schemas with MongoDB and PostgreSQL
+- 🚀 **Performance Optimization**: Optimizing applications for speed and scalability
+- 🔒 **Security Implementation**: Implementing JWT authentication and role-based authorization
+- 📱 **Responsive Design**: Ensuring applications work seamlessly across all devices
+- 🎯 **Problem Solving**: Creative solutions for complex web development challenges
+
+## 📈 My Development Process
+
+```mermaid
+graph LR
+    A[Planning & Analysis] --> B[Design & Prototyping]
+    B --> C[Development]
+    C --> D[Testing & Debugging]
+    D --> E[Deployment]
+    E --> F[Maintenance & Updates]
+```
+
+## 🎓 Education & Certifications
+
+### Academic Background
+- **MBA in Marketing** (2023-2025) - Cumilla Victoria Govt. College (NU)
+- **BBA in Marketing** (2017-2022) - Cumilla Victoria Govt. College (NU)
+
+### Professional Development
+- **Next Level Web Development** - Programming Hero (2024)
+- **Complete Web Development Course** with Jhankar Mahbub - Programming Hero (2022)
+
+## 🌟 Core Competencies
+
+### Programming Languages
+- **JavaScript/TypeScript**: Advanced proficiency in modern ES6+ features
+- **HTML/CSS**: Expert level with responsive design principles
+- **SQL**: Database querying and management
+
+### Frameworks & Libraries
+- **Frontend**: React.js, Next.js, Redux Toolkit, Material-UI, Bootstrap, DaisyUI
+- **Backend**: Node.js, Express.js, Mongoose, Prisma
+- **Database**: MongoDB, PostgreSQL
+- **Styling**: Tailwind CSS, Custom CSS, Responsive Design
+- **Forms**: React Hook Form with Zod validation
+
+### Development Tools
+- **Version Control**: Git, GitHub
+- **Package Managers**: npm, yarn
+- **API Testing**: Postman
+- **Design Tools**: Figma, Adobe Photoshop, Adobe Illustrator
+- **Deployment**: Vercel, Firebase
+
+## 📫 Let's Connect
+
+<div align="center">
+  <a href="https://www.linkedin.com/in/abdullahboshir" target="_blank">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
+  
+  <a href="mailto:abdullahboshir@gmail.com">
+    <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
+  </a>
+  
+  <a href="https://abdullahboshir.vercel.app" target="_blank">
+    <img src="https://img.shields.io/badge/Portfolio-FF5722?style=for-the-badge&logo=todoist&logoColor=white" alt="Portfolio" />
+  </a>
+  
+  <a href="tel:+8801852141471">
+    <img src="https://img.shields.io/badge/Phone-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Phone" />
+  </a>
+</div>
+
+## 🎉 Fun Facts
+
+- 🎮 I love playing with new technologies and building side projects
+- ☕ Coffee is my fuel for coding sessions
+- 📚 Always learning and exploring new frameworks and libraries
+- 🌍 Passionate about creating solutions that make a difference
+- 🎯 Goal: Contribute to open-source projects and help the developer community
+- 💼 Background in Marketing gives me unique perspective on user experience
+
+## 📊 Weekly Development Breakdown
+
+```text
+💻 This Week I Spent My Time On:
+🟡 JavaScript/TypeScript  ████████████████████░░░░  80.0%
+🟢 HTML/CSS               ████████░░░░░░░░░░░░░░░░  20.0%
+🟠 React/Next.js          ████████████████████████ 100.0%
+🔴 Node.js/Express         ████████████████████████ 100.0%
+```
+
+## 🌍 Languages
+
+- **English**: Fluent
+- **Hindi**: Conversational
+- **Bengali**: Native
+
+---
+
+<div align="center">
+  <img src="https://github-profile-trophy.vercel.app/?username=abdullahboshir&theme=radical&no-frame=true&no-bg=false&margin-w=4" alt="GitHub Trophies" />
+</div>
+
+<div align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=500&size=20&pause=1000&color=6366F1&center=true&vCenter=true&width=435&lines=Thanks+for+visiting+my+profile!;Let's+build+something+amazing+together+%F0%9F%9A%80" alt="Typing SVG" />
+</div>
+
+---
+
+<div align="center">
+  <sub>Made with ❤️ by Abdullah Boshir</sub>
+</div>

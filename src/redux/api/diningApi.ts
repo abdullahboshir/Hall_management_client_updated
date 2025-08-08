@@ -4,9 +4,9 @@ import { baseApi } from "./baseApi";
 
 const diningApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getAllDinings: build.query({
+    getAllDining: build.query({
       query: () => ({
-        url: "/dining/getAllDinings",
+        url: "/dining/getAllDining",
         method: "GET",
       }),
       providesTags: [tagTypes.dining],
@@ -22,4 +22,4 @@ const diningApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAllDiningsQuery, useUpdateDiningMutation } = diningApi;
+export const { useGetAllDiningQuery, useUpdateDiningMutation } = diningApi;

@@ -143,8 +143,8 @@ const MiddleSection = () => {
 
   return (
     <Box
-      px={2}
-      height="100vh"
+      px={{ xs: 1, sm: 2, md: 2 }}
+      height={{ xs: "auto", md: "100vh" }}
       overflow="auto"
       ref={containerRef}
       sx={{
@@ -159,7 +159,7 @@ const MiddleSection = () => {
 
       <Stack>
         <Box>
-          <Grid2 container spacing={2} gap={1}>
+          <Grid2 container spacing={{ xs: 1, md: 2 }} gap={{ xs: 1, md: 1 }}>
             <Grid2 size={12}>
               <Box
                 width="100%"
@@ -167,15 +167,14 @@ const MiddleSection = () => {
                 justifyContent="center"
                 alignItems="center"
                 bgcolor="primary.light"
-                p={2}
+                p={{ xs: 1, sm: 2 }}
                 borderRadius={2}
-                
               >
-                <Box bgcolor="white" px={7} py={2} borderRadius={1} >
+                <Box bgcolor="white" px={{ xs: 2, sm: 4, md: 7 }} py={{ xs: 1, sm: 2 }} borderRadius={1}>
                   <Box
                     onClick={() => setOpen(true)}
-                    width="30vw"
-                    height="6vh"
+                    width={{ xs: "100%", sm: "50vw", md: "30vw" }}
+                    height={{ xs: "8vh", sm: "6vh" }}
                     border={2}
                     borderRadius={2}
                     borderColor="secondary.light"
@@ -184,7 +183,10 @@ const MiddleSection = () => {
                     alignItems="center"
                     sx={{ cursor: "pointer" }}
                   >
-                    <Typography fontWeight="bold" fontSize="1vw">
+                    <Typography 
+                      fontWeight="bold" 
+                      fontSize={{ xs: "14px", sm: "16px", md: "1vw" }}
+                    >
                       Add a Post
                     </Typography>
                   </Box>
@@ -193,15 +195,13 @@ const MiddleSection = () => {
             </Grid2>
 
             <Grid2 size={12}>
-              <Box bgcolor="primary.light" p={2} borderRadius={2}>
+              <Box bgcolor="primary.light" p={{ xs: 1, sm: 2 }} borderRadius={2}>
                 <Box mt={2} display="flex" flexDirection="column" gap={3}>
                   {allPosts.slice(0, visiblePosts).map((post: any) => {
-                    // const isLast = i === allPosts.length - 1;
                     return (
                       <Box
                         key={post._id}
-                        // ref={isLast ? lastPostRef : null}
-                        p={3}
+                        p={{ xs: 2, sm: 3 }}
                         borderRadius={3}
                         boxShadow={3}
                         bgcolor="background.paper"
@@ -217,19 +217,22 @@ const MiddleSection = () => {
                           alignItems="center"
                           justifyContent="center"
                           mb={2}
+                          flexDirection={{ xs: "column", sm: "row" }}
+                          gap={{ xs: 1, sm: 0 }}
                         >
                           <Box
                             display="flex"
                             alignItems="center"
                             justifyContent="center"
+                            flexDirection={{ xs: "column", sm: "row" }}
+                            gap={{ xs: 1, sm: 0 }}
                           >
                             <Box
                               position="relative"
-                              width={50}
-                              height={50}
+                              width={{ xs: 40, sm: 50 }}
+                              height={{ xs: 40, sm: 50 }}
                               overflow="hidden"
                               borderRadius={1}
-                              // border={1}
                             >
                               <Image
                                 src={
@@ -246,14 +249,16 @@ const MiddleSection = () => {
                             </Box>
 
                             <Box
-                              ml={1.5}
+                              ml={{ xs: 0, sm: 1.5 }}
                               display="flex"
                               flexDirection={"column"}
+                              textAlign={{ xs: "center", sm: "left" }}
                             >
                               <Typography
                                 variant="subtitle1"
                                 fontWeight={600}
                                 lineHeight={1}
+                                fontSize={{ xs: "14px", sm: "16px" }}
                               >
                                 {post?.createdBy?.fullName}
                               </Typography>
@@ -261,7 +266,7 @@ const MiddleSection = () => {
                                 variant="caption"
                                 color="text.secondary"
                                 lineHeight={1.5}
-                                // mt={-0.3}
+                                fontSize={{ xs: "12px", sm: "14px" }}
                               >
                                 Posted by {post?.createdBy?.role}
                               </Typography>
@@ -269,10 +274,10 @@ const MiddleSection = () => {
                                 variant="caption"
                                 color="text.secondary"
                                 lineHeight={1}
-                                // mt={-0.3}
+                                fontSize={{ xs: "12px", sm: "14px" }}
                               >
                                 <AccessTimeFilledIcon
-                                  sx={{ fontSize: "13px" }}
+                                  sx={{ fontSize: { xs: "12px", sm: "13px" } }}
                                 />{" "}
                                 {getTimeAgo(post?.createdAt)} ago
                               </Typography>
@@ -281,34 +286,26 @@ const MiddleSection = () => {
 
                           <Box
                             display="flex"
-                            flexDirection="column"
-                            alignItems="flex-end"
-                            ml="auto"
+                            flexDirection="row"
+                            alignItems="center"
+                            justifyContent="center"
+                            ml={{ xs: 0, sm: "auto" }}
+                            gap={1}
                           >
                             <Typography
                               variant="caption"
                               color="text.secondary"
-                              fontSize={16}
+                              fontSize={{ xs: "14px", sm: "16px" }}
                             >
-                              {/* {
-                                new Date(post.createdAt)
-                                  .toTimeString()
-                                  .split(" ")[0]
-                              } */}
                               <MoreHorizIcon />
                             </Typography>
                             <Typography
                               variant="caption"
                               color="text.secondary"
-                              fontSize={16}
+                              fontSize={{ xs: "14px", sm: "16px" }}
                               onClick={() => handleBookmarkUpdate(post?._id)}
                               sx={{ cursor: "pointer" }}
                             >
-                              {/* {new Date(post.createdAt).getDate() +
-                                "/" +
-                                (new Date(post.createdAt).getMonth() + 1) +
-                                "/" +
-                                new Date(post.createdAt).getFullYear()} */}
                               {post?.bookmarks.includes(userData?.user?._id) ? (
                                 <BookmarkIcon />
                               ) : (
@@ -326,10 +323,15 @@ const MiddleSection = () => {
                           fontWeight={600}
                           gutterBottom
                           mt={2}
+                          fontSize={{ xs: "16px", sm: "18px", md: "20px" }}
                         >
                           {post?.title}
                         </Typography>
-                        <Typography variant="body1" color="text.secondary">
+                        <Typography 
+                          variant="body1" 
+                          color="text.secondary"
+                          fontSize={{ xs: "14px", sm: "16px" }}
+                        >
                           {post?.description}
                         </Typography>
 
@@ -360,14 +362,13 @@ const MiddleSection = () => {
                                   display="flex"
                                   gap={1}
                                   width="100%"
-                                  height={150} // Adjust this if you want landscape or square
+                                  height={{ xs: 100, sm: 150 }}
                                 >
                                   {row.map((img: string, idx: number) => (
                                     <Box
                                       key={idx}
                                       flex={1}
                                       position="relative"
-                                      // borderRadius={2}
                                       overflow="hidden"
                                     >
                                       <Image
@@ -383,7 +384,12 @@ const MiddleSection = () => {
                           </Box>
                         )}
 
-                        <Box my={2} display="flex" gap={2}>
+                        <Box 
+                          my={2} 
+                          display="flex" 
+                          gap={2}
+                          flexDirection={{ xs: "column", sm: "row" }}
+                        >
                           <Button
                             onClick={() => handlePostUpdate(post?._id)}
                             size="small"
@@ -393,6 +399,7 @@ const MiddleSection = () => {
                                 ? "contained"
                                 : "outlined"
                             }
+                            fullWidth={{ xs: true, sm: false }}
                           >
                             👍 Like ({post?.likes.length})
                           </Button>
@@ -402,6 +409,7 @@ const MiddleSection = () => {
                             size="small"
                             variant="outlined"
                             sx={{ px: 1 }}
+                            fullWidth={{ xs: true, sm: false }}
                           >
                             💬 Comment ({post?.comments?.length})
                           </Button>
@@ -410,7 +418,7 @@ const MiddleSection = () => {
                         {isPostIdMatch === post?._id && (
                           <Box
                             mt={2}
-                            p={2}
+                            p={{ xs: 1, sm: 2 }}
                             borderRadius={2}
                             bgcolor="background.paper"
                             maxWidth="100%"
@@ -424,7 +432,6 @@ const MiddleSection = () => {
                                 alignItems="center"
                                 justifyContent={"space-between"}
                                 flexDirection={{
-                                  lg: "row",
                                   xs: "column",
                                   sm: "row",
                                 }}
@@ -437,7 +444,6 @@ const MiddleSection = () => {
                                 {/* Close Button */}
                                 <Typography
                                   onClick={() => setIsPostIdMatch("")}
-                                  // bgcolor='error.light'
                                   px={1}
                                   borderRadius={1}
                                   sx={{
@@ -457,17 +463,15 @@ const MiddleSection = () => {
                                       display: "flex",
                                       alignItems: "center",
                                       justifyContent: "center",
-                                      // border: '1px solid #ccc',
-                                      // px: 2,
                                       py: 1,
-                                      // bgcolor: '#f9f9f9',
                                       width: "100%",
+                                      flexDirection: { xs: "column", sm: "row" },
+                                      gap: { xs: 1, sm: 0 },
                                     }}
                                   >
                                     <HmInput
                                       name="text"
                                       label="Write a comment..."
-                                      // isMultiline={true}
                                     />
 
                                     <Button
@@ -479,7 +483,8 @@ const MiddleSection = () => {
                                         textTransform: "none",
                                         p: 0,
                                         minWidth: "32px",
-                                        ml: "20px",
+                                        ml: { xs: 0, sm: "20px" },
+                                        mt: { xs: 1, sm: 0 },
                                       }}
                                     >
                                       <SendIcon />
@@ -511,8 +516,8 @@ const MiddleSection = () => {
                                           alt={"user"}
                                           src={comment?.user?.profileImg}
                                           sx={{
-                                            width: 30,
-                                            height: 30,
+                                            width: { xs: 25, sm: 30 },
+                                            height: { xs: 25, sm: 30 },
                                             "& img": {
                                               objectFit: "cover",
                                               objectPosition: "top",
@@ -522,13 +527,13 @@ const MiddleSection = () => {
 
                                         <Box>
                                           <Typography
-                                            fontSize="1vw"
+                                            fontSize={{ xs: "12px", sm: "14px", md: "1vw" }}
                                             fontWeight={600}
                                           >
                                             {comment?.user?.fullName}
                                           </Typography>
                                           <Typography
-                                            fontSize="1vw"
+                                            fontSize={{ xs: "11px", sm: "12px", md: "1vw" }}
                                             lineHeight={0.4}
                                           >
                                             {comment?.user?.role}
@@ -536,7 +541,10 @@ const MiddleSection = () => {
                                         </Box>
                                       </Stack>
 
-                                      <Typography color="text.secondary">
+                                      <Typography 
+                                        color="text.secondary"
+                                        fontSize={{ xs: "13px", sm: "14px" }}
+                                      >
                                         {comment?.text}
                                       </Typography>
 
@@ -571,7 +579,6 @@ const MiddleSection = () => {
                                               )}
                                               {comment?.likes.length}
                                             </Box>
-                                            {/* <Typography variant="body2">{comment?.likes.length}</Typography> */}
                                           </Box>
                                           <Box>
                                             <Box
@@ -594,10 +601,11 @@ const MiddleSection = () => {
                                               )}{" "}
                                               {comment?.dislikes.length}
                                             </Box>
-                                            {/* <Typography variant="body2">{comment?.dislikes.length}</Typography> */}
                                           </Box>
                                         </Stack>
-                                        Reply
+                                        <Typography fontSize={{ xs: "12px", sm: "14px" }}>
+                                          Reply
+                                        </Typography>
                                       </Stack>
                                     </Box>
                                   )
@@ -630,8 +638,6 @@ const MiddleSection = () => {
                     </Typography>
                   </Box>
                 )}
-
-
               </Box>
             </Grid2>
           </Grid2>

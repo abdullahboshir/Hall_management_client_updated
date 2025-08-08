@@ -5,7 +5,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { DayCalendarSkeleton } from "@mui/x-date-pickers/DayCalendarSkeleton";
-import { Box, FormControlLabel, IconButton, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useUpdateMealStatusMutation } from "@/redux/api/mealApi";
 import { currentDateBD } from "@/utils/currentDateBD";
 import { toast } from "sonner";
@@ -22,13 +28,12 @@ export default function MealDateCalendar({
   diningData,
   isMealLoading,
   userIsLoading,
-}:any) {
+}: any) {
   const [mealDays, setMealDays] = React.useState<number[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
-      const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
-      const [mealSelectedId, setMealSelectedId] = React.useState(null);
+  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+  const [mealSelectedId, setMealSelectedId] = React.useState(null);
   const [currentViewDate, setCurrentViewDate] = React.useState<Dayjs>(today);
-  
 
   const [checked, setChecked] = React.useState(false);
 
@@ -47,13 +52,15 @@ export default function MealDateCalendar({
     const mealHistory: Record<string, number> =
       mealData?.mealInfo?.[yearStr]?.[monthName]?.dailyMealHistory || {};
 
-const activeDays = Object.entries(mealHistory).reduce<number[]>((acc, [day, value]) => {
-  if (value === 1) acc.push(Number(day));
-  return acc;
-}, []);
+    const activeDays = Object.entries(mealHistory).reduce<number[]>(
+      (acc, [day, value]) => {
+        if (value === 1) acc.push(Number(day));
+        return acc;
+      },
+      []
+    );
 
-setMealDays(activeDays);
-
+    setMealDays(activeDays);
   }, [mealData, currentViewDate]);
 
   const handleMonthChange = (date: Dayjs) => {
@@ -62,7 +69,6 @@ setMealDays(activeDays);
     setTimeout(() => setIsLoading(false), 300);
   };
 
- 
   React.useEffect(() => {
     if (mealData?.mealStatus) {
       setChecked(mealData.mealStatus === "on");
@@ -96,7 +102,7 @@ setMealDays(activeDays);
         if (res?.id) {
           toast.success(`Meal is ${res?.mealStatus}`);
         }
-      } catch (error:any) {
+      } catch (error: any) {
         console.error("Error updating meal status:", error);
         toast.error(error?.data);
       }
@@ -104,24 +110,31 @@ setMealDays(activeDays);
   };
 
   return (
-    <Stack bgcolor="primary.light" p='1vw' borderRadius={2}>
+    <Stack bgcolor="primary.light" p="1vw" borderRadius={2}>
       <Box
         display="flex"
         justifyContent="center"
         alignItems="center"
         bgcolor="white"
         borderRadius={2}
-        p={3}
+        p={2}
+        
       >
+        <Box bgcolor="primary.main" width={'100%'} borderRadius={1} display="flex"
+        justifyContent="center"
+        alignItems="center"
+       p={1}
+        >
         <FormControlLabel
           control={
             <MealToggleSwitch checked={checked} onChange={handleToggleChange} />
           }
           label=""
-        />
-        <Typography fontWeight="bold">
+          />
+        <Typography fontWeight="bold"  color={'white'}>
           Toggle to Meal {checked ? "OFF" : "ON"}
         </Typography>
+          </Box>
       </Box>
 
       <Box
@@ -144,8 +157,7 @@ setMealDays(activeDays);
               zIndex: 10,
               pointerEvents: "none",
             }}
-          >
-          </Box>
+          ></Box>
 
           {/* Calendar */}
           <DateCalendar
@@ -162,36 +174,35 @@ setMealDays(activeDays);
           />
         </LocalizationProvider>
       </Box>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        bgcolor="white"
+        borderRadius={2}
+        p={1}
+      >
+        <Button
+          onClick={() => {
+            setIsModalOpen(true);
+            setMealSelectedId(mealData?._id);
+          }}
+          sx={{px: 8}}
+        >
+          <Typography fontWeight="bold" color="white" mr={1}>
+            Add to Deposit
+          </Typography>{" "}
+          <AddCardIcon />
+        </Button>
 
-                  <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    bgcolor="white"
-                    borderRadius={2}
-                    p={1}
-                  >
-      
-                <IconButton
-                  onClick={() => {
-                    setIsModalOpen(true);
-                    setMealSelectedId(mealData?._id);
-                  }}
-                  aria-label="delete"
-                >
-               <Typography px={2} fontWeight='bold'>Add to Deposit</Typography>  <AddCardIcon />
-                </IconButton>
-      
-      
-            <Stack>
-              <DiningModal
-                open={isModalOpen}
-                setOpen={setIsModalOpen}
-                mealId={mealSelectedId}
-              />
-            </Stack>
-      
-                  </Box>
+        <Stack>
+          <DiningModal
+            open={isModalOpen}
+            setOpen={setIsModalOpen}
+            mealId={mealSelectedId}
+          />
+        </Stack>
+      </Box>
     </Stack>
   );
 }

@@ -40,14 +40,31 @@ export default function HmSelectField({
           size={size}
           error={!!error?.message}
           helperText={error?.message}
-          sx={{ ...sx }}
+          sx={{ 
+            ...sx,
+            "& .MuiInputLabel-root": {
+              fontSize: { xs: "12px", sm: "14px" }
+            },
+            "& .MuiInputBase-input": {
+              fontSize: { xs: "12px", sm: "14px" }
+            },
+            "& .MuiFormHelperText-root": {
+              fontSize: { xs: "10px", sm: "12px" }
+            }
+          }}
           onChange={(event) => {
             field.onChange(event);
             onChange?.(event.target.value);
           }}
         >
           {items.map((name) => (
-            <MenuItem key={name} value={name}>
+            <MenuItem 
+              key={name} 
+              value={name}
+              sx={{
+                fontSize: { xs: "12px", sm: "14px" }
+              }}
+            >
               {name}
             </MenuItem>
           ))}

@@ -8,28 +8,38 @@ const PostContainer = () => {
     <Box
       position="relative"
       overflow="hidden"
-      width="98.8vw"
-      height="91.4vh"
+      width="100%"
+      height={{ xs: "auto", sm: "auto", md: "91.4vh" }}
       display="flex"
-      flexDirection="row"
+      flexDirection={{ xs: "column", md: "row" }}
       pt={1}
+      gap={{ xs: 2, md: 0 }}
     >
-
-  <Box width="27%" top={0} left={0}>
+      {/* Left Section - Hidden on mobile, visible on larger screens */}
+      <Box 
+        width={{ xs: "100%", md: "27%" }} 
+        display={{ xs: "none", md: "block" }}
+        top={0} 
+        left={0}
+      >
         <LeftSection />
       </Box>
-
       
-      <Box width="46%">
+      {/* Middle Section - Full width on mobile, 46% on larger screens */}
+      <Box width={{ xs: "100%", md: "46%" }}>
         <MiddleSection />
       </Box>
 
-      <Box width="27%" position="sticky" top={0} left={0}>
+      {/* Right Section - Hidden on mobile, visible on larger screens */}
+      <Box 
+        width={{ xs: "100%", md: "27%" }} 
+        display={{ xs: "none", md: "block" }}
+        position="sticky" 
+        top={0} 
+        left={0}
+      >
         <RightSection />
       </Box>
-
-
-    
     </Box>
   );
 };

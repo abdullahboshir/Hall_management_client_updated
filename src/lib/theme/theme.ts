@@ -1,26 +1,34 @@
 import { createTheme } from "@mui/material/styles";
 
-
-declare module '@mui/material/styles' {
+declare module "@mui/material/styles" {
   interface Palette {
-    gray: Palette['primary'];
+    gray: Palette["primary"];
   }
   interface PaletteOptions {
-    gray?: PaletteOptions['primary'];
+    gray?: PaletteOptions["primary"];
   }
 }
 
-declare module '@mui/material/Button' {
+declare module "@mui/material/Button" {
   interface ButtonPropsColorOverrides {
     gray: true;
   }
 }
 
 export const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
   palette: {
     primary: {
       main: "#0075ED",
-      light: "rgb(209, 215, 228)",
+      light: "rgba(231, 233, 240, 1)",
       dark: "#002884",
       contrastText: "#fff",
     },
@@ -28,7 +36,12 @@ export const theme = createTheme({
       main: "#03DAC6",
       light: "rgb(119, 128, 146)",
     },
-gray: {
+    success: {
+      main: "#2e7d32",
+      light: "#4caf50",
+      dark: "#1b5e20",
+    },
+    gray: {
       main: "#9e9e9e",
       light: "#eeececff",
       dark: "#616161",
@@ -45,11 +58,6 @@ gray: {
     MuiButton: {
       defaultProps: {
         variant: "contained",
-      },
-      styleOverrides: {
-        root: {
-          padding: "8px 24px",
-        },
       },
     },
     MuiContainer: {

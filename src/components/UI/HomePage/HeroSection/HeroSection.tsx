@@ -8,20 +8,37 @@ const HeroSection = () => {
     <Container
       sx={{
         display: "flex",
-        direction: "row",
-        my: 16,
+        flexDirection: { xs: "column", md: "row" },
+        my: { xs: 4, sm: 8, md: 16 },
+        gap: { xs: 2, md: 0 },
+        position: "relative",
       }}
     >
-      <Box>
-        <Typography variant="h2">Left Section</Typography>
+      <Box 
+        order={{ xs: 2, md: 1 }}
+        textAlign={{ xs: "center", md: "left" }}
+      >
+        <Typography 
+          variant="h2"
+          fontSize={{ xs: "24px", sm: "32px", md: "48px" }}
+        >
+          Left Section
+        </Typography>
       </Box>
-      <Box sx={{ flex: 1, position: "absolute" }}>
+      <Box 
+        sx={{ 
+          flex: 1, 
+          position: { xs: "relative", md: "absolute" },
+          order: { xs: 1, md: 2 }
+        }}
+      >
         <Box
           sx={{
-            position: "absolute",
-            width: "700px",
-            top: "-90px",
-            left: "-120px",
+            position: { xs: "relative", md: "absolute" },
+            width: { xs: "100%", sm: "500px", md: "700px" },
+            top: { xs: 0, md: "-90px" },
+            left: { xs: 0, md: "-120px" },
+            mx: { xs: "auto", md: 0 },
           }}
         >
           {/* <Image
@@ -32,8 +49,16 @@ const HeroSection = () => {
           /> */}
         </Box>
       </Box>
-      <Box>
-        <Typography variant="h2">Right Section</Typography>
+      <Box 
+        order={{ xs: 3, md: 3 }}
+        textAlign={{ xs: "center", md: "left" }}
+      >
+        <Typography 
+          variant="h2"
+          fontSize={{ xs: "24px", sm: "32px", md: "48px" }}
+        >
+          Right Section
+        </Typography>
       </Box>
     </Container>
   );

@@ -10,3 +10,128 @@
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+
+/* Mobile-first responsive design */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+    scrollbar-color: rgba(100, 100, 100, 0.4) transparent;
+}
+
+/* Touch-friendly buttons for mobile */
+@media (max-width: 600px) {
+  button, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Custom scrollbar */
+/* ::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+} */
+
+/* ::-webkit-scrollbar-thumb {
+  background: #0075ED;
+  border-radius: 3px;
+  width: 1px;
+} */
+
+/* Responsive utilities */
+.hidden-xs {
+  display: none;
+}
+
+@media (min-width: 600px) {
+  .hidden-xs {
+    display: block;
+  }
+  
+  .hidden-sm {
+    display: none;
+  }
+}
+
+@media (min-width: 900px) {
+  .hidden-sm {
+    display: block;
+  }
+  
+  .hidden-md {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .hidden-md {
+    display: block;
+  }
+  
+  .hidden-lg {
+    display: none;
+  }
+}
+
+/* Mobile-first responsive text */
+.text-responsive {
+  font-size: 14px;
+}
+
+@media (min-width: 600px) {
+  .text-responsive {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 900px) {
+  .text-responsive {
+    font-size: 18px;
+  }
+}
+
+/* Touch-friendly buttons for mobile */
+@media (max-width: 600px) {
+  button, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Prevent horizontal scroll on mobile */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better focus indicators for accessibility */
+*:focus {
+  outline: 2px solid #0075ED;
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0075ED;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0056b3;
+}

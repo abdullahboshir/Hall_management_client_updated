@@ -15,7 +15,7 @@ function GradientCircularProgress() {
         </defs>
       </svg>
       <CircularProgress
-        size={50}
+        size={{ xs: 30, sm: 40, md: 50 }}
         sx={{ "svg circle": { stroke: "url(#my_gradient)" } }}
       />
     </React.Fragment>
@@ -24,7 +24,14 @@ function GradientCircularProgress() {
 
 export default function Spinner() {
   return (
-    <Stack width='100%' height='100vh' display='flex' alignItems='center' justifyContent='center' sx={{ flexGrow: 1 }}>
+    <Stack 
+      width='100%' 
+      height={{ xs: '50vh', sm: '100vh' }} 
+      display='flex' 
+      alignItems='center' 
+      justifyContent='center' 
+      sx={{ flexGrow: 1 }}
+    >
       <GradientCircularProgress />
     </Stack>
   );

@@ -1,6 +1,6 @@
 
 
-export const calculateTotalmaintenanceFee = (row:any) => {
+export const calculateTotalMaintenanceFee = (row:any) => {
         const monthsWithZeroMaintenance: Record<string, string[]> = {}; // Object to store years and months
 
         for (const year in row?.mealInfo) {

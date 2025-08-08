@@ -66,7 +66,7 @@ export default function Notifications({ data, isLoading, refetch, setFilters}:an
       {isLoading ? (
         <Spinner/>
       ) : (
-        <Paper square sx={{ height: "88vh", overflow: "auto", p: -3, m: -3 }}>
+        <Paper square sx={{ height: "88vh", overflow: "auto" }}>
           <Box
             height="50px"
             width="100%"
