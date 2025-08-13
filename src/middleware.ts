@@ -69,6 +69,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+    if (/^\/dashboard\/[a-z]+\/profile\/[^/]+$/.test(pathname)) {
+    return NextResponse.next();
+  }
+
   // Role-specific dashboard prefix check
   const expectedPrefix = roleBasedPrefixes[role as keyof typeof roleBasedPrefixes];
   if (expectedPrefix && pathname.startsWith(expectedPrefix)) {

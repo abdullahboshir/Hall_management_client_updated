@@ -29,7 +29,7 @@ const DiningModal = ({ mealId, open, setOpen }: TProps) => {
     const { data: diningData, isLoading: isDiningLoading } =
       useGetAllDiningQuery({});
 
-  console.log('cureeeeeeeeeeeeeee', data)
+
     const baseMealObj = data?.mealInfo?.[currentYear]?.[currentMonth] || {};
         const mealCharge = diningData?.diningPolicies?.mealCharge;
 

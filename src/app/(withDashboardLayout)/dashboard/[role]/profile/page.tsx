@@ -3,15 +3,15 @@ import React from "react";
 import Profile from "@/components/Shared/Profile/Profile";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
 import Spinner from "@/components/Shared/Spinner/Spinner";
+import { useGetSingleStudentQuery } from "@/redux/api/studentApi";
+import { useParams } from "next/navigation";
 
 const UserProfile = () => {
   const { data, isLoading } = useGetSingleUserQuery({});
 
+  if (isLoading) return <Spinner />;
 
-  if(isLoading) {return <Spinner />;}
-
-
-  return <>{isLoading ?   <Spinner/> : <Profile data={data} />}</>;
+  return <>{isLoading ? <Spinner /> : <Profile data={data} />}</>;
 };
 
 export default UserProfile;

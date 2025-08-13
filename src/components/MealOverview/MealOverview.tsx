@@ -28,6 +28,7 @@ const MealOverview = () => {
   
   const { data: studentData, isLoading: isStudentLoading } = useGetSingleStudentQuery(mealData?.student?._id);
 
+
   if (userIsLoading || isMealLoading || isHallLoading || isDiningLoading || isStudentLoading) {
     return <Spinner />;
   }

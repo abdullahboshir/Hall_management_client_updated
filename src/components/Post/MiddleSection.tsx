@@ -399,7 +399,7 @@ const MiddleSection = () => {
                                 ? "contained"
                                 : "outlined"
                             }
-                            fullWidth={{ xs: true, sm: false }}
+                        
                           >
                             👍 Like ({post?.likes.length})
                           </Button>
@@ -409,7 +409,7 @@ const MiddleSection = () => {
                             size="small"
                             variant="outlined"
                             sx={{ px: 1 }}
-                            fullWidth={{ xs: true, sm: false }}
+                            
                           >
                             💬 Comment ({post?.comments?.length})
                           </Button>

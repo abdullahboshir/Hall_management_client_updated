@@ -15,8 +15,7 @@ function GradientCircularProgress() {
         </defs>
       </svg>
       <CircularProgress
-        // size={{ xs: 10, sm: 10, md: 10 }}
-        sx={{ "svg circle": { stroke: "url(#my_gradient)" } }}
+        sx={{ "svg circle": { stroke: "url(#my_gradient)" }, width: 10, height: 10}}
       />
     </React.Fragment>
   );

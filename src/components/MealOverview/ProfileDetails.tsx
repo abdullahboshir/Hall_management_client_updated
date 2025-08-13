@@ -22,8 +22,10 @@ import Link from "next/link";
 
 const ProfileDetails = ({ data }: any) => {
   const isStudent = data?.user?.role === "student";
-  const statusColor = data?.user?.status === "active" ? "success" : "error";
-  const statusText = data?.user?.status === "active" ? "Active" : "Inactive";
+  // const statusColor = data?.user?.status === "active" ? "success" : "error";
+  // const statusText = data?.user?.status === "active" ? "Active" : "Inactive";
+
+
 
   return (
     <Stack
@@ -42,6 +44,8 @@ const ProfileDetails = ({ data }: any) => {
           boxShadow: 3,
         }}
       >
+
+        
              <Box
   width="100%"
   height={140}
@@ -54,9 +58,31 @@ const ProfileDetails = ({ data }: any) => {
 >
 </Box>
 
+<Box display={'flex'} justifyContent={'space-between'}  alignItems={'center'} my={2} mx={1}>
+      {data?.user?.role && (
+        <Chip
+        label={String(data?.user?.role).toUpperCase()}
+        size="small"
+        color="primary"
+        variant="outlined"
+        sx={{ fontWeight: 700}}
+        />
+      )}
+
+        {data?.user?.status && (
+                <Chip
+                  label={String(data?.user?.status).toUpperCase()}
+                  size="small"
+                  color="success"
+                  variant="outlined"
+                  sx={{ fontWeight: 700}}
+                />
+              )}
+      </Box>
+
         <CardContent sx={{ p: { xs: 2, md: 2 } }}>
          
-          <Box display="flex"  justifyContent="center" mb={2} mt={-13}>
+          <Box display="flex"  justifyContent="center" mb={2} mt={-19}>
             <Box
               sx={{
                 position: "relative",
@@ -78,10 +104,8 @@ const ProfileDetails = ({ data }: any) => {
                 <PersonIcon sx={{ fontSize: { xs: 56, md: 64 } }} />
               </Avatar>
             </Box>
-
           </Box>
 
-         
           <Box
             sx={{
               background: "#ffffff",
@@ -98,6 +122,7 @@ const ProfileDetails = ({ data }: any) => {
               },
             }}
           >
+            
             <Box display="flex" justifyContent="center" alignItems="center" gap={1} mb={0.5}>
               <Typography
                 fontSize={{ xs: 20, md: "1.5vw" }}
@@ -107,15 +132,7 @@ const ProfileDetails = ({ data }: any) => {
               >
                 {data?.fullName?.toUpperCase()}
               </Typography>
-              {data?.user?.role && (
-                <Chip
-                  label={String(data?.user?.role).toUpperCase()}
-                  size="small"
-                  color="primary"
-                  variant="outlined"
-                  sx={{ fontWeight: 700 }}
-                />
-              )}
+          
             </Box>
             <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
               <EmailIcon fontSize="small" sx={{ color: '#4caf50'}}/>
@@ -187,7 +204,7 @@ const ProfileDetails = ({ data }: any) => {
           {/* Actions */}
           <Grid2 container spacing={1.2} mb={2}>
             <Grid2 size={6}>
-              <Link href={`${data?.user?.role}/profile`} style={{ textDecoration: "none" }}>
+              <Link href={`/${data?.user?.role}/profile`} style={{ textDecoration: "none" }}>
                 <Button
                   fullWidth
                   startIcon={<EditIcon />}
@@ -209,7 +226,8 @@ const ProfileDetails = ({ data }: any) => {
               </Link>
             </Grid2>
             <Grid2 size={6}>
-              <Link href={`dashboard/${data?.user?.role}/profile`} style={{ textDecoration: "none" }}>
+            <Link href={`/dashboard/${data?.user?.role}/profile/${data?._id}`} style={{ textDecoration: "none" }}>
+       
                 <Button
                   fullWidth
                   startIcon={<ArrowOutwardIcon />}
@@ -296,6 +314,7 @@ const ProfileDetails = ({ data }: any) => {
             </>
           )}
         </CardContent>
+        
       </Card>
     </Stack>
   );

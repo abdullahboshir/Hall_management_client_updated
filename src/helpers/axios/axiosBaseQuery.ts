@@ -30,15 +30,15 @@ export const axiosBaseQuery =
           "Content-Type": contentType || "application/json",
         },
       });
+      console.log('ggggggggggggggggggggg', result)
       if (!result || result?.data === undefined) {
         throw new Error("Invalid API response: No data received.");
       }
-
       // return { data: result?.data || {} };
       return result;
     } catch (axiosError) {
       const err = axiosError as any;
-      console.log('status codeeeeeeeeeeeeeeeee',  err?.statusCode)
+      console.log('Error from axios instance',  err)
       return {
         error: {
           status: err?.statusCode,

@@ -40,10 +40,11 @@ const userApi = baseApi.injectEndpoints({
     }),
     getSingleUser: build.query({
       query: () => ({
-        url: "/user/me",
+        url: `/user/me`,
         method: "GET",
       }),
       providesTags: [tagTypes.user],
+      
 
     }),
     updateUserStatus: build.mutation({
